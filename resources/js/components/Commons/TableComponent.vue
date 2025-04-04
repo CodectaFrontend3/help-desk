@@ -1,28 +1,29 @@
 <script>
-import axios from 'axios';
+import apiServices from "../../services/ApiServices.js";
+
 export default {
   name: "TableComponent",
   data() {
     return {
-
-    }
+      microCompany: [],  // Datos de las microempresas
+    };
   },
   props: {
-    columns: Array,
-    data: Array,
+    columns: Array,  // Prop de columnas, que contiene las cabeceras y las claves para las filas
   },
-  computed: {
-    etiquetasCampos() {
-      return {
-        nombreCampoBaseDatos: "Label a mostrar en vista",
-      };
-    },
+  async created() {
+    await this.fetchMicroCompany();  // Llamada a la API cuando el componente se crea
   },
   methods: {
     infoShow() {
-      // Lógica del botón
+      // Lógica para el botón de ver detalles (si es necesario)
     },
-  }
+    async fetchMicroCompany() {
+      // Obtener los datos de microempresas desde la API
+      this.microCompany = await apiServices.getMicroCompany();
+      console.log(this.microCompany);  // Verifica los datos que se reciben
+    },
+  },
 };
 </script>
 
@@ -33,62 +34,28 @@ export default {
     <table>
       <thead>
       <tr>
+        <!-- Mostrar las columnas dinámicamente -->
         <th v-for="(col, index) in columns" :key="index">
-          {{ col.label }}
+          {{ col.label }}  <!-- Mostrar el label de cada columna -->
         </th>
-        <th>dato1</th>
-        <th>dato2</th>
-        <th>dato3</th>
-        <th></th>
+        <th></th>  <!-- Columna para la acción -->
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(row, rowIndex) in data" :key="rowIndex">
+      <!-- Iterar sobre microCompany para mostrar los datos -->
+      <tr v-for="(row, rowIndex) in microCompany" :key="rowIndex">
+        <!-- Iterar sobre cada columna para mostrar los datos -->
         <td v-for="(col, colIndex) in columns" :key="colIndex">
-          {{ row[col.key] }}
+          {{ row[col.key] }}  <!-- Mostrar el valor de cada columna del objeto de microCompany -->
         </td>
-        <td>register1</td>
-        <td>register2</td>
-        <td>register3</td>
         <td class="acciones">
-          <button class="pi pi-eye"  title="Ver registro" @click="infoShow"></button>
-        </td>
-      </tr>
-      <tr>
-        <td v-for="(col, colIndex) in columns" :key="colIndex">
-          {{ row[col.key] }}
-        </td>
-        <td>register1</td>
-        <td>register2</td>
-        <td>register3</td>
-        <td class="acciones">
-          <button class="pi pi-eye"  title="Ver registro" @click="infoShow"></button>
-        </td>
-      </tr>
-      <tr>
-        <td v-for="(col, colIndex) in columns" :key="colIndex">
-          {{ row[col.key] }}
-        </td>
-        <td>register1</td>
-        <td>register2</td>
-        <td>register3</td>
-        <td class="acciones">
-          <button class="pi pi-eye"  title="Ver registro" @click="infoShow"></button>
-        </td>
-      </tr>
-      <tr>
-        <td v-for="(col, colIndex) in columns" :key="colIndex">
-          {{ row[col.key] }}
-        </td>
-        <td>register1</td>
-        <td>register2</td>
-        <td>register3</td>
-        <td class="acciones">
-          <button class="pi pi-eye"  title="Ver registro" @click="infoShow"></button>
+          <button class="pi pi-eye" title="Ver registro" @click="infoShow"></button>
         </td>
       </tr>
       </tbody>
     </table>
+
+    <!-- Paginador -->
     <Paginator></Paginator>
 
   </div>

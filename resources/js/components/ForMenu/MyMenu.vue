@@ -28,7 +28,7 @@ export default {
   <div class="menu-container">
     <div class="profile">
       <div class="profile-img">
-        <img src="" width="120px" alt="">
+        <img src="../assets/user.png" width="120px" alt="">
       </div>
       <p class="profile-name">Beto Ortiz</p>
       <h4 class="profile-especialization">
