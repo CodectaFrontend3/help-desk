@@ -20,6 +20,14 @@ class SoftwareController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'nombre' => 'required|string',
+            'licencia' => 'required|string',
+            'correo' => 'required|email',
+            'contraseña' => 'required|string',
+            'proveedor' => 'required|string',
+            'fecha_instalacion' => 'required|date',
+            'fecha_caducidad' => 'required|date']);
         $software = Software::create($request->all());
         return response()->json($software, 201);
     }
@@ -39,6 +47,14 @@ class SoftwareController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request->validate([
+            'nombre' => 'required|string',
+            'licencia' => 'required|string',
+            'correo' => 'required|email',
+            'contraseña' => 'required|string',
+            'proveedor' => 'required|string',
+            'fecha_instalacion' => 'required|date',
+            'fecha_caducidad' => 'required|date']);
         $software = Software::findOrFail($id);
         $software->update($request->all());
         return response()->json($software, 204);
