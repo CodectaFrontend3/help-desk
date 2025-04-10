@@ -17,8 +17,11 @@ class PlanController extends Controller
      */
     public function store(Request  $request)
     {
-        
-        //$validatedData = $request->validated();
+        $request->validate([
+            'numero_plan' => 'required|integer',
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string|max:2000'
+        ]);
         $plan = Plan::create($request->all());
         return response()->json($plan, 201);
     }
@@ -38,6 +41,11 @@ class PlanController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request->validate([
+            'numero_plan' => 'required|integer',
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string|max:2000'
+        ]);
         $plan = Plan::findOrFail($id);
         $plan->update($request->all());
         return response()->json($plan, 204);
