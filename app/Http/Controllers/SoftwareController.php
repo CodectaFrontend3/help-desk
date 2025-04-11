@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SoftwareRequest;
 use App\Models\Software;
 use Illuminate\Http\Request;
 
@@ -18,17 +19,9 @@ class SoftwareController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SoftwareRequest $request)
     {
-        $request->validate([
-            'nombre' => 'required|string',
-            'licencia' => 'required|string',
-            'correo' => 'required|email',
-            'contraseña' => 'required|string',
-            'proveedor' => 'required|string',
-            'fecha_instalacion' => 'required|date',
-            'fecha_caducidad' => 'required|date']);
-        $software = Software::create($request->all());
+        $software = Software::create($request->validated());
         return response()->json($software, 201);
     }
 
@@ -45,18 +38,10 @@ class SoftwareController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(SoftwareRequest $request, string $id)
     {
-        $request->validate([
-            'nombre' => 'required|string',
-            'licencia' => 'required|string',
-            'correo' => 'required|email',
-            'contraseña' => 'required|string',
-            'proveedor' => 'required|string',
-            'fecha_instalacion' => 'required|date',
-            'fecha_caducidad' => 'required|date']);
         $software = Software::findOrFail($id);
-        $software->update($request->all());
+        $software->update($request->validated());
         return response()->json($software, 204);
     }
 
