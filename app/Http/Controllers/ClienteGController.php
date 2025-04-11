@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClienteGRequest;
 use App\Models\ClienteG;
 use Illuminate\Http\Request;
 
@@ -18,17 +19,9 @@ class ClienteGController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ClienteGRequest $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:50',
-            'apellido' => 'required|string|max:50',
-            'direccion' => 'required|string|max:200',
-            'correo' => 'required|email|max:50',
-            'num_telefono' => 'required|string|max:9',
-            'numero_plan' => 'required|integer',
-        ]);
-        $clienteG = ClienteG::create($request->all());
+        $clienteG = ClienteG::create($request->validated());
         return response()->json($clienteG, 201);
     }
 
@@ -45,18 +38,10 @@ class ClienteGController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ClienteGRequest $request, string $id)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:50',
-            'apellido' => 'required|string|max:50',
-            'direccion' => 'required|string|max:200',
-            'correo' => 'required|email|max:50',
-            'num_telefono' => 'required|string|max:9',
-            'numero_plan' => 'required|integer',
-        ]);
         $clienteG = ClienteG::findOrFail($id);
-        $clienteG->update($request->all());
+        $clienteG->update($request->validated());
         return response()->json($clienteG, 204);
     }
 
