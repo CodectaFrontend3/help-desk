@@ -3,6 +3,7 @@
 use App\Http\Controllers\MicroCompanyController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ClienteGController;
+use App\Http\Controllers\RegistroCuentasController;
 use App\Http\Controllers\RegistroHardwareController;
 use App\Http\Controllers\SoftwareController;
 
@@ -21,3 +22,4 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('/clienteG', ClienteGController::class);
 Route::apiResource('/registroHardware', RegistroHardwareController::class);
 Route::apiResource('/software', SoftwareController::class);
+Route::apiResource('/registroCuenta', RegistroCuentasController::class);
