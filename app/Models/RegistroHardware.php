@@ -11,4 +11,7 @@ class RegistroHardware extends Model
     protected $fillable =[
         'fecha_instalacion','descripcion','serie','proveedor'
     ];
+    public function hardware(){
+        return $this->hasOne(Hardware::class,'id_RH');
+    }
 }

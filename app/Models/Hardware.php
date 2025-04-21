@@ -12,4 +12,8 @@ class Hardware extends Model
         'id_RH','tipo_equipo','num_serie','fecha_compra','plan','marca','proveedor',
         'descripcion','ult_revision','rev_programada',
     ];
+
+    public function registroHardware(){
+        return $this->belongsTo(RegistroHardware::class,'id_RH');
+    }
 }
