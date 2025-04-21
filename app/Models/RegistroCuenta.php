@@ -11,4 +11,8 @@ class RegistroCuenta extends Model
     protected $fillable = [
         'id_clienteG','correo','contraseña',
     ];
+    public function clienteG()
+    {
+        return $this->belongsTo(clienteG::class, 'id_clienteG');
+    }
 }

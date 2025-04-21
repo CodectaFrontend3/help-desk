@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('registro_cuentas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_clienteG')->nullable()->constrained('cliente_g')->nullOnDelete();
+            $table->foreignId('id_clienteG')->nullable()->constrained('cliente_g')->nullOnDelete()->unique();
             $table->string('correo');
             $table->string('contraseña');
             $table->timestamps();

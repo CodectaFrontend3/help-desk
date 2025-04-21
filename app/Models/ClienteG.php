@@ -11,4 +11,7 @@ class ClienteG extends Model
     protected $fillable = [
         'nombre','apellido','direccion','correo','num_telefono','numero_plan',
     ];
+    public function resgistroCuenta(){
+        return $this->hasOne(RegistroCuenta::class, 'id_clienteG');
+    }
 }
