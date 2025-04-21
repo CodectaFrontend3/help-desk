@@ -12,6 +12,6 @@ class RegistroHardware extends Model
         'fecha_instalacion','descripcion','serie','proveedor'
     ];
     public function hardware(){
-        return $this->hasOne(Hardware::class,'id_RH');
+        return $this->hasMany(Hardware::class,'id_RH');
     }
 }
