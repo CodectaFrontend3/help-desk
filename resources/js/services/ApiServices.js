@@ -13,11 +13,10 @@ class Requester {
         try {
             const response = await apiClient.get(url, { headers });
             console.log(response);
-            return response.data; // Devuelve solo los datos del backend
-
+            return response.data;
         } catch (error) {
             console.error('Error en la solicitud GET:', error);
-            return null; // Devuelve null en caso de error
+            return null;
         }
     }
     async post(url, data, headers = {}) {
@@ -86,6 +85,11 @@ class Requester {
 const requester = new Requester()
 
 export default {
+    // Métodos genéricos expuestos
+    get: (endpoint) => requester.get(endpoint),
+    post: (data, endpoint) => requester.post(endpoint, data),
+    put: (data, endpoint) => requester.put(endpoint, data),
+    delete: (endpoint) => requester.delete(endpoint),
     async getMicroCompany(){
         return await requester.get(`/micro-company`);
     }
