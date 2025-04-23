@@ -1,140 +1,110 @@
 <script>
-import axios from 'axios';
-export default {
-  name: "TableComponent",
-  data() {
-    return {
+import apiServices from "../../services/ApiServices.js";
+import PopCliente from "../Commons/PopCliente.vue";
 
-    }
-  },
-  props: {
-    columns: Array,
-    data: Array,
-  },
-  computed: {
-    etiquetasCampos() {
-      return {
-        nombreCampoBaseDatos: "Label a mostrar en vista",
-      };
+export default {
+    name: "TableComponent",
+    components: { PopCliente },
+    data() {
+        return {
+            showPopup: false,
+        };
     },
-  },
-  methods: {
-    infoShow() {
-      // Lógica del botón
+    props: {
+        columns: Array, // Prop de columnas, que contiene las cabeceras y las claves para las filas
+        data: Array, // Prop del array de datos
     },
-  }
+    methods: {
+        infoShow() {
+            // Lógica para el botón de ver detalles (si es necesario)
+        },
+    },
 };
 </script>
 
 <template>
-  <div class="table-container">
+    <div class="table-container">
+        <!-- Tabla de los registros -->
+        <table>
+            <thead>
+                <tr>
+                    <!-- Iterar sobre las columnas para mostrar los encabezados -->
+                    <th v-for="(col, index) in columns" :key="index">
+                        {{ col.label }}
+                    </th>
+                    <th>Acciones</th>
+                    <!-- Columna para la acción -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Primero iterar sobre cada registro (fila) -->
+                <tr v-for="(row, rowIndex) in data" :key="rowIndex">
+                    <!-- Luego iterar sobre cada columna para la fila actual -->
+                    <td v-for="(col, colIndex) in columns" :key="colIndex">
+                        {{ row[col.key] }}
+                        <!-- Usar col.key para acceder a la propiedad correcta del objeto row -->
+                    </td>
+                    <td class="acciones">
+                        <button
+                            class="pi pi-eye"
+                            title="Ver registro"
+                            @click="showPopup = !showPopup"
+                        ></button>
 
-    <!--  Tabla de los registros -->
-    <table>
-      <thead>
-      <tr>
-        <th v-for="(col, index) in columns" :key="index">
-          {{ col.label }}
-        </th>
-        <th>dato1</th>
-        <th>dato2</th>
-        <th>dato3</th>
-        <th></th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(row, rowIndex) in data" :key="rowIndex">
-        <td v-for="(col, colIndex) in columns" :key="colIndex">
-          {{ row[col.key] }}
-        </td>
-        <td>register1</td>
-        <td>register2</td>
-        <td>register3</td>
-        <td class="acciones">
-          <button class="pi pi-eye"  title="Ver registro" @click="infoShow"></button>
-        </td>
-      </tr>
-      <tr>
-        <td v-for="(col, colIndex) in columns" :key="colIndex">
-          {{ row[col.key] }}
-        </td>
-        <td>register1</td>
-        <td>register2</td>
-        <td>register3</td>
-        <td class="acciones">
-          <button class="pi pi-eye"  title="Ver registro" @click="infoShow"></button>
-        </td>
-      </tr>
-      <tr>
-        <td v-for="(col, colIndex) in columns" :key="colIndex">
-          {{ row[col.key] }}
-        </td>
-        <td>register1</td>
-        <td>register2</td>
-        <td>register3</td>
-        <td class="acciones">
-          <button class="pi pi-eye"  title="Ver registro" @click="infoShow"></button>
-        </td>
-      </tr>
-      <tr>
-        <td v-for="(col, colIndex) in columns" :key="colIndex">
-          {{ row[col.key] }}
-        </td>
-        <td>register1</td>
-        <td>register2</td>
-        <td>register3</td>
-        <td class="acciones">
-          <button class="pi pi-eye"  title="Ver registro" @click="infoShow"></button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <Paginator></Paginator>
+                    </td>
 
-  </div>
+                </tr>
+            </tbody>
+        </table>
+        <PopCliente :visible="showPopup" :cliente-id="123" @close="showPopup = false" />
+        <!-- Paginador -->
+        <Paginator></Paginator>
+    </div>
 </template>
 
 <style scoped>
-
-  table {
+table {
     width: 100%;
     border-collapse: collapse;
     border-radius: 10px;
     overflow: hidden;
     text-align: center;
-  }
-  thead {
+    table-layout: fixed;
+    text-overflow: ellipsis;
+}
+thead {
     background-color: #ccc;
-  }
-  tr {
+}
+tr {
     display: flex;
     align-items: center;
-  }
-  td, th {
+}
+td,
+th {
     flex: 1;
     padding: 16px;
-  }
-  tbody tr:nth-child(odd) {
+}
+tbody tr:nth-child(odd) {
     background-color: #fff;
-  }
+}
 
-  tbody tr:nth-child(even) {
+tbody tr:nth-child(even) {
     background-color: #eee;
-  }
+}
 
-  .pagination {
+.pagination {
     margin-top: 20px;
     text-align: center;
-  }
+}
 
-  .pagination button {
+.pagination button {
     padding: 5px 10px;
     margin: 0 5px;
     cursor: pointer;
-  }
+}
 
-  .pagination button:disabled {
+.pagination button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
-  }
+}
 </style>

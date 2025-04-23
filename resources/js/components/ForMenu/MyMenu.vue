@@ -14,7 +14,7 @@ export default {
         { label: 'Tickets', icon: 'pi pi-fw pi-ticket', to: '/tickets' },
         { label: 'Historial de tickets', icon: 'pi pi-fw pi-ticket', to: '/historialtickets' },
         { label: 'Tickets urgentes', icon: 'pi pi-fw pi-ticket', to: '/ticketsurgentes' },
-        { label: 'Empresa - TI', icon: 'pi pi-fw pi-ticket', to: '/tiempresa' },
+        { label: 'Microempresa - TI', icon: 'pi pi-fw pi-ticket', to: '/microempresa' },
         { label: 'Persona Natural', icon: 'pi pi-fw pi-users', to: '/clientespersona' },
         { label: 'Empresa', icon: 'pi pi-fw pi-users', to: '/clientesempresa' },
         { label: 'Plan de soporte', icon: 'pi pi-fw pi-users', to: '/soporte' },
@@ -28,7 +28,7 @@ export default {
   <div class="menu-container">
     <div class="profile">
       <div class="profile-img">
-        <img src="" width="120px" alt="">
+        <img src="../assets/user.png" width="120px" alt="">
       </div>
       <p class="profile-name">Beto Ortiz</p>
       <h4 class="profile-especialization">
