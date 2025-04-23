@@ -8,11 +8,13 @@ uses(RefreshDatabase::class);
 it('lista de todos los clientes g',function(){
     ClienteG::factory()->count(3)->create();
 
-    $response = $this->getJson('/api/clienteG');
+    $response = $this->getJson(route('clienteG.index'));
 
-    $response->assertOk();
-    $response->assertJsonCount(3);
+    $response->assertOk()
+            ->assertJsonCount(3);
 });
+
+
 
 test('crear un cliente_g', function () {
     $data = [
@@ -24,7 +26,7 @@ test('crear un cliente_g', function () {
         'numero_plan' => 1,
     ];
 
-    $response = $this->postJson('/api/clienteG', $data);
+    $response = $this->postJson(route('clienteG.store'), $data);
 
     $response->assertCreated()
              ->assertJsonFragment($data);
@@ -35,7 +37,7 @@ test('crear un cliente_g', function () {
 test('mostrar un cliente g específico', function () {
     $cliente = ClienteG::factory()->create();
 
-    $response = $this->getJson("/api/clienteG/{$cliente->id}");
+    $response = $this->getJson(route('clienteG.show',['clienteG'=>$cliente->id]));
 
     $response->assertOk()
              ->assertJsonFragment([
@@ -56,7 +58,7 @@ test('actualizar un cliente g', function () {
         'numero_plan' => 2,
     ];
 
-    $response = $this->putJson("/api/clienteG/{$cliente->id}", $nuevosDatos);
+    $response = $this->putJson(route('clienteG.update',['clienteG'=>$cliente->id]), $nuevosDatos);
 
     $response->assertNoContent();
 
@@ -66,9 +68,10 @@ test('actualizar un cliente g', function () {
 test('eliminar un cliente_g', function () {
     $cliente = ClienteG::factory()->create();
 
-    $response = $this->deleteJson("/api/clienteG/{$cliente->id}");
+    $response = $this->deleteJson(route('clienteG.destroy',['clienteG'=>$cliente->id]));
 
     $response->assertNoContent();
 
     $this->assertDatabaseMissing('cliente_g', ['id' => $cliente->id]);
 });
+

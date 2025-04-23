@@ -8,13 +8,13 @@ uses(RefreshDatabase::class);
 it('lista de todas las cuentas registradas', function () {
     RegistroCuenta::factory()->count(3)->create();
 
-    $response = $this->getJson('/api/registroCuenta');
+    $response = $this->getJson(route('registroCuenta.index'));
 
     $response->assertOk();
     $response->assertJsonCount(3);
 });
 
-it('registrar una nueva cuenta', function () {
+it('registrar una nueva cuenta registro', function () {
     $cliente = ClienteG::factory()->create();
 
     $data = [
@@ -23,16 +23,29 @@ it('registrar una nueva cuenta', function () {
         'contraseña' => 'a12345678955'
     ];
 
-    $response = $this->postJson('/api/registroCuenta', $data);
+    $response = $this->postJson(route('registroCuenta.store'), $data);
 
     $response->assertCreated();
     $this->assertDatabaseHas('registro_cuentas', $data);
 });
 
+it('un clienteG puede tener una cuenta registrada', function () {
+    $clienteG = ClienteG::factory()->create();
+
+    $cuenta = RegistroCuenta::factory()->create([
+        'id_clienteG' => $clienteG->id
+    ]);
+
+    $clienteG->load('registroCuenta');
+
+    $this->assertNotNull($clienteG->registroCuenta);
+    $this->assertTrue($clienteG->registroCuenta->is($cuenta));
+});
+
 it('mostrar una cuenta específica', function () {
     $registro = RegistroCuenta::factory()->create();
 
-    $response = $this->getJson("/api/registroCuenta/{$registro->id}");
+    $response = $this->getJson(route('registroCuenta.show',['registroCuentum'=>$registro->id]));
 
     $response->assertOk();
     $response->assertJson([
@@ -51,7 +64,7 @@ it('actualizar una cuenta', function () {
         'contraseña' => 'a12345678955'
     ];
 
-    $response = $this->putJson("/api/registroCuenta/{$registro->id}", $data);
+    $response = $this->putJson(route('registroCuenta.update',['registroCuentum'=>$registro->id]), $data);
 
     $response->assertNoContent();
     $this->assertDatabaseHas('registro_cuentas', array_merge(['id' => $registro->id], $data));
@@ -60,7 +73,7 @@ it('actualizar una cuenta', function () {
 it('eliminar una cuenta', function () {
     $registro = RegistroCuenta::factory()->create();
 
-    $response = $this->deleteJson("/api/registroCuenta/{$registro->id}");
+    $response = $this->deleteJson(route('registroCuenta.destroy',['registroCuentum'=>$registro->id]));
 
     $response->assertNoContent();
     $this->assertDatabaseMissing('registro_cuentas', ['id' => $registro->id]);
