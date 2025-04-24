@@ -13,17 +13,10 @@ class MicroEmpresaController extends Controller
         return MicroEmpresa::all();
     }
 
-    public function store(Request $request)
+    public function store(MicroEmpresaRequest $request)
     {
-        $request->validate([
-            'nombre_cliente' => 'required|string|max:255',
-            'ruc' => 'required|string|max:11',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|max:15',
-            'correo' => 'required|email|max:255',
-        ]);
-
-        $microempresa = MicroEmpresa::create($request->all());
+       
+        $microempresa = MicroEmpresa::create($request->validated());
 
         return response()->json($microempresa, 201);
     }
@@ -33,17 +26,9 @@ class MicroEmpresaController extends Controller
         return $microempresa;
     }
 
-    public function update(Request $request, MicroEmpresa $microempresa)
+    public function update(MicroEmpresaRequest $request, MicroEmpresa $microempresa)
     {
-        $request->validate([
-            'nombre_cliente' => 'required|string|max:255',
-            'ruc' => 'required|string|max:11',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|max:15',
-            'correo' => 'required|email|max:255',
-        ]);
-
-        $microempresa->update($request->all());
+        $microempresa->update($request->validated());
 
         return response()->noContent();
     }

@@ -15,8 +15,6 @@ class ContactosRefController extends Controller
     // Crear un nuevo registro
     public function store(ContactoRefRequest $request)
     {
-        $validatedData = $request->validated();
-
         $contactoRef = ContactoRef::create($validatedData);
 
         return response()->json($contactoRef, 201);
@@ -32,11 +30,9 @@ class ContactosRefController extends Controller
     // Actualizar un registro
     public function update(ContactoRefRequest $request, $id)
     {
-        $validatedData = $request->validated();
 
         $contactoRef = ContactoRef::findOrFail($id);
-        $contactoRef->update($validatedData);
-
+        $contactoRef->update($request->validated());
         return response()->json($contactoRef, 200);
     }
 

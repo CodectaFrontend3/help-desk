@@ -8,6 +8,9 @@ use App\Http\Controllers\RegistroHardwareController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\MicroEmpresaController;
+use App\Http\Controllers\SucursalController;
+use App\Http\Controllers\AreaController;
+use App\Http\Controllers\ContactosRefController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -30,5 +33,10 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('/clienteG', ClienteGController::class);
 Route::apiResource('/registroHardware', RegistroHardwareController::class);
 Route::apiResource('/software', SoftwareController::class);
+
+//Tablas inferiores
 Route::apiResource('empresa', EmpresaController::class);
 Route::apiResource('microempresa', MicroEmpresaController::class);
+Route::apiResource('sucursal', SucursalController::class);
+Route::apiResource('area', AreaController::class);
+Route::apiResource('contactosRef', ContactosRefController::class);
