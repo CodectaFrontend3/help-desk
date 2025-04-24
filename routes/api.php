@@ -6,6 +6,8 @@ use App\Http\Controllers\ClienteGController;
 use App\Http\Controllers\NaturalPersonController;
 use App\Http\Controllers\RegistroHardwareController;
 use App\Http\Controllers\SoftwareController;
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\MicroEmpresaController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -28,3 +30,5 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('/clienteG', ClienteGController::class);
 Route::apiResource('/registroHardware', RegistroHardwareController::class);
 Route::apiResource('/software', SoftwareController::class);
+Route::apiResource('empresa', EmpresaController::class);
+Route::apiResource('microempresa', MicroEmpresaController::class);
