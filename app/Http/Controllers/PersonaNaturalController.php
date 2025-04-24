@@ -29,7 +29,7 @@ class PersonaNaturalController extends Controller
     {
         $persona = PersonaNatural::findOrFail($id);
         $persona->update($request->validated());
-        return response()->json($persona, 200);
+        return response()->noContent();
     }
 
     public function destroy(string $id)
