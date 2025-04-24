@@ -8,10 +8,9 @@ uses(RefreshDatabase::class);
 it('puede listar todos los planes', function () {
     Plan::factory()->count(3)->create();
 
-    $response = $this->getJson('/api/planes');
+    $response = $this->getJson(route('planes.index'));
 
-    $response->assertOk();
-    $response->assertJsonCount(3);
+    $response->assertOk()->assertJsonCount(3);
 });
 
 it('puede crear un nuevo plan', function () {
@@ -21,7 +20,7 @@ it('puede crear un nuevo plan', function () {
         'descripcion' => 'Este es un plan de prueba.'
     ];
 
-    $response = $this->postJson('/api/planes', $data);
+    $response = $this->postJson(route('planes.store'), $data);
 
     $response->assertCreated();
     $this->assertDatabaseHas('planes', $data);
@@ -32,8 +31,7 @@ it('puede mostrar un plan específico', function () {
 
     $response = $this->getJson("/api/planes/{$plan->id}");
 
-    $response->assertOk();
-    $response->assertJson([
+    $response->assertOk()->assertJson([
         'id' => $plan->id,
         'nombre' => $plan->nombre,
         'descripcion' => $plan->descripcion
@@ -49,7 +47,7 @@ it('puede actualizar un plan', function () {
         'descripcion' => 'Descripción actualizada.'
     ];
 
-    $response = $this->putJson("/api/planes/{$plan->id}", $newData);
+    $response = $this->putJson(route('planes.update',['plane'=>$plan->id]), $newData);
 
     $response->assertNoContent();
     $this->assertDatabaseHas('planes', array_merge(['id' => $plan->id], $newData));
@@ -58,7 +56,7 @@ it('puede actualizar un plan', function () {
 it('puede eliminar un plan', function () {
     $plan = Plan::factory()->create();
 
-    $response = $this->deleteJson("/api/planes/{$plan->id}");
+    $response = $this->deleteJson(route('planes.destroy',['plane'=>$plan->id]));
 
     $response->assertNoContent();
     $this->assertDatabaseMissing('planes', ['id' => $plan->id]);
