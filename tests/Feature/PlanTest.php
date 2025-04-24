@@ -29,7 +29,7 @@ it('puede crear un nuevo plan', function () {
 it('puede mostrar un plan específico', function () {
     $plan = Plan::factory()->create();
 
-    $response = $this->getJson("/api/planes/{$plan->id}");
+    $response = $this->getJson(route('planes.show',['plane'=>$plan->id]));
 
     $response->assertOk()->assertJson([
         'id' => $plan->id,
