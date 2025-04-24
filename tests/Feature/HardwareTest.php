@@ -9,10 +9,23 @@ uses(RefreshDatabase::class);
 it('listas de todos los hardware', function () {
     Hardware::factory()->count(3)->create();
 
-    $response = $this->getJson('/api/hardware');
+    $response = $this->getJson(route('hardware.index'));
 
     $response->assertOk();
     $response->assertJsonCount(3);
+});
+
+it('un RegistroHardware puede tener muchos Hardware', function () {
+    $registro = RegistroHardware::factory()->create();
+
+    $hardware1 = Hardware::factory()->create(['id_RH' => $registro->id]);
+    $hardware2 = Hardware::factory()->create(['id_RH' => $registro->id]);
+
+    $registro->load('hardware');
+
+    $this->assertCount(2, $registro->hardware);
+    $this->assertTrue($registro->hardware->contains($hardware1));
+    $this->assertTrue($registro->hardware->contains($hardware2));
 });
 
 it('crear un nuevo hardware', function () {
@@ -22,7 +35,7 @@ it('crear un nuevo hardware', function () {
         'id_RH' => $registro->id,
     ])->toArray();
 
-    $response = $this->postJson('/api/hardware', $data);
+    $response = $this->postJson(route('hardware.store'), $data);
 
     $response->assertCreated();
     $response->assertJsonFragment(['num_serie' => $data['num_serie']]);
@@ -33,7 +46,7 @@ it('crear un nuevo hardware', function () {
 it('mostrar un hardware específico', function () {
     $hardware = Hardware::factory()->create();
 
-    $response = $this->getJson("/api/hardware/{$hardware->id}");
+    $response = $this->getJson(route('hardware.show',['hardware'=>$hardware->id]));
 
     $response->assertOk()
              ->assertJsonFragment(['id' => $hardware->id]);
@@ -43,7 +56,7 @@ it('actualizar un hardware', function () {
     $hardware = Hardware::factory()->create();
 
     $nuevoProveedor = 'Proveedor Actualizado S.A.';
-    $response = $this->putJson("/api/hardware/{$hardware->id}", [
+    $response = $this->putJson(route('hardware.update',['hardware'=>$hardware->id]), [
         ...$hardware->toArray(),
         'proveedor' => $nuevoProveedor,
     ]);
@@ -55,7 +68,7 @@ it('actualizar un hardware', function () {
 it('eliminar un hardware', function () {
     $hardware = Hardware::factory()->create();
 
-    $response = $this->deleteJson("/api/hardware/{$hardware->id}");
+    $response = $this->deleteJson(route('hardware.destroy',['hardware'=>$hardware->id]));
 
     $response->assertNoContent();
     $this->assertDatabaseMissing('hardware', ['id' => $hardware->id]);
