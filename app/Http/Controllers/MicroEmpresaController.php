@@ -10,32 +10,33 @@ class MicroEmpresaController extends Controller
 {
     public function index()
     {
-        return response()->json(MicroEmpresa::all());
+        return MicroEmpresa::all();
     }
 
     public function store(MicroEmpresaRequest $request)
     {
+       
         $microempresa = MicroEmpresa::create($request->validated());
+
         return response()->json($microempresa, 201);
     }
 
-    public function show(string $id)
+    public function show(MicroEmpresa $microempresa)
     {
-        $microempresa = MicroEmpresa::findOrFail($id);
-        return response()->json($microempresa);
+        return $microempresa;
     }
 
-    public function update(MicroEmpresaRequest $request, string $id)
+    public function update(MicroEmpresaRequest $request, MicroEmpresa $microempresa)
     {
-        $microempresa = MicroEmpresa::findOrFail($id);
         $microempresa->update($request->validated());
-        return response()->json($microempresa, 200);
+
+        return response()->noContent();
     }
 
-    public function destroy(string $id)
+    public function destroy(MicroEmpresa $microempresa)
     {
-        $microempresa = MicroEmpresa::findOrFail($id);
         $microempresa->delete();
+
         return response()->noContent();
     }
 }

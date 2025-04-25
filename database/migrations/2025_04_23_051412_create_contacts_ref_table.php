@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('area', function (Blueprint $table) {
+        Schema::create('contacts_ref', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('microempresa_id')->constrained('microempresa')->onDelete('cascade');
             $table->foreignId('empresa_id')->constrained('empresa')->onDelete('cascade');
-            $table->foreignId('sucursal_id')->constrained('sucursal')->onDelete('cascade');
-            $table->string('nombre_area');
-            $table->string('contacto');
-            $table->string('telefono');
-            $table->string('correo');
+            $table->foreignId('microempresa_id')->constrained('micro_empresas')->onDelete('cascade');
+            $table->foreignId('persona_natural_id')->constrained('natural_person')->onDelete('cascade');
+            $table->string('name');
+            $table->string('address');
+            $table->string('email');
+            $table->string('phone');
+            $table->string('manager');
             $table->timestamps();
         });
     }
@@ -29,7 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('area');
+        Schema::dropIfExists('contacts_ref');
     }
 };
- 
