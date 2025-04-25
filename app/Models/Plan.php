@@ -16,4 +16,8 @@ class Plan extends Model
         "nombre",
         "descripcion"
     ];
+
+    public function equipo(){
+        return $this->hasMany(Equipo::class,'id_plan');
+    }
 }

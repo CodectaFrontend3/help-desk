@@ -15,4 +15,20 @@ class Equipo extends Model
         'id_clienteG','id_empresa','id_microempresa','id_personaN','id_plan','tipo',
         'marca','nombre_usuario','ult_revision','revision_programada'
     ];
+
+    public function clienteG(){
+        return $this->belongsTo(ClienteG::class,'id_clienteG');
+    }
+    public function empresa(){
+        return $this->belongsTo(ClienteG::class,'id_empresa');
+    }
+    public function microEmpresa(){
+        return $this->belongsTo(ClienteG::class,'id_microempresa');
+    }
+    public function personaNatural(){
+        return $this->belongsTo(ClienteG::class,'id_personaN');
+    }
+    public function plan(){
+        return $this->belongsTo(ClienteG::class,'id_plan');
+    }
 }

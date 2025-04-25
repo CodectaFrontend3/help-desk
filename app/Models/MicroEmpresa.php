@@ -16,4 +16,7 @@ class MicroEmpresa extends Model
         'telefono', 
         'correo'
     ];
+    public function equipo(){
+        return $this->hasMany(Equipo::class,'id_microempresa');
+    }
 }

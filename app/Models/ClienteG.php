@@ -18,4 +18,7 @@ class ClienteG extends Model
     {
         return $this->hasOne(RegistroCuenta::class, 'id_clienteG');
     }
+    public function equipo(){
+        return $this->hasMany(Equipo::class,'id_clienteG');
+    }
 }
