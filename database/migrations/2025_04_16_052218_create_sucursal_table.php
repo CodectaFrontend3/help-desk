@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('sucursal', function (Blueprint $table) {
             $table->id();
             $table->foreignId('empresa_id')->constrained('empresa')->onDelete('cascade');
-            $table->string('nombre_sucursal');
-            $table->string('encargado');
-            $table->string('telefono');
-            $table->string('correo');
+            $table->string('name');
+            $table->string('manager');
+            $table->string('phone');
+            $table->string('email');
             $table->timestamps();
         });   
     }

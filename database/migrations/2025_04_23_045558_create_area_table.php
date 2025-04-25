@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('microempresa_id')->constrained('micro_empresas')->onDelete('cascade');
             $table->foreignId('sucursal_id')->constrained('sucursal')->onDelete('cascade');
-            $table->string('nombre_area');
-            $table->string('contacto');
-            $table->string('telefono');
-            $table->string('correo');
+            $table->string('name_area');
+            $table->string('contact');
+            $table->string('phone');
+            $table->string('email');
             $table->timestamps();
         });
     }

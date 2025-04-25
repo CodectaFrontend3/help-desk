@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contactos_ref', function (Blueprint $table) {
+        Schema::create('contacts_ref', function (Blueprint $table) {
             $table->id();
             $table->foreignId('empresa_id')->constrained('empresa')->onDelete('cascade');
             $table->foreignId('microempresa_id')->constrained('micro_empresas')->onDelete('cascade');
-            $table->foreignId('persona_natural_id')->constrained('persona_natural')->onDelete('cascade');
-            $table->string('nombre');
-            $table->string('direccion');
-            $table->string('correo');
-            $table->string('telefono');
-            $table->string('cargo');
+            $table->foreignId('persona_natural_id')->constrained('natural_person')->onDelete('cascade');
+            $table->string('name');
+            $table->string('address');
+            $table->string('email');
+            $table->string('phone');
+            $table->string('manager');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contactos_ref');
+        Schema::dropIfExists('contacts_ref');
     }
 };
