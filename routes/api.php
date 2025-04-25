@@ -14,6 +14,7 @@ use App\Http\Controllers\ContactosRefController;
 use App\Http\Controllers\HardwareController;
 use App\Http\Controllers\PersonaNaturalController;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\RegistroCuentasController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/micro-company', [MicroCompanyController::class, "index"]);
@@ -45,3 +46,4 @@ Route::apiResource('contactosRef', ContactosRefController::class);
 Route::apiResource('/personaNatural', PersonaNaturalController::class);
 Route::apiResource('/planes', PlanController::class);
 Route::apiResource('/hardware', HardwareController::class);
+Route::apiResource('/registroCuenta', RegistroCuentasController::class);
