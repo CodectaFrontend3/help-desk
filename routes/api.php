@@ -16,6 +16,7 @@ use App\Http\Controllers\HardwareController;
 use App\Http\Controllers\PersonaNaturalController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\RegistroCuentasController;
+use App\Http\Controllers\SoftwareEquipoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/micro-company', [MicroCompanyController::class, "index"]);
@@ -50,3 +51,4 @@ Route::apiResource('/planes', PlanController::class);
 Route::apiResource('/hardware', HardwareController::class);
 Route::apiResource('/registroCuenta', RegistroCuentasController::class);
 Route::apiResource('/equipo', EquipoController::class);
+Route::apiResource('/softwareEquipo', SoftwareEquipoController::class);
