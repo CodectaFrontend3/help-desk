@@ -31,4 +31,7 @@ class Equipo extends Model
     public function plan(){
         return $this->belongsTo(ClienteG::class,'id_plan');
     }
+    public function softwareEquipo(){
+        return $this->hasMany(SoftwareEquipo::class,'id_equipos');
+    }
 }
