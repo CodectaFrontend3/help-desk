@@ -11,6 +11,7 @@ use App\Http\Controllers\MicroEmpresaController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ContactosRefController;
+use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\HardwareController;
 use App\Http\Controllers\PersonaNaturalController;
 use App\Http\Controllers\PlanController;
@@ -44,6 +45,8 @@ Route::apiResource('sucursal', SucursalController::class);
 Route::apiResource('area', AreaController::class);
 Route::apiResource('contactosRef', ContactosRefController::class);
 Route::apiResource('/personaNatural', PersonaNaturalController::class);
+
 Route::apiResource('/planes', PlanController::class);
 Route::apiResource('/hardware', HardwareController::class);
 Route::apiResource('/registroCuenta', RegistroCuentasController::class);
+Route::apiResource('/equipo', EquipoController::class);
