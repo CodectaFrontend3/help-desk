@@ -20,18 +20,21 @@ class Equipo extends Model
         return $this->belongsTo(ClienteG::class,'id_clienteG');
     }
     public function empresa(){
-        return $this->belongsTo(ClienteG::class,'id_empresa');
+        return $this->belongsTo(Empresa::class,'id_empresa');
     }
     public function microEmpresa(){
-        return $this->belongsTo(ClienteG::class,'id_microempresa');
+        return $this->belongsTo(MicroEmpresa::class,'id_microempresa');
     }
     public function personaNatural(){
-        return $this->belongsTo(ClienteG::class,'id_personaN');
+        return $this->belongsTo(PersonaNatural::class,'id_personaN');
     }
     public function plan(){
-        return $this->belongsTo(ClienteG::class,'id_plan');
+        return $this->belongsTo(Plan::class,'id_plan');
     }
     public function softwareEquipo(){
         return $this->hasMany(SoftwareEquipo::class,'id_equipos');
+    }
+    public function cuentaTrabajador(){
+        return $this->hasOne(CuentaTrabajador::class,'id_equipos');
     }
 }
