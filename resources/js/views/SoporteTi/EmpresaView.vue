@@ -24,11 +24,8 @@ export default {
     methods: {
         async fetchMicroCompany() {
             // Obtener los datos de microempresas desde la API
-
             this.microCompany = await apiServices.get("micro-company");
-
             console.log(this.microCompany); // Verifica los datos que se reciben
-            console.log('Datos de microempresas:', this.microCompany); // Verifica los datos que se reciben
         },
     },
 };

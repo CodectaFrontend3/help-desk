@@ -90,7 +90,4 @@ export default {
     post: (data, endpoint) => requester.post(endpoint, data),
     put: (data, endpoint) => requester.put(endpoint, data),
     delete: (endpoint) => requester.delete(endpoint),
-    async getMicroCompany(){
-        return await requester.get(`/micro-company`);
-    }
 }

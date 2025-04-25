@@ -1,5 +1,4 @@
 <script>
-import apiServices from "../../services/ApiServices.js";
 import PopCliente from "../Commons/PopCliente.vue";
 
 export default {
@@ -45,14 +44,8 @@ export default {
                         <!-- Usar col.key para acceder a la propiedad correcta del objeto row -->
                     </td>
                     <td class="acciones">
-                        <button
-                            class="pi pi-eye"
-                            title="Ver registro"
-                            @click="showPopup = !showPopup"
-                        ></button>
-
+                        <button class="pi pi-eye" title="Ver registro" @click="showPopup = !showPopup"></button>
                     </td>
-
                 </tr>
             </tbody>
         </table>
