@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('area', function (Blueprint $table) {
             $table->id();
             $table->foreignId('microempresa_id')->constrained('micro_empresas')->onDelete('cascade');
-            $table->foreignId('sucursal_id')->constrained('sucursal')->onDelete('cascade');
+            $table->foreignId('sucursal_id')->constrained('branch')->onDelete('cascade');
             $table->string('nombre_area');
             $table->string('contacto');
             $table->string('telefono');

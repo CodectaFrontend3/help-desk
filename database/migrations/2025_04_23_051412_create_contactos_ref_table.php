@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('contactos_ref', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('empresa_id')->constrained('empresa')->onDelete('cascade');
-            $table->foreignId('microempresa_id')->constrained('micro_empresas')->onDelete('cascade');
+            $table->foreignId('empresa_id')->constrained('company')->onDelete('cascade');
+            $table->foreignId('microempresa_id')->constrained('company')->onDelete('cascade');
             $table->foreignId('persona_natural_id')->constrained('persona_natural')->onDelete('cascade');
             $table->string('nombre');
             $table->string('direccion');

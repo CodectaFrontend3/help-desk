@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('equipo', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_clienteG')->nullable()->constrained('cliente_g')->nullOnDelete();
-            $table->foreignId('id_empresa')->nullable()->constrained('empresa')->nullOnDelete();
+            $table->foreignId('id_empresa')->nullable()->constrained('company')->nullOnDelete();
             $table->foreignId('id_microempresa')->nullable()->constrained('micro_empresas')->nullOnDelete();
             $table->foreignId('id_personaN')->nullable()->constrained('persona_natural')->nullOnDelete();
             $table->foreignId('id_plan')->nullable()->constrained('planes')->nullOnDelete();
