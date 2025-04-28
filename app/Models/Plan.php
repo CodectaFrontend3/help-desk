@@ -7,17 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Plan extends Model
 {
-    protected $table = "planes";
+    protected $table = "plan";
 
     use HasFactory;
 
     protected $fillable = [
-        "numero_plan",
-        "nombre",
-        "descripcion"
+        "plan_number",
+        "name",
+        "description"
     ];
 
-    public function equipo(){
-        return $this->hasMany(Equipo::class,'id_plan');
-    }
+    // public function equipo(){
+    //     return $this->hasMany(Equipo::class,'id_plan');
+    // }
 }

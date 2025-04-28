@@ -10,10 +10,10 @@ class Software extends Model
     use HasFactory;
     protected $table = "software";
     protected $fillable = [
-        'nombre','licencia','correo','contraseña','proveedor','fecha_instalacion','fecha_caducidad'
+        'name','license','email','password','supplier','installation_date','expiration_date'
     ];
 
-    public function softwareEquipo(){
-        return $this->hasMany(SoftwareEquipo::class,'id_software');
-    }
+    // public function softwareEquipo(){
+    //     return $this->hasMany(SoftwareEquipo::class,'id_software');
+    // }
 }
