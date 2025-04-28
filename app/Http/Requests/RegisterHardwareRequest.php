@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SoftwareRequest extends FormRequest
+class RegisterHardwareRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,13 +22,10 @@ class SoftwareRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'license' => 'required|string',
-            'email' => 'required|email',
-            'password' => 'required|string',
-            'supplier' => 'required|string',
             'installation_date' => 'required|date',
-            'expiration_date' => 'required|date'
+            'description' => 'required|string',
+            'serie' => 'required|string|max:50',
+            'supplier' => 'required|string|max:50'
         ];
     }
 }

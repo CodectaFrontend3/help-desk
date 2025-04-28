@@ -22,9 +22,9 @@ class PlanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'numero_plan' => 'required|integer',
-            'nombre' => 'required|string|max:50',
-            'descripcion' => 'required|string|max:2000'
+            'plan_number' => 'required|integer',
+            'name' => 'required|string|max:50',
+            'description' => 'required|string|max:2000'
         ];
     }
 }
