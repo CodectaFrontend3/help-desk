@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('software', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('licencia');
-            $table->string('correo');
-            $table->string('contraseña');
-            $table->string('proveedor');
-            $table->dateTime('fecha_instalacion');
-            $table->dateTime('fecha_caducidad');
+            $table->string('name');
+            $table->string('license');
+            $table->string('email');
+            $table->string('password');
+            $table->string('supplier');
+            $table->dateTime('installation_date');
+            $table->dateTime('expiration_date');
             $table->timestamps();
         });
     }
