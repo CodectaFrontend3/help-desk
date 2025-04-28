@@ -14,13 +14,13 @@ class SoftwareFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre' => $this->faker->word(),
-            'licencia' => $this->faker->uuid(),
-            'correo' => $this->faker->safeEmail(),
-            'contraseña' => $this->faker->password(),
-            'proveedor' => $this->faker->company(),
-            'fecha_instalacion' => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s'),
-            'fecha_caducidad' => $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d H:i:s')
+            'name' => $this->faker->word(),
+            'license' => $this->faker->uuid(),
+            'email' => $this->faker->safeEmail(),
+            'password' => $this->faker->password(),
+            'supplier' => $this->faker->company(),
+            'installation_date' => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s'),
+            'expiration_date' => $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d H:i:s')
         ];
     }
 }

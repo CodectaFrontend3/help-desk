@@ -15,9 +15,9 @@ class PlanFactory extends Factory
     public function definition(): array
     {
         return [
-            'numero_plan' => $this->faker->numberBetween(1, 100),
-            'nombre' => $this->faker->words(3, true),
-            'descripcion' => $this->faker->paragraph,
+            'plan_number' => $this->faker->numberBetween(1, 100),
+            'name' => $this->faker->words(3, true),
+            'description' => $this->faker->paragraph,
         ];
     }
 }
