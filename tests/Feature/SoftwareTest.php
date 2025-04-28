@@ -5,7 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lista todos los software', function () {
+it('list of all software', function () {
     Software::factory()->count(3)->create();
 
     $response = $this->getJson(route('software.index'));
@@ -14,18 +14,18 @@ it('lista todos los software', function () {
     ->assertJsonCount(3);
 });
 
-it('crear un nuevo software', function () {
+it('create a new software', function () {
     $data = Software::factory()->make()->toArray();
 
     $response = $this->postJson(route('software.store'), $data);
 
     $response->assertCreated();
-    $response->assertJsonFragment(['nombre' => $data['nombre']]);
+    $response->assertJsonFragment(['name' => $data['name']]);
 
-    $this->assertDatabaseHas('software', ['nombre' => $data['nombre']]);
+    $this->assertDatabaseHas('software', ['name' => $data['name']]);
 });
 
-it('mostrar un software específico', function () {
+it('show a specific software', function () {
     $software = Software::factory()->create();
 
     $response = $this->getJson(route('software.show', ['software' => $software->id]));
@@ -34,20 +34,20 @@ it('mostrar un software específico', function () {
              ->assertJsonFragment(['id' => $software->id]);
 });
 
-it('actualizar un software', function () {
+it('update a software', function () {
     $software = Software::factory()->create();
 
-    $nuevoNombre = 'Antivirus Pro 2025';
+    $newname = 'Antivirus Pro 2025';
     $response = $this->putJson(route('software.update', ['software' => $software->id]), [
         ...$software->toArray(),
-        'nombre' => $nuevoNombre,
+        'name' => $newname,
     ]);
 
     $response->assertNoContent();
-    $this->assertDatabaseHas('software', ['nombre' => $nuevoNombre]);
+    $this->assertDatabaseHas('software', ['name' => $newname]);
 });
 
-it('eliminar un software', function () {
+it('delete a software', function () {
     $software = Software::factory()->create();
 
     $response = $this->deleteJson(route('software.destroy', ['software' => $software->id]));

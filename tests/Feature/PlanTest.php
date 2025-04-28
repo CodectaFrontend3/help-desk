@@ -5,59 +5,59 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('puede listar todos los planes', function () {
+it('list of all plans', function () {
     Plan::factory()->count(3)->create();
 
-    $response = $this->getJson(route('planes.index'));
+    $response = $this->getJson(route('plan.index'));
 
     $response->assertOk()->assertJsonCount(3);
 });
 
-it('puede crear un nuevo plan', function () {
+it('create a new plan', function () {
     $data = [
-        'numero_plan' => 101,
-        'nombre' => 'Plan Básico',
-        'descripcion' => 'Este es un plan de prueba.'
+        'plan_number' => 101,
+        'name' => 'Plan Básico',
+        'description' => 'Este es un plan de prueba.'
     ];
 
-    $response = $this->postJson(route('planes.store'), $data);
+    $response = $this->postJson(route('plan.store'), $data);
 
     $response->assertCreated();
-    $this->assertDatabaseHas('planes', $data);
+    $this->assertDatabaseHas('plan', $data);
 });
 
-it('puede mostrar un plan específico', function () {
+it('show a specific plan', function () {
     $plan = Plan::factory()->create();
 
-    $response = $this->getJson(route('planes.show',['plane'=>$plan->id]));
+    $response = $this->getJson(route('plan.show',['plan'=>$plan->id]));
 
     $response->assertOk()->assertJson([
         'id' => $plan->id,
-        'nombre' => $plan->nombre,
-        'descripcion' => $plan->descripcion
+        'name' => $plan->name,
+        'description' => $plan->description
     ]);
 });
 
-it('puede actualizar un plan', function () {
+it('update a plan', function () {
     $plan = Plan::factory()->create();
 
     $newData = [
-        'numero_plan' => 202,
-        'nombre' => 'Plan Actualizado',
-        'descripcion' => 'Descripción actualizada.'
+        'plan_number' => 202,
+        'name' => 'Plan Actualizado',
+        'description' => 'Descripción actualizada.'
     ];
 
-    $response = $this->putJson(route('planes.update',['plane'=>$plan->id]), $newData);
+    $response = $this->putJson(route('plan.update',['plan'=>$plan->id]), $newData);
 
     $response->assertNoContent();
-    $this->assertDatabaseHas('planes', array_merge(['id' => $plan->id], $newData));
+    $this->assertDatabaseHas('plan', array_merge(['id' => $plan->id], $newData));
 });
 
-it('puede eliminar un plan', function () {
+it('delete a plan', function () {
     $plan = Plan::factory()->create();
 
-    $response = $this->deleteJson(route('planes.destroy',['plane'=>$plan->id]));
+    $response = $this->deleteJson(route('plan.destroy',['plan'=>$plan->id]));
 
     $response->assertNoContent();
-    $this->assertDatabaseMissing('planes', ['id' => $plan->id]);
+    $this->assertDatabaseMissing('plan', ['id' => $plan->id]);
 });
