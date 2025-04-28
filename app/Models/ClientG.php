@@ -14,10 +14,10 @@ class ClientG extends Model
     protected $fillable = [
         'name','last_name','address','email','phone_number','plan_number',
     ];
-    // public function registroCuenta()
-    // {
-    //     return $this->hasOne(RegistroCuenta::class, 'id_clientG');
-    // }
+    public function AccountRegister()
+    {
+        return $this->hasOne(AccountRegister::class, 'id_clientG');
+    }
     // public function equipo(){
     //     return $this->hasMany(Equipo::class,'id_clientG');
     // }
