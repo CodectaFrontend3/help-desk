@@ -19,8 +19,7 @@ export default {
             // Solo mostrar los botones en estas rutas (puedes personalizarlas)
             return (
                 this.$route.name === "Yo" ||
-                this.$route.meta.navbarConfig.persona === true ||
-                this.$route.meta.navbarConfig.clientes === true
+                this.$route.meta.navbarConfig.persona === true || this.$route.meta.navbarConfig.clientes === true
             );
         },
         showAdd() {
@@ -28,7 +27,7 @@ export default {
             return this.$route.meta.role === "admin";
         },
         isTicketActive() {
-            return this.$route.name === "Tickets activos";
+            return this.$route.name === "Tickets activos" || this.$route.name === "Soporte técnico - Soporte TI";
         },
     },
 };
@@ -214,6 +213,38 @@ export default {
                 </div>
             </div>
 
+            <!-- SOPORTE TI -->
+            <div v-if="navbarConfig.soporteTi" class="soporte-container">
+                <!-- RUC -->
+                <div
+                    v-if="navbarConfig.ruc"
+                    class="seeker seeker__soporte"
+                    :class="{ width__sekker: isTicketActive }"
+                >
+                    <label for="soporte-ruc">{{ navbarConfig.ruc }}</label>
+                    <input
+                        id="soporte-ruc"
+                        type="text"
+                        title="Buscar empresa"
+                        placeholder="Ingrese el RUC"
+                    />
+                </div>
+                <!-- EMPRESA -->
+                <div
+                    v-if="navbarConfig.company"
+                    class="seeker seeker__soporte"
+                    :class="{ width__sekker: isTicketActive }"
+                >
+                    <label for="soporte-ruc">{{ navbarConfig.company }}</label>
+                    <input
+                        id="soporte-ruc"
+                        type="text"
+                        title="Buscar empresa"
+                        placeholder="Ingrese el nombre de la empresa"
+                    />
+                </div>
+            </div>
+
             <!--Seeker General-->
             <div
                 class="seeker seeker__general"
@@ -238,7 +269,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
     text-align: center;
     font-weight: 600;
     gap: 20px;
@@ -430,7 +460,7 @@ p {
     padding: 10px 30px;
 }
 .width__sekker {
-    max-width: 300px;
+    max-width: 350px;
 }
 .icon {
     position: absolute;
@@ -454,5 +484,17 @@ p {
     background-color: var(
         --accent-color
     ); /* Cambia el color según lo que desees */
+}
+
+.soporte-container {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+}
+.seeker__soporte {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 6px;
 }
 </style>

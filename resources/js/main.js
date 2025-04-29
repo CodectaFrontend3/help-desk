@@ -3,7 +3,8 @@ import '../css/style.css';
 import App from './App.vue';
 import router from './router/index.js';
 import PrimeVue from 'primevue/config';
-import 'primeicons/primeicons.css';                      // Estilos de los iconos
+             // core
+import 'primeicons/primeicons.css';     
 import Paginator from 'primevue/paginator';              // Importa el componente Paginator
 import Button from 'primevue/button';                    // Importa el componente Button
 

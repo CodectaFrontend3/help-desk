@@ -7,8 +7,8 @@ export default {
   data() {
     return {
       cards: [
-        { icon: "pi pi-ticket", text: "Tickets Activos", number: 60, link: "/tickets" },
-        { icon: "pi pi-bell", text: "Tickets Urgentes", number: 45, link: "/notificaciones" },
+        { icon: "pi pi-ticket", text: "Tickets Activos", number: 60, link: "/tickets-activos" },
+        { icon: "pi pi-bell", text: "Tickets Urgentes", number: 45, link: "/ticketsurgentes" },
         { icon: "pi pi-history", text: "Historial de Tickets", number: 30, link: "/usuarios" },
         { icon: "pi pi-star-fill", text: "Valorización de Satisfacción", number: 60, link: "/tickets" }
       ],
