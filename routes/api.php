@@ -58,4 +58,6 @@ Route::apiResource('/registerHardware', RegisterHardwareController::class);
 Route::apiResource('/plan', PlanController::class);
 Route::apiResource('/software', SoftwareController::class);
 Route::apiResource('/accountRegister', AccountRegisterController::class);
-Route::apiResource('company', MicroCompanyController::class);
+Route::apiResource('micro_company', MicroCompanyController::class);
+Route::apiResource('company', CompanyController::class);
+Route::apiResource('natural-person', NaturalPersonController::class);

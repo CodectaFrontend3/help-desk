@@ -8,7 +8,7 @@ uses(RefreshDatabase::class);
 it('list all micro companies', function () {
     MicroCompany::factory()->count(3)->create();
 
-    $response = $this->getJson(route('company.index'));
+    $response = $this->getJson(route('micro_company.index'));
 
     $response->assertOk()
              ->assertJsonCount(3);
@@ -23,7 +23,7 @@ test('create a micro company', function () {
         'email' => 'acme@correo.com',
     ];
 
-    $response = $this->postJson(route('company.store'), $data);
+    $response = $this->postJson(route('micro_company.store'), $data);
 
     $response->assertCreated()
              ->assertJsonFragment($data);
@@ -34,7 +34,7 @@ test('create a micro company', function () {
 test('show a specific micro company', function () {
     $company = MicroCompany::factory()->create();
 
-    $response = $this->getJson(route('company.show', ['company' => $company->id]));
+    $response = $this->getJson(route('micro_company.show', ['micro_company' => $company->id]));
 
     $response->assertOk()
              ->assertJsonFragment([
@@ -54,7 +54,7 @@ test('update a micro company', function () {
         'email' => 'nueva@empresa.com',
     ];
 
-    $response = $this->putJson(route('company.update', ['company' => $company->id]), $nuevosDatos);
+    $response = $this->putJson(route('micro_company.update', ['micro_company' => $company->id]), $nuevosDatos);
 
     $response->assertNoContent();
 
@@ -64,7 +64,7 @@ test('update a micro company', function () {
 test('delete a micro company', function () {
     $company = MicroCompany::factory()->create();
 
-    $response = $this->deleteJson(route('company.destroy', ['company' => $company->id]));
+    $response = $this->deleteJson(route('micro_company.destroy', ['micro_company' => $company->id]));
 
     $response->assertNoContent();
 
