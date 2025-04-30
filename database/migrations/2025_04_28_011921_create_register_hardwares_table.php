@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('register_hardware', function (Blueprint $table) {
+        Schema::create('register_hardwares', function (Blueprint $table) {
             $table->id();
             $table->dateTime('installation_date');
             $table->longText('description');

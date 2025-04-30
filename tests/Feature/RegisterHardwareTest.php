@@ -5,7 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('list of all register hardware', function () {
+it('list of all register hardwares', function () {
     RegisterHardware::factory()->count(3)->create();
 
     $response = $this->getJson(route('registerHardware.index'));
@@ -22,7 +22,7 @@ it('create a register hardware', function () {
 
     $response->assertCreated();
     $response->assertJsonFragment(['serie' => $register['serie']]);
-    $this->assertDatabaseHas('register_hardware', ['serie' => $register['serie']]);
+    $this->assertDatabaseHas('register_hardwares', ['serie' => $register['serie']]);
 });
 
 it('show a specific register hardware', function () {
@@ -44,7 +44,7 @@ it('update a register hardware', function () {
     ]);
 
     $response->assertOk();
-    $this->assertDatabaseHas('register_hardware', ['supplier' => $newSupplier]);
+    $this->assertDatabaseHas('register_hardwares', ['supplier' => $newSupplier]);
 });
 
 it('delete a register hardware', function () {
@@ -53,5 +53,5 @@ it('delete a register hardware', function () {
     $response = $this->deleteJson(route('registerHardware.destroy',['registerHardware'=>$register->id]));
 
     $response->assertNoContent();
-    $this->assertDatabaseMissing('register_hardware', ['id' => $register->id]);
+    $this->assertDatabaseMissing('register_hardwares', ['id' => $register->id]);
 });

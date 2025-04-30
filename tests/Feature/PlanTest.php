@@ -23,7 +23,7 @@ it('create a new plan', function () {
     $response = $this->postJson(route('plan.store'), $data);
 
     $response->assertCreated();
-    $this->assertDatabaseHas('plan', $data);
+    $this->assertDatabaseHas('plans', $data);
 });
 
 it('show a specific plan', function () {
@@ -50,7 +50,7 @@ it('update a plan', function () {
     $response = $this->putJson(route('plan.update',['plan'=>$plan->id]), $newData);
 
     $response->assertNoContent();
-    $this->assertDatabaseHas('plan', array_merge(['id' => $plan->id], $newData));
+    $this->assertDatabaseHas('plans', array_merge(['id' => $plan->id], $newData));
 });
 
 it('delete a plan', function () {
@@ -59,5 +59,5 @@ it('delete a plan', function () {
     $response = $this->deleteJson(route('plan.destroy',['plan'=>$plan->id]));
 
     $response->assertNoContent();
-    $this->assertDatabaseMissing('plan', ['id' => $plan->id]);
+    $this->assertDatabaseMissing('plans', ['id' => $plan->id]);
 });

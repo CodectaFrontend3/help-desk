@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClientG extends Model
 {
-    protected $table = "client_g";
+    protected $table = "clients_g";
 
     use HasFactory;
 

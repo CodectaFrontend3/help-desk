@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RegisterHardware extends Model
 {
-    protected $table = "register_hardware";
+    protected $table = "register_hardwares";
 
     use HasFactory;
 

@@ -22,7 +22,7 @@ class AccountRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_clientG' => 'required|integer|exists:client_g,id',
+            'id_clientG' => 'required|integer|exists:clients_g,id',
             'email' => 'required|email|max:50',
             'password' => 'required|string|max:50'
         ];

@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('software', function (Blueprint $table) {
+        Schema::create('accounts_register', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('license');
+            $table->foreignId('id_clientG')->nullable()->constrained('clients_g')->nullOnDelete()->unique();
             $table->string('email');
             $table->string('password');
-            $table->string('supplier');
-            $table->dateTime('installation_date');
-            $table->dateTime('expiration_date');
             $table->timestamps();
         });
     }
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('software');
+        Schema::dropIfExists('account_register');
     }
 };

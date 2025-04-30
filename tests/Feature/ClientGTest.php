@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('list of all client_g',function(){
+it('list of all clients g',function(){
     ClientG::factory()->count(3)->create();
 
     $response = $this->getJson(route('clientG.index'));
@@ -15,7 +15,7 @@ it('list of all client_g',function(){
 
 
 
-test('create a client_g', function () {
+test('create a clients g', function () {
     $data = [
         'name' => 'Juan',
         'last_name' => 'Perz',
@@ -30,10 +30,10 @@ test('create a client_g', function () {
     $response->assertCreated()
              ->assertJsonFragment($data);
 
-    $this->assertDatabaseHas('client_g', $data);
+    $this->assertDatabaseHas('clients_g', $data);
 });
 
-test('show a specific client_g', function () {
+test('show a specific client g', function () {
     $client = ClientG::factory()->create();
 
     $response = $this->getJson(route('clientG.show',['clientG'=>$client->id]));
@@ -45,7 +45,7 @@ test('show a specific client_g', function () {
              ]);
 });
 
-test('update a client_g', function () {
+test('update a client g', function () {
     $client = ClientG::factory()->create();
 
     $nuevosDatos = [
@@ -61,16 +61,16 @@ test('update a client_g', function () {
 
     $response->assertNoContent();
 
-    $this->assertDatabaseHas('client_g', $nuevosDatos);
+    $this->assertDatabaseHas('clients_g', $nuevosDatos);
 });
 
-test('delete a client_g', function () {
+test('delete a client g', function () {
     $client = ClientG::factory()->create();
 
     $response = $this->deleteJson(route('clientG.destroy',['clientG'=>$client->id]));
 
     $response->assertNoContent();
 
-    $this->assertDatabaseMissing('client_g', ['id' => $client->id]);
+    $this->assertDatabaseMissing('clients_g', ['id' => $client->id]);
 });
 

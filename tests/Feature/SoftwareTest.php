@@ -22,7 +22,7 @@ it('create a new software', function () {
     $response->assertCreated();
     $response->assertJsonFragment(['name' => $data['name']]);
 
-    $this->assertDatabaseHas('software', ['name' => $data['name']]);
+    $this->assertDatabaseHas('softwares', ['name' => $data['name']]);
 });
 
 it('show a specific software', function () {
@@ -44,7 +44,7 @@ it('update a software', function () {
     ]);
 
     $response->assertNoContent();
-    $this->assertDatabaseHas('software', ['name' => $newname]);
+    $this->assertDatabaseHas('softwares', ['name' => $newname]);
 });
 
 it('delete a software', function () {
@@ -53,5 +53,5 @@ it('delete a software', function () {
     $response = $this->deleteJson(route('software.destroy', ['software' => $software->id]));
 
     $response->assertNoContent();
-    $this->assertDatabaseMissing('software', ['id' => $software->id]);
+    $this->assertDatabaseMissing('softwares', ['id' => $software->id]);
 });

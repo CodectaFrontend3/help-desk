@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lista de todas las cuentas registradas', function () {
+it('list of all accounts register', function () {
     AccountRegister::factory()->count(3)->create();
 
     $response = $this->getJson(route('accountRegister.index'));
@@ -15,7 +15,7 @@ it('lista de todas las cuentas registradas', function () {
     $response->assertJsonCount(3);
 });
 
-it('registrar una nueva cuenta registro', function () {
+it('create a account register', function () {
     $client = ClientG::factory()->create();
 
     $data = [
@@ -27,10 +27,10 @@ it('registrar una nueva cuenta registro', function () {
     $response = $this->postJson(route('accountRegister.store'), $data);
 
     $response->assertCreated();
-    $this->assertDatabaseHas('account_register', $data);
+    $this->assertDatabaseHas('accounts_register', $data);
 });
 
-it('un clienteG puede tener una cuenta registrada', function () {
+it('a clientG can have one account register', function () {
     $client = ClientG::factory()->create();
 
     $account = AccountRegister::factory()->create([
@@ -43,7 +43,7 @@ it('un clienteG puede tener una cuenta registrada', function () {
     $this->assertTrue($client->AccountRegister->is($account));
 });
 
-it('mostrar una cuenta específica', function () {
+it('show a specific account register', function () {
     $account = AccountRegister::factory()->create();
 
     $response = $this->getJson(route('accountRegister.show',['accountRegister'=>$account->id]));
@@ -55,7 +55,7 @@ it('mostrar una cuenta específica', function () {
     ]);
 });
 
-it('actualizar una cuenta', function () {
+it('update a account register', function () {
     $account = AccountRegister::factory()->create();
     $newClient = ClientG::factory()->create();
 
@@ -68,14 +68,14 @@ it('actualizar una cuenta', function () {
     $response = $this->putJson(route('accountRegister.update',['accountRegister'=>$account->id]), $data);
 
     $response->assertNoContent();
-    $this->assertDatabaseHas('account_register', array_merge(['id' => $account->id], $data));
+    $this->assertDatabaseHas('accounts_register', array_merge(['id' => $account->id], $data));
 });
 
-it('eliminar una cuenta', function () {
+it('delete a account register', function () {
     $account = AccountRegister::factory()->create();
 
     $response = $this->deleteJson(route('accountRegister.destroy',['accountRegister'=>$account->id]));
 
     $response->assertNoContent();
-    $this->assertDatabaseMissing('account_register', ['id' => $account->id]);
+    $this->assertDatabaseMissing('accounts_register', ['id' => $account->id]);
 });

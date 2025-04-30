@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('software_equipo', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_software')->nullable()->constrained('software')->nullOnDelete();
+            $table->foreignId('id_software')->nullable()->constrained('softwares')->nullOnDelete();
             $table->foreignId('id_equipos')->nullable()->constrained('equipo')->nullOnDelete();
             $table->timestamps();
         });
