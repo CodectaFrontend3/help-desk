@@ -1,12 +1,12 @@
 <?php
 
 use App\Models\Hardware;
-use App\Models\RegistroHardware;
+use App\Models\RegisterHardware;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('listas de todos los hardware', function () {
+it('list of all hardware', function () {
     Hardware::factory()->count(3)->create();
 
     $response = $this->getJson(route('hardware.index'));
@@ -15,35 +15,35 @@ it('listas de todos los hardware', function () {
     $response->assertJsonCount(3);
 });
 
-it('un RegistroHardware puede tener muchos Hardware', function () {
-    $registro = RegistroHardware::factory()->create();
+it('A Hardware Register can have many Hardware', function () {
+    $register = RegisterHardware::factory()->create();
 
-    $hardware1 = Hardware::factory()->create(['id_RH' => $registro->id]);
-    $hardware2 = Hardware::factory()->create(['id_RH' => $registro->id]);
+    $hardware1 = Hardware::factory()->create(['id_RH' => $register->id]);
+    $hardware2 = Hardware::factory()->create(['id_RH' => $register->id]);
 
-    $registro->load('hardware');
+    $register->load('hardwares');
 
-    $this->assertCount(2, $registro->hardware);
-    $this->assertTrue($registro->hardware->contains($hardware1));
-    $this->assertTrue($registro->hardware->contains($hardware2));
+    $this->assertCount(2, $register->hardwares);
+    $this->assertTrue($register->hardwares->contains($hardware1));
+    $this->assertTrue($register->hardwares->contains($hardware2));
 });
 
-it('crear un nuevo hardware', function () {
-    $registro = RegistroHardware::factory()->create();
+it('create a new hardware', function () {
+    $register = RegisterHardware::factory()->create();
 
     $data = Hardware::factory()->make([
-        'id_RH' => $registro->id,
+        'id_RH' => $register->id,
     ])->toArray();
 
     $response = $this->postJson(route('hardware.store'), $data);
 
     $response->assertCreated();
-    $response->assertJsonFragment(['num_serie' => $data['num_serie']]);
+    $response->assertJsonFragment(['serial_number' => $data['serial_number']]);
 
-    $this->assertDatabaseHas('hardware', ['num_serie' => $data['num_serie']]);
+    $this->assertDatabaseHas('hardwares', ['serial_number' => $data['serial_number']]);
 });
 
-it('mostrar un hardware específico', function () {
+it('show a specific hardware', function () {
     $hardware = Hardware::factory()->create();
 
     $response = $this->getJson(route('hardware.show',['hardware'=>$hardware->id]));
@@ -52,24 +52,24 @@ it('mostrar un hardware específico', function () {
              ->assertJsonFragment(['id' => $hardware->id]);
 });
 
-it('actualizar un hardware', function () {
+it('Update a hardware', function () {
     $hardware = Hardware::factory()->create();
 
-    $nuevoProveedor = 'Proveedor Actualizado S.A.';
+    $newSupplier = 'Proveedor Actualizado S.A.';
     $response = $this->putJson(route('hardware.update',['hardware'=>$hardware->id]), [
         ...$hardware->toArray(),
-        'proveedor' => $nuevoProveedor,
+        'supplier' => $newSupplier,
     ]);
 
     $response->assertOk();
-    $this->assertDatabaseHas('hardware', ['proveedor' => $nuevoProveedor]);
+    $this->assertDatabaseHas('hardwares', ['supplier' => $newSupplier]);
 });
 
-it('eliminar un hardware', function () {
+it('Delete a hardware', function () {
     $hardware = Hardware::factory()->create();
 
     $response = $this->deleteJson(route('hardware.destroy',['hardware'=>$hardware->id]));
 
     $response->assertNoContent();
-    $this->assertDatabaseMissing('hardware', ['id' => $hardware->id]);
+    $this->assertDatabaseMissing('hardwares', ['id' => $hardware->id]);
 });
