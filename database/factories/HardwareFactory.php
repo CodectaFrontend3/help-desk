@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Hardware;
-use App\Models\RegistroHardware;
+use App\Models\RegisterHardware;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,16 +16,16 @@ class HardwareFactory extends Factory
     public function definition(): array
     {
         return [
-            'id_RH' => RegistroHardware::factory(),
-            'tipo_equipo' => $this->faker->word(),
-            'num_serie' => $this->faker->randomNumber(6),
-            'fecha_compra' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
+            'id_RH' => RegisterHardware::factory(),
+            'type_team' => $this->faker->word(),
+            'serial_number' => $this->faker->randomNumber(6),
+            'buy_date' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
             'plan' => $this->faker->word(),
-            'marca' => $this->faker->company(),
-            'proveedor' => $this->faker->company(),
-            'descripcion' => $this->faker->paragraph(),
-            'ult_revision' => $this->faker->date('Y-m-d'),
-            'rev_programada' => $this->faker->date('Y-m-d')
+            'brand' => $this->faker->company(),
+            'supplier' => $this->faker->company(),
+            'description' => $this->faker->paragraph(),
+            'end_revision' => $this->faker->date('Y-m-d'),
+            'revision_scheduled' => $this->faker->date('Y-m-d')
         ];
     }
 }
