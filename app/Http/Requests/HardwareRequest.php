@@ -22,16 +22,16 @@ class HardwareRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_RH' => 'required|integer|exists:registro_hardware,id',
-            'tipo_equipo' => 'required|string|max:50',
-            'num_serie' => 'required|integer',
-            'fecha_compra' => 'required|date',
+            'id_RH' => 'required|integer|exists:register_hardwares,id',
+            'type_team' => 'required|string|max:50',
+            'serial_number' => 'required|integer',
+            'buy_date' => 'required|date',
             'plan' => 'string|max:50',
-            'marca' => 'required|string|max:50',
-            'proveedor' => 'required|string|max:50',
-            'descripcion' => 'string|max:2000',
-            'ult_revision' => 'string|max:50',
-            'rev_programada' => 'required|string|max:50',
+            'brand' => 'required|string|max:50',
+            'supplier' => 'required|string|max:50',
+            'description' => 'string|max:2000',
+            'end_revision' => 'string|max:50',
+            'revision_scheduled' => 'required|string|max:50',
         ];
     }
 }
