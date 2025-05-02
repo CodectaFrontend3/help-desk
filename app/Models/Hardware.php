@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Hardware extends Model
 {
-    protected $table='hardware';
+    protected $table='hardwares';
 
     use HasFactory;
 
     protected $fillable=[
-        'id_RH','tipo_equipo','num_serie','fecha_compra','plan','marca','proveedor',
-        'descripcion','ult_revision','rev_programada',
+        'id_RH','type_team','serial_number','buy_date','plan','brand','supplier',
+        'description','end_revision','revision_scheduled',
     ];
 
-    public function registroHardware(){
-        return $this->belongsTo(RegistroHardware::class,'id_RH');
+    public function registerHardwares(){
+        return $this->belongsTo(RegisterHardware::class,'id_RH');
     }
 }

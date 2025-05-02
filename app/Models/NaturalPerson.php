@@ -15,4 +15,7 @@ class NaturalPerson extends Model
         "phone",
         "email",
     ];
+    public function teams(){
+        return $this->hasMany(Team::class,'id_personN');
+    }
 }

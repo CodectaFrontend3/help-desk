@@ -14,4 +14,7 @@ class RegisterHardware extends Model
     protected $fillable =[
         'installation_date','description','serie','supplier'
     ];
+    public function hardwares(){
+        return $this->hasMany(Hardware::class,'id_RH');
+    }
 }

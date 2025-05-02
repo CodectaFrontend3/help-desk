@@ -18,8 +18,8 @@ class ClientG extends Model
     {
         return $this->hasOne(AccountRegister::class, 'id_clientG');
     }
-    // public function equipo(){
-    //     return $this->hasMany(Equipo::class,'id_clientG');
-    // }
+    public function teams(){
+        return $this->hasMany(Team::class,'id_clientG');
+    }
 }
 
