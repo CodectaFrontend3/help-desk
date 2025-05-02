@@ -23,6 +23,7 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\RegisterHardwareController;
 use App\Http\Controllers\RegistroCuentasController;
 use App\Http\Controllers\SoftwareEquipoController;
+use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('/micro-company', MicroCompanyController::class);
@@ -61,3 +62,4 @@ Route::apiResource('/accountRegister', AccountRegisterController::class);
 Route::apiResource('micro_company', MicroCompanyController::class);
 Route::apiResource('company', CompanyController::class);
 Route::apiResource('natural-person', NaturalPersonController::class);
+Route::apiResource('/team', TeamController::class);
