@@ -31,10 +31,10 @@ class Team extends Model
     public function plans(){
         return $this->belongsTo(Plan::class,'id_plan');
     }
-    // public function softwareEquipo(){
-    //     return $this->hasMany(SoftwareEquipo::class,'id_equipos');
-    // }
-    // public function cuentaTrabajador(){
-    //     return $this->hasOne(CuentaTrabajador::class,'id_equipos');
-    // }
+    public function softwareTeams(){
+        return $this->hasMany(SoftwareTeam::class,'id_team');
+    }
+    public function accountWorkers(){
+        return $this->hasOne(AccountWorker::class,'id_team');
+    }
 }
