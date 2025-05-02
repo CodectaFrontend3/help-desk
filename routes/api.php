@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountRegisterController;
+use App\Http\Controllers\AccountWorkerController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\MicroCompanyController;
 use Illuminate\Http\Request;
@@ -23,6 +24,7 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\RegisterHardwareController;
 use App\Http\Controllers\RegistroCuentasController;
 use App\Http\Controllers\SoftwareEquipoController;
+use App\Http\Controllers\SoftwareTeamController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,7 +49,6 @@ Route::apiResource('contactosRef', ContactosRefController::class);
 Route::apiResource('/personaNatural', PersonaNaturalController::class);
 
 Route::apiResource('/planes', PlanController::class);
-Route::apiResource('/hardware', HardwareController::class);
 Route::apiResource('/registroCuenta', RegistroCuentasController::class);
 Route::apiResource('/equipo', EquipoController::class);
 Route::apiResource('/softwareEquipo', SoftwareEquipoController::class);
@@ -63,3 +64,6 @@ Route::apiResource('micro_company', MicroCompanyController::class);
 Route::apiResource('company', CompanyController::class);
 Route::apiResource('natural-person', NaturalPersonController::class);
 Route::apiResource('/team', TeamController::class);
+Route::apiResource('/hardware', HardwareController::class);
+Route::apiResource('/softwareTeam', SoftwareTeamController::class);
+Route::apiResource('/accountWorker', AccountWorkerController::class);
