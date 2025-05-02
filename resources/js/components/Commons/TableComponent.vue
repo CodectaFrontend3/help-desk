@@ -11,13 +11,19 @@ export default {
     props: {
         columns: Array,
         data: Array,
+        // Propiedad para indicar el tipo de entidad (micro, company, person)
+        entityType: {
+            type: String,
+            default: "company"
+        }
     },
     data() {
         return {
             showPopup: false,
             first: 0,
             rows: 10,
-            rowsPerPageOptions: [5, 10, 20, 50], // <-- NUEVO
+            rowsPerPageOptions: [5, 10, 20, 50],
+            selectedClientId: null,
         };
     },
     computed: {
@@ -30,6 +36,34 @@ export default {
             this.first = event.first;
             this.rows = event.rows;
         },
+        showButtons() {
+            return this.$route.meta.navbarConfig.companySoporteTi === true;
+        },
+        viewEquipment(row) {
+            // Verificar que el ID exista
+            const id = row.id || row._id;
+
+            if (!id) {
+                console.error("Error: No se pudo obtener el ID del registro", row);
+                return;
+            }
+
+            console.log("Navegando a detalles de equipos para:", row);
+            console.log("ID:", id, "Tipo:", this.entityType);
+
+            // Navegar a la ruta de detalles de equipos con el ID
+            this.$router.push({
+                name: "Equipos de Empresa",
+                params: {
+                    id: id,
+                    type: this.entityType
+                }
+            });
+        },
+        viewClient(row) {
+            this.selectedClientId = row.id || row._id;
+            this.showPopup = true;
+        }
     },
 };
 </script>
@@ -47,7 +81,6 @@ export default {
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Usa paginatedData en lugar de data -->
                     <tr
                         v-for="(row, rowIndex) in paginatedData"
                         :key="rowIndex"
@@ -57,9 +90,16 @@ export default {
                         </td>
                         <td class="acciones">
                             <button
+                                v-if="!showButtons()"
                                 class="pi pi-eye"
                                 title="Ver registro"
-                                @click="showPopup = !showPopup"
+                                @click="viewClient(row)"
+                            ></button>
+                            <button
+                                v-if="showButtons()"
+                                class="pi pi-file"
+                                title="Ver equipos"
+                                @click="viewEquipment(row)"
                             ></button>
                         </td>
                     </tr>
@@ -80,7 +120,7 @@ export default {
         <!-- Popup -->
         <PopCliente
             :visible="showPopup"
-            :cliente-id="123"
+            :cliente-id="selectedClientId"
             @close="showPopup = false"
         />
     </div>
@@ -100,11 +140,9 @@ table {
     border-radius: 10px;
 }
 thead {
-    display: table-row;
     background-color: #ccc;
 }
 tr {
-    display: table-row;
     display: flex;
     align-items: center;
 }
@@ -114,16 +152,24 @@ th {
     flex: 1;
     padding: 16px;
 }
-tbody {
-    display: table-row;
-}
 tbody tr:nth-child(odd) {
     background-color: #fff;
 }
 
 tbody tr:nth-child(even) {
     background-color: #eee;
-}   
+}
+button.pi {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    margin: 0 4px;
+}
+button.pi:hover {
+    background-color: #e0e0e0;
+}
 .paginator {
     position: sticky;
     bottom: 0;

@@ -16,20 +16,16 @@ export default {
                     to: "/company-admin",
                 },
                 {
-                    label: "Clientes - Empresa - Soporte TI",
-                    icon: "pi pi-fw pi-users",
-                    to: "/clientesempresa",
-                },
-                {
-                    label: "Clientes - Persona Natural - Soporte TI y Administrador",
+                    label: "Clientes - Persona Natural - Administrador",
                     icon: "pi pi-fw pi-users",
                     to: "/clientespersona",
                 },
                 {
-                    label: "Clientes - Microempresa - Soporte TI",
+                    label: "Plan de soporte - Administrador",
                     icon: "pi pi-fw pi-users",
-                    to: "/microempresa",
+                    to: "/soporte",
                 },
+
                 {
                     label: "Historial de tickets - Soporte TI",
                     icon: "pi pi-fw pi-ticket",
@@ -46,9 +42,9 @@ export default {
                     to: "/ticketsurgentes",
                 },
                 {
-                    label: "Plan de soporte - Administrador",
+                    label: "Clientes - Soporte TI",
                     icon: "pi pi-fw pi-users",
-                    to: "/soporte",
+                    to: "/clients-soporte-ti",
                 },
                 {
                     label: "Plan de soporte - Soporte TI",
@@ -58,12 +54,7 @@ export default {
                 {
                     label: "Empresa - Soporte TI",
                     icon: "pi pi-fw pi-users",
-                    to: "/soporte-ti",
-                },
-                {
-                    label: "Empresa - Soporte TI",
-                    icon: "pi pi-fw pi-users",
-                    to: "/soporte-ti",
+                    to: "/company-soporte-ti",
                 },
             ];
         },

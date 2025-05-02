@@ -13,13 +13,17 @@ export default {
         },
         showButtonsTi() {
             // Solo mostrar los botones en estas rutas (puedes personalizarlas)
-            return this.$route.meta.navbarConfig.TiEmpresa === true;
+            return (
+                this.$route.meta.navbarConfig.TiEmpresa === true ||
+                this.$route.meta.navbarConfig.companySoporteTi === true ||
+                this.$route.meta.navbarConfig.clientsSoporteTi === true
+            );
         },
         showButtons() {
             // Solo mostrar los botones en estas rutas (puedes personalizarlas)
             return (
-                this.$route.name === "Yo" ||
-                this.$route.meta.navbarConfig.persona === true || this.$route.meta.navbarConfig.clientes === true
+                this.$route.meta.navbarConfig.persona === true ||
+                this.$route.meta.navbarConfig.clientes === true
             );
         },
         showAdd() {
@@ -27,7 +31,62 @@ export default {
             return this.$route.meta.role === "admin";
         },
         isTicketActive() {
-            return this.$route.name === "Tickets activos" || this.$route.name === "Soporte técnico - Soporte TI";
+            return (
+                this.$route.name === "Tickets activos" ||
+                this.$route.name === "Soporte técnico - Soporte TI"
+            );
+        },
+    },
+    methods: {
+        // Determina qué tipo de empresa está seleccionada
+        currentType() {
+            const path = this.$route.path;
+            if (path.includes("company-micro")) return "micro";
+            if (path.includes("company-company")) return "company";
+            if (path.includes("company-person")) return "person";
+            return null;
+        },
+
+        dynamicSegment(type) {
+            // Encuentra la ruta padre que tiene hijos
+            const parentRoute = this.$route.matched
+                .slice()
+                .reverse()
+                .find((r) => r.children && r.children.length > 0);
+
+            if (!parentRoute) {
+                console.warn("Ruta padre no encontrada.");
+                return "";
+            }
+
+            // Ej: "/company-soporte-ti" => "company"
+            const lastSegment = parentRoute.path.split("/").pop(); // "company-soporte-ti"
+            const prefix = lastSegment.split("-")[0]; // "company"
+
+            return `${prefix}-${type}`; // Resultado correcto: "company-micro"
+        },
+
+        navigateToChildren(typeSegment) {
+            const parentRoute = this.$route.matched
+                .slice()
+                .reverse()
+                .find((r) => r.children && r.children.length > 0);
+
+            if (!parentRoute) {
+                console.warn("Ruta padre no encontrada.");
+                return;
+            }
+
+            const basePath = parentRoute.path;
+            const newPath = `${basePath}/${typeSegment}`; // Ej: "/company-soporte-ti/company-micro"
+
+            if (this.$route.path !== newPath) {
+                this.$router.push(newPath);
+            }
+        },
+
+        isActive(type) {
+            return this.$route.path.endsWith(this.dynamicSegment(type));
         },
     },
 };
@@ -54,20 +113,23 @@ export default {
 
         <div v-if="showButtonsTi" class="buttons-ti">
             <button
-                :class="{ active: navbarConfig.TiEmpresa === true }"
-                title="Seleccionar empresa"
+                :class="{ active: isActive('micro') }"
+                title="Seleccionar microempresa"
+                @click="navigateToChildren(dynamicSegment('micro'))"
             >
                 Microempresa
             </button>
             <button
-                :class="{ active: navbarConfig.clientes === true }"
+                :class="{ active: isActive('company') }"
                 title="Seleccionar empresa"
+                @click="navigateToChildren(dynamicSegment('company'))"
             >
                 Empresa
             </button>
             <button
-                :class="{ active: navbarConfig.persona === true }"
+                :class="{ active: isActive('person') }"
                 title="Seleccionar persona natural"
+                @click="navigateToChildren(dynamicSegment('person'))"
             >
                 Persona Natural
             </button>
@@ -156,7 +218,7 @@ export default {
             </div>
 
             <!--CLIENTES - Empresa-->
-            <div v-if="navbarConfig.clientes" class="clientes-container">
+            <div v-if="navbarConfig.clientes || navbarConfig.clientCompany" class="clientes-container">
                 <div
                     v-if="navbarConfig.labelRuc"
                     class="seeker seeker__clientes"
@@ -186,7 +248,7 @@ export default {
             </div>
 
             <!--Clientes - Persona Natural-->
-            <div v-if="navbarConfig.persona" class="persona-container">
+            <div v-if="navbarConfig.persona || navbarConfig.clientPerson" class="persona-container">
                 <div
                     v-if="navbarConfig.labelDni"
                     class="seeker seeker__clientes"

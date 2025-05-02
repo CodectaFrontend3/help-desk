@@ -1,7 +1,7 @@
 <script>
 import TableComponent from "@/components/Commons/TableComponent.vue";
-import apiServices from "../../services/ApiServices";
-import PopCliente from "../../components/Commons/PopCliente.vue";
+import apiServices from "../../../services/ApiServices";
+import PopCliente from "../../../components/Commons/PopCliente.vue";
 
 export default {
     name: "SoporteView",

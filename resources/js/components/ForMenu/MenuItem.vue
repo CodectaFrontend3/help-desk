@@ -28,16 +28,19 @@ const props = defineProps({
 const isActiveMenu = ref(false);
 const itemKey = ref(null);
 
+// Configura el key del ítem y si debe estar expandido al inicio
 onBeforeMount(() => {
     itemKey.value = props.parentItemKey
         ? `${props.parentItemKey}-${props.index}`
         : String(props.index);
+
     const activeItem = layoutState.activeMenuItem;
     isActiveMenu.value =
         activeItem === itemKey.value ||
         activeItem?.startsWith(`${itemKey.value}-`);
 });
 
+// Reactiva cuando cambia el ítem activo
 watch(
     () => layoutState.activeMenuItem,
     (newVal) => {
@@ -46,6 +49,7 @@ watch(
     }
 );
 
+// Maneja el clic del ítem
 function itemClick(event, item) {
     if (item.disabled) {
         event.preventDefault();
@@ -68,14 +72,15 @@ function itemClick(event, item) {
             ? props.parentItemKey
             : itemKey
         : itemKey.value;
+
     setActiveMenuItem(foundItemKey);
 }
 
+// ✅ Verifica si la ruta actual coincide o está dentro de la ruta del item
 function checkActiveRoute(item) {
-    if (route.path === item.to) {
-        console.log("Ruta activa: " + item.to);
-    }
-    return route.path === item.to;
+    if (!item.to) return false;
+    const pattern = new RegExp(`^${item.to}(/|$)`);
+    return pattern.test(route.path);
 }
 </script>
 
@@ -86,7 +91,7 @@ function checkActiveRoute(item) {
             'active-menuitem': isActiveMenu,
         }"
     >
-        <!-- Si el item tiene una propiedad 'to', usamos router-link -->
+        <!-- Para rutas internas -->
         <router-link
             v-if="item.to && !item.items && item.visible !== false"
             @click="itemClick($event, item, index)"
@@ -110,7 +115,7 @@ function checkActiveRoute(item) {
             <span class="layout-menuitem-text">{{ item.label }}</span>
         </router-link>
 
-        <!-- Si el item tiene una propiedad 'url', usamos <a> para enlaces externos -->
+        <!-- Para enlaces externos -->
         <a
             v-else-if="item.url && !item.items && item.visible !== false"
             :href="item.url"
@@ -125,6 +130,7 @@ function checkActiveRoute(item) {
         </a>
     </li>
 </template>
+
 
 <style scoped>
 /* Aplicar la fuente Poppins */

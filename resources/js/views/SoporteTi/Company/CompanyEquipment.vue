@@ -1,6 +1,6 @@
 <script>
 import tableComponent from "@/components/Commons/TableComponent.vue";
-import apiServices from "../../services/ApiServices";
+import apiServices from "../../../services/ApiServices";
 
 export default {
     name: "MicroEmpresa",
@@ -18,21 +18,18 @@ export default {
             microCompany: [],
         };
     },
-    async created() {
-        await this.fetchMicroCompany(); // Llamada a la API cuando el componente se crea
-    },
     methods: {
-        async fetchMicroCompany() {
-            // Obtener los datos de microempresas desde la API
-            this.microCompany = await apiServices.get("micro-company");
-            console.log(this.microCompany); // Verifica los datos que se reciben
-        },
+        // Métodos futuros para cargar datos
     },
 };
 </script>
 
 <template>
-    <table-component :data="microCompany" :columns="columns" />
+    <table-component
+        :data="microCompany"
+        :columns="columns"
+        entity-type="micro"
+    />
 </template>
 
 <style scoped></style>
