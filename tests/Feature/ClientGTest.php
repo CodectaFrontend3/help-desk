@@ -15,7 +15,7 @@ it('list of all clients g',function(){
 
 
 
-test('create a clients g', function () {
+test('create a new clients g', function () {
     $data = [
         'name' => 'Juan',
         'last_name' => 'Perz',
