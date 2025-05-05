@@ -22,13 +22,13 @@ class SoftwareRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => 'required|string',
-            'licencia' => 'required|string',
-            'correo' => 'required|email',
-            'contraseña' => 'required|string',
-            'proveedor' => 'required|string',
-            'fecha_instalacion' => 'required|date',
-            'fecha_caducidad' => 'required|date'
+            'name' => 'required|string',
+            'license' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string',
+            'supplier' => 'required|string',
+            'installation_date' => 'required|date',
+            'expiration_date' => 'required|date'
         ];
     }
 }
