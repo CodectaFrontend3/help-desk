@@ -22,13 +22,13 @@ class AreaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'microempresa_id' => 'required|exists:microempresa,id',
-            'empresa_id' => 'required|exists:empresa,id',
-            'sucursal_id' => 'required|exists:sucursal,id',
-            'nombre_area' => 'required|string|max:255',
-            'contacto' => 'required|string|max:255',
-            'telefono' => 'required|string|max:15',
-            'correo' => 'required|email|max:255',
+            'micro_company_id' => 'required|exists:micro_companies,id',
+            'company_id'       => 'required|exists:companies,id',
+            'branch_id'        => 'required|exists:branches,id',
+            'area_name'        => 'required|string|max:255',
+            'contact'          => 'required|string|max:255',
+            'phone'            => 'required|string|max:9',
+            'email'            => 'required|email|max:255',
         ];
     }
 }
