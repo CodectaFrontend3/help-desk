@@ -28,6 +28,7 @@ use App\Http\Controllers\SoftwareTeamController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactRefController;
+use App\Http\Controllers\TicketController;
 
 Route::apiResource('/micro-company', MicroCompanyController::class);
 Route::apiResource('/natural-person', NaturalPersonController::class);
@@ -71,3 +72,4 @@ Route::apiResource('/accountWorker', AccountWorkerController::class);
 Route::apiResource('branches', BranchController::class);
 Route::resource('areas', AreaController::class);
 Route::resource('contact_refs', ContactRefController::class);
+Route::apiResource('tickets', TicketController::class);
