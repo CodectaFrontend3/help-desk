@@ -141,7 +141,8 @@ const routes = [
             {
                 path: "tickets-activos",
                 name: "Tickets activos",
-                component: () => import("@/views/SoporteTi/Tickets/TicketsActivos.vue"),
+                component: () =>
+                    import("@/views/SoporteTi/Tickets/TicketsActivos.vue"),
                 meta: {
                     navbarConfig: {
                         tickets: true,
@@ -171,7 +172,8 @@ const routes = [
             {
                 path: "soporte-ti",
                 name: "Soporte técnico - Soporte TI",
-                component: () => import("@/views/SoporteTi/Support/SoporteTiView.vue"),
+                component: () =>
+                    import("@/views/SoporteTi/Support/SoporteTiView.vue"),
                 meta: {
                     navbarConfig: {
                         soporteTi: true,
@@ -186,7 +188,7 @@ const routes = [
                 path: "company-soporte-ti",
                 name: "Empresa - Soporte TI",
                 component: () =>
-                    import("@/views/SoporteTi/Company/CompanySoporteTi.vue"), // Usa la capitalización correcta
+                    import("@/views/SoporteTi/Company/CompanySoporteTi.vue"),
                 meta: {
                     navbarConfig: {
                         companySoporteTi: true,
@@ -206,6 +208,28 @@ const routes = [
                                 companyMicro: true,
                             },
                         },
+                        // Añadimos rutas hijas para mostrar equipos de microempresas
+                        // children: [
+                        //     {
+                        //         path: ":id/equipments",
+                        //         name: "Equipos de Microempresa",
+                        //         component: () =>
+                        //             import(
+                        //                 "@/views/SoporteTi/Company/CompanyEquipment.vue"
+                        //             ),
+                        //         props: (route) => ({
+                        //             id: route.params.id,
+                        //             type: "micro",
+                        //         }),
+                        //         meta: {
+                        //             navbarConfig: {
+                        //                 companySoporteTi: true,
+                        //                 companyMicro: true,
+                        //                 companyEquipment: true,
+                        //             },
+                        //         },
+                        //     },
+                        // ],
                     },
                     {
                         path: "company-company",
@@ -220,6 +244,28 @@ const routes = [
                                 companyCompany: true,
                             },
                         },
+                        // Añadimos rutas hijas para mostrar equipos de empresas
+                        // children: [
+                        //     {
+                        //         path: ":id/equipments",
+                        //         name: "Equipos de Empresa",
+                        //         component: () =>
+                        //             import(
+                        //                 "@/views/SoporteTi/Company/CompanyEquipment.vue"
+                        //             ),
+                        //         props: (route) => ({
+                        //             id: route.params.id,
+                        //             type: "company",
+                        //         }),
+                        //         meta: {
+                        //             navbarConfig: {
+                        //                 companySoporteTi: true,
+                        //                 companyCompany: true,
+                        //                 companyEquipment: true,
+                        //             },
+                        //         },
+                        //     },
+                        // ],
                     },
                     {
                         path: "company-person",
@@ -234,8 +280,71 @@ const routes = [
                                 companyPerson: true,
                             },
                         },
+                        // Añadimos rutas hijas para mostrar equipos de personas naturales
+                        // children: [
+                        //     {
+                        //         path: ":id/equipments",
+                        //         name: "Equipos de Persona Natural",
+                        //         component: () =>
+                        //             import(
+                        //                 "@/views/SoporteTi/Company/CompanyEquipment.vue"
+                        //             ),
+                        //         props: (route) => ({
+                        //             id: route.params.id,
+                        //             type: "person",
+                        //         }),
+                        //         meta: {
+                        //             navbarConfig: {
+                        //                 companySoporteTi: true,
+                        //                 companyPerson: true,
+                        //                 companyEquipment: true,
+                        //             },
+                        //         },
+                        //     },
+                        // ],
+                    },
+                    // Ruta para detalles de equipo - compartida por todos los tipos
+                    {
+                        path: "equipment/:equipmentId",
+                        name: "Detalles de Equipo",
+                        component: () =>
+                            import(
+                                "@/views/SoporteTi/Company/CompanyEquipmentDetails.vue"
+                            ),
+                        meta: {
+                            navbarConfig: {
+                                companySoporteTi: true,
+                                companyEquipment: true,
+                            },
+                        },
                     },
                 ],
+            },
+            {
+                path: "company-equipment/:id/:type",
+                name: "Equipos de Empresa",
+                component: () =>
+                    import("@/views/SoporteTi/Company/CompanyEquipment.vue"),
+                meta: {
+                    navbarConfig: {
+                        companySoporteTi: true,
+                        companyEquipment: true,
+                    },
+                },
+            },
+            {
+                path: "equipment-details/:companyId/:equipmentId",
+                name: "Detalles de Equipo",
+                component: () =>
+                    import(
+                        "@/views/SoporteTi/Company/CompanyEquipmentDetails.vue"
+                    ),
+                meta: {
+                    navbarConfig: {
+                        companySoporteTi: true,
+                        companyEquipment: true,
+                    },
+                },
             },
         ],
     },
@@ -266,3 +375,147 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
+
+// // Rutas para la vista EMPRESA - Soporte TI
+// {
+//     path: "company-soporte-ti",
+//     name: "Empresa - Soporte TI",
+//     component: () =>
+//         import("@/views/SoporteTi/Company/CompanySoporteTi.vue"), // Usa la capitalización correcta
+//     meta: {
+//         navbarConfig: {
+//             companySoporteTi: true,
+//         },
+//     },
+//     children: [
+//         {
+//             path: "company-micro",
+//             name: "Empresa - Microempresa - Soporte TI",
+//             component: () =>
+//                 import(
+//                     "@/views/SoporteTi/Company/CompanyMicro.vue"
+//                 ),
+//             meta: {
+//                 navbarConfig: {
+//                     companySoporteTi: true,
+//                     companyMicro: true,
+//                 },
+//             },
+//             // children: [
+//             //     {
+//             //         path: ":id/equipments",
+//             //         name: "Equipos de Microempresa",
+//             //         component: () => import("@/views/SoporteTi/Company/CompanyEquipment.vue"),
+//             //         props: (route) => ({
+//             //             id: route.params.id,
+//             //             type: 'micro'
+//             //         }),
+//             //         meta: {
+//             //             navbarConfig: {
+//             //                 companySoporteTi: true,
+//             //                 companyMicro: true,
+//             //                 companyEquipment: true,
+//             //             },
+//             //         },
+//             //     }
+//             // ],
+//         },
+//         {
+//             path: "company-company",
+//             name: "Empresa - Empresa - Soporte TI",
+//             component: () =>
+//                 import(
+//                     "@/views/SoporteTi/Company/CompanyCompany.vue"
+//                 ),
+//             meta: {
+//                 navbarConfig: {
+//                     companySoporteTi: true,
+//                     companyCompany: true,
+//                 },
+//             },
+//             // children: [
+//             //     {
+//             //         path: ":id/equipments",
+//             //         name: "Equipos de Empresa",
+//             //         component: () => import("@/views/SoporteTi/Company/CompanyEquipment.vue"),
+//             //         props: (route) => ({
+//             //             id: route.params.id,
+//             //             type: 'company'
+//             //         }),
+//             //         meta: {
+//             //             navbarConfig: {
+//             //                 companySoporteTi: true,
+//             //                 companyCompany: true,
+//             //                 companyEquipment: true,
+//             //             },
+//             //         },
+//             //     }
+//             // ]
+//         },
+//         {
+//             path: "company-person",
+//             name: "Empresa - Persona Natural - Soporte TI",
+//             component: () =>
+//                 import(
+//                     "@/views/SoporteTi/Company/CompanyPerson.vue"
+//                 ),
+//             meta: {
+//                 navbarConfig: {
+//                     companySoporteTi: true,
+//                     companyPerson: true,
+//                 },
+//             },
+//             // children: [
+//             //     {
+//             //         path: ":id/equipements",
+//             //         name: "Equipos de Persona Natural",
+//             //         component: () => import("@/views/SoporteTi/Company/CompanyEquipment.vue"),
+//             //         props: (route) => ({
+//             //             id: route.params.id,
+//             //             type: 'person'
+//             //         }),
+//             //         meta: {
+//             //             navbarConfig: {
+//             //                 companySoporteTi: true,
+//             //                 companyPerson: true,
+//             //                 companyEquipment: true,
+//             //             },
+//             //         },
+//             //     }
+//             // ]
+//         },
+//         // {
+//         //     path: "equipment/:equipmentId",
+//         //     name: "Detalles de Equipo",
+//         //     component: () => import("@/views/SoporteTi/Company/CompanyEquipmentDetails.vue"),
+//         //     meta: {
+//         //         navbarConfig: {
+//         //             companySoporteTi: true,
+//         //             companyEquipment: true,
+//         //         },
+//         //     },
+//         // },
+//     ],
+// },
+// {
+//     path: "company-equipment/:id/:type",
+//     name: "Equipos de Empresa",
+//     component: () => import("@/views/SoporteTi/Company/CompanyEquipment.vue"),
+//     meta: {
+//         navbarConfig: {
+//             companySoporteTi: true,
+//             companyEquipment: true,
+//         },
+//     },
+// },
+// {
+//     path: "equipment-details/:companyId/:equipmentId",
+//     name: "Detalles de Equipo",
+//     component: () => import("@/views/SoporteTi/Company/CompanyEquipmentDetails.vue"),
+//     meta: {
+//         navbarConfig: {
+//             companySoporteTi: true,
+//             companyEquipment: true,
+//         },
+//     },
+// },
