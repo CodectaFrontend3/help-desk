@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('micro_companies', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('client_name');
             $table->string('ruc');
             $table->string('address');
             $table->string('phone');

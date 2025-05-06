@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory; // Permite crear factories para modelos
 
 class Company extends Model
-{
-    protected $table = 'company'; // Especifica el nombre de la tabla en singular
+{   
+    use HasFactory; // Permite crear factories para modelos
     protected $fillable = [
         "client_name",
         "ruc",
@@ -22,5 +23,8 @@ class Company extends Model
     public function branches(): HasMany
     {
         return $this->hasMany(Branch::class);
+    }
+    public function teams(){
+        return $this->hasMany(Team::class,'id_company');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MicroCompany;
 use Illuminate\Http\Request;
+use App\Http\Requests\MicroCompanyRequest;
 
 class MicroCompanyController extends Controller
 {
@@ -18,7 +19,7 @@ class MicroCompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MicroCompanyRequest $request)
     {
         $microCompany = MicroCompany::create($request->all());
         return response()->json($microCompany, 201);
@@ -37,7 +38,7 @@ class MicroCompanyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(MicroCompanyRequest $request, string $id)
     {
         $microCompany = MicroCompany::findOrFail($id);
         $microCompany->update($request->all());
