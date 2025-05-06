@@ -30,31 +30,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactRefController;
 use App\Http\Controllers\TicketController;
 
-Route::apiResource('/micro-company', MicroCompanyController::class);
-Route::apiResource('/natural-person', NaturalPersonController::class);
-Route::apiResource('/company', CompanyController::class);
-Route::apiResource('/branch', BranchController::class);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-
-Route::apiResource('/clienteG', ClienteGController::class);
-Route::apiResource('/registroHardware', RegistroHardwareController::class);
-
-//Tablas inferiores
-Route::apiResource('empresa', EmpresaController::class);
-Route::apiResource('microempresa', MicroEmpresaController::class);
-Route::apiResource('sucursal', SucursalController::class);
-Route::apiResource('area', AreaController::class);
-Route::apiResource('contactosRef', ContactosRefController::class);
-Route::apiResource('/personaNatural', PersonaNaturalController::class);
-
-Route::apiResource('/planes', PlanController::class);
-Route::apiResource('/registroCuenta', RegistroCuentasController::class);
-Route::apiResource('/equipo', EquipoController::class);
-Route::apiResource('/softwareEquipo', SoftwareEquipoController::class);
-Route::apiResource('/cuentaTrabajador', CuentaTrabajadorController::class);
 
 //routes en ingles
 Route::apiResource('/clientG', ClientGController::class);
@@ -62,14 +41,14 @@ Route::apiResource('/registerHardware', RegisterHardwareController::class);
 Route::apiResource('/plan', PlanController::class);
 Route::apiResource('/software', SoftwareController::class);
 Route::apiResource('/accountRegister', AccountRegisterController::class);
-Route::apiResource('micro_company', MicroCompanyController::class);
-Route::apiResource('company', CompanyController::class);
-Route::apiResource('natural-person', NaturalPersonController::class);
+Route::apiResource('/micro_company', MicroCompanyController::class);
+Route::apiResource('/company', CompanyController::class);
+Route::apiResource('/natural-person', NaturalPersonController::class);
 Route::apiResource('/team', TeamController::class);
 Route::apiResource('/hardware', HardwareController::class);
 Route::apiResource('/softwareTeam', SoftwareTeamController::class);
 Route::apiResource('/accountWorker', AccountWorkerController::class);
-Route::apiResource('branches', BranchController::class);
-Route::resource('areas', AreaController::class);
-Route::resource('contact_refs', ContactRefController::class);
-Route::apiResource('tickets', TicketController::class);
+Route::apiResource('/branches', BranchController::class);
+Route::resource('/areas', AreaController::class);
+Route::resource('/contact_refs', ContactRefController::class);
+Route::apiResource('/tickets', TicketController::class);
