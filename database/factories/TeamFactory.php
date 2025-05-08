@@ -18,12 +18,18 @@ class TeamFactory extends Factory
     protected $model = Team::class;
     public function definition(): array
     {
+        $clientG = ClientG::pluck('id')->toArray();
+        $company = Company::pluck('id')->toArray();
+        $microCompany = MicroCompany::pluck('id')->toArray();
+        $naturalPerson = NaturalPerson::pluck('id')->toArray();
+        $plan = Plan::pluck('id')->toArray();
+        
         return [
-            'id_clientG' => ClientG::factory(),
-            'id_company' => Company::factory(),
-            'id_microcompany' => MicroCompany::factory(),
-            'id_personN' => NaturalPerson::factory(),
-            'id_plan' => Plan::factory(),
+            'id_clientG' => $this->faker->randomElement($clientG) ?? ClientG::factory(),
+            'id_company' => $this->faker->randomElement($company) ?? Company::factory(),
+            'id_microcompany' => $this->faker->randomElement($microCompany) ?? MicroCompany::factory(),
+            'id_personN' => $this->faker->randomElement($naturalPerson) ?? NaturalPerson::factory(),
+            'id_plan' => $this->faker->randomElement($plan) ?? Plan::factory(),
             'type' => $this->faker->word(),
             'brand' => $this->faker->company(),
             'username' => $this->faker->userName(),

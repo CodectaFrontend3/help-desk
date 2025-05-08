@@ -15,9 +15,11 @@ class SoftwareTeamFactory extends Factory
     protected $model = SoftwareTeam::class;
     public function definition(): array
     {
+        $software = Software::pluck('id')->toArray();
+        $team = Team::pluck('id')->toArray();
         return [
-            'id_software' => Software::factory(),
-            'id_team' => Team::factory()
+            'id_software' => $this->faker->randomElement($software) ?? Software::factory(),
+            'id_team' => $this->faker->randomElement($team) ?? Team::factory()
         ];
     }
 }
