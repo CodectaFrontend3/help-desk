@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 // Test: crear un área
-it('crea un área correctamente', function () {
+it('ceate an area', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
@@ -34,7 +34,7 @@ it('crea un área correctamente', function () {
 });
 
 // Test: listar todas las áreas
-it('lista todas las áreas con su información', function () {
+it('list all areas with their information', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
@@ -52,7 +52,7 @@ it('lista todas las áreas con su información', function () {
 });
 
 // Test: ver un área específica
-it('muestra un área con su información', function () {
+it('show an area with its information', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
@@ -72,7 +72,7 @@ it('muestra un área con su información', function () {
 });
 
 // Test: actualizar un área
-it('actualiza un área correctamente', function () {
+it('updatw an area', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
@@ -101,7 +101,7 @@ it('actualiza un área correctamente', function () {
 });
 
 // Test: eliminar un área
-it('elimina un área correctamente', function () {
+it('delete an area', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);

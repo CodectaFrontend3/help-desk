@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 // Test: listar todas las sucursales
-it('lista todas las sucursales con su empresa', function () {
+it('list all the branches with their company', function () {
     $company = Company::factory()->create();
     Branch::factory()->count(3)->create(['company_id' => $company->id]);
 
@@ -18,7 +18,7 @@ it('lista todas las sucursales con su empresa', function () {
 });
 
 // Test: crear una sucursal
-it('crea una sucursal correctamente', function () {
+it('create a branch', function () {
     $company = Company::factory()->create();
 
     $response = $this->postJson('/api/branches', [
@@ -39,7 +39,7 @@ it('crea una sucursal correctamente', function () {
 });
 
 // Test: ver una sucursal específica
-it('muestra una sucursal con su empresa', function () {
+it('Show a branch with its company', function () {
     $company = Company::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
 
@@ -53,7 +53,7 @@ it('muestra una sucursal con su empresa', function () {
 });
 
 // Test: actualizar una sucursal
-it('actualiza una sucursal correctamente', function () {
+it('update a branch', function () {
     $company = Company::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
 
@@ -73,7 +73,7 @@ it('actualiza una sucursal correctamente', function () {
 });
 
 // Test: eliminar una sucursal
-it('elimina una sucursal correctamente', function () {
+it('delete a branch', function () {
     $company = Company::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
 
