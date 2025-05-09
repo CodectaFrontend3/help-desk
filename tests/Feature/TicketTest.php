@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 // Test: crear un ticket
-it('crea un ticket correctamente', function () {
+it('create a ticket', function () {
     $team = Team::factory()->create();
 
     $response = $this->postJson('/api/tickets', [
@@ -31,7 +31,7 @@ it('crea un ticket correctamente', function () {
 });
 
 // Test: listar todos los tickets
-it('lista todos los tickets', function () {
+it('list all tickets', function () {
     Ticket::factory()->count(3)->create();
 
     $response = $this->getJson('/api/tickets');
@@ -57,7 +57,7 @@ it('muestra un ticket por su ID', function () {
 });
 
 // Test: actualizar un ticket
-it('actualiza un ticket correctamente', function () {
+it('update a ticket', function () {
     $ticket = Ticket::factory()->create();
 
     $response = $this->putJson("/api/tickets/{$ticket->id}", [
@@ -79,7 +79,7 @@ it('actualiza un ticket correctamente', function () {
 });
 
 // Test: eliminar un ticket
-it('elimina un ticket correctamente', function () {
+it('delete a ticket', function () {
     $ticket = Ticket::factory()->create();
 
     $response = $this->deleteJson("/api/tickets/{$ticket->id}");

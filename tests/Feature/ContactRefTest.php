@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 // Test: crear un contacto
-it('crea un contacto correctamente', function () {
+it('create a contact', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
@@ -35,7 +35,7 @@ it('crea un contacto correctamente', function () {
 });
 
 // Test: listar todos los contactos
-it('lista todos los contactos con su información', function () {
+it('list all contacts', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
@@ -53,7 +53,7 @@ it('lista todos los contactos con su información', function () {
 });
 
 // Test: ver un contacto específico
-it('muestra un contacto con su información', function () {
+it('show a contact specific', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
@@ -73,7 +73,7 @@ it('muestra un contacto con su información', function () {
 });
 
 // Test: actualizar un contacto
-it('actualiza un contacto correctamente', function () {
+it('update a contact', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
@@ -102,7 +102,7 @@ it('actualiza un contacto correctamente', function () {
 });
 
 // Test: eliminar un contacto
-it('elimina un contacto correctamente', function () {
+it('delete a contact', function () {
     $company = Company::factory()->create();
     $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
