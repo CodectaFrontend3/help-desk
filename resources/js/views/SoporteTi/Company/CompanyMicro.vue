@@ -25,7 +25,7 @@ export default {
         async fetchMicroCompany() {
             try {
                 // Obtener los datos de microempresas desde la API
-                this.microCompany = await apiServices.get("micro-company");
+                this.microCompany = await apiServices.get("micro_company");
                 console.log("Microempresas cargadas:", this.microCompany);
             } catch (error) {
                 console.error("Error al cargar microempresas:", error);

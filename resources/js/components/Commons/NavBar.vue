@@ -12,23 +12,22 @@ export default {
             return this.$route.meta.navbarConfig || {};
         },
         showButtonsTi() {
-            // Solo mostrar los botones en estas rutas (puedes personalizarlas)
+            const config = this.$route.meta?.navbarConfig;
             return (
-                this.$route.meta.navbarConfig.TiEmpresa === true ||
-                this.$route.meta.navbarConfig.companySoporteTi === true ||
-                this.$route.meta.navbarConfig.clientsSoporteTi === true
+                config?.TiEmpresa === true ||
+                config?.companySoporteTi === true ||
+                config?.clientsSoporteTi === true ||
+                config?.companyEquipment === true
             );
         },
         showButtons() {
-            // Solo mostrar los botones en estas rutas (puedes personalizarlas)
-            return (
-                this.$route.meta.navbarConfig.persona === true ||
-                this.$route.meta.navbarConfig.clientes === true
-            );
+            const config = this.$route.meta?.navbarConfig;
+            return config?.persona === true || config?.clientes === true;
         },
+
+        // Solo mostrar los botones en estas rutas (puedes personalizarlas)
         showAdd() {
-            // Solo mostrar los botones en estas rutas (puedes personalizarlas)
-            return this.$route.meta.role === "admin";
+            return this.$route.meta?.role === "admin";
         },
         isTicketActive() {
             return (
@@ -41,13 +40,53 @@ export default {
         // Determina qué tipo de empresa está seleccionada
         currentType() {
             const path = this.$route.path;
-            if (path.includes("company-micro")) return "micro";
-            if (path.includes("company-company")) return "company";
-            if (path.includes("company-person")) return "person";
+            if (
+                path.includes("company-micro") ||
+                path.includes("clients-micro")
+            )
+                return "micro";
+            if (
+                path.includes("company-company") ||
+                path.includes("clients-company")
+            )
+                return "company";
+            if (
+                path.includes("company-person") ||
+                path.includes("clients-person")
+            )
+                return "person";
+
+            // Si estamos en la ruta de equipos
+            if (path.includes("company-equipment")) {
+                // Extraer el tipo de la URL
+                const pathParts = path.split("/");
+                const typeIndex = pathParts.length > 3 ? 3 : 0;
+                return pathParts[typeIndex] || "company";
+            }
+
             return null;
         },
 
-        dynamicSegment(type) {
+        // Determinar la ruta base para la navegación
+        getBaseRoute() {
+            // Si estamos en la ruta de clientes de soporte TI
+            if (
+                this.$route.path.includes("clients-soporte-ti") ||
+                this.$route.path.includes("clients-micro") ||
+                this.$route.path.includes("clients-company") ||
+                this.$route.path.includes("clients-person")
+            ) {
+                return "/clients-soporte-ti";
+            }
+
+            // Si estamos en la ruta de equipos, necesitamos volver a la ruta principal
+            if (
+                this.$route.path.includes("company-equipment") ||
+                this.$route.path.includes("equipment-details")
+            ) {
+                return "/company-soporte-ti";
+            }
+
             // Encuentra la ruta padre que tiene hijos
             const parentRoute = this.$route.matched
                 .slice()
@@ -56,29 +95,28 @@ export default {
 
             if (!parentRoute) {
                 console.warn("Ruta padre no encontrada.");
-                return "";
+                return this.$route.path.includes("clients")
+                    ? "/clients-soporte-ti"
+                    : "/company-soporte-ti";
             }
 
-            // Ej: "/company-soporte-ti" => "company"
-            const lastSegment = parentRoute.path.split("/").pop(); // "company-soporte-ti"
-            const prefix = lastSegment.split("-")[0]; // "company"
+            return parentRoute.path;
+        },
 
-            return `${prefix}-${type}`; // Resultado correcto: "company-micro"
+        dynamicSegment(type) {
+            // Determinar si estamos en la sección de clientes o empresas
+            if (this.$route.path.includes("clients")) {
+                return `clients-${type}`;
+            } else {
+                return `company-${type}`;
+            }
         },
 
         navigateToChildren(typeSegment) {
-            const parentRoute = this.$route.matched
-                .slice()
-                .reverse()
-                .find((r) => r.children && r.children.length > 0);
+            const basePath = this.getBaseRoute();
+            const newPath = `${basePath}/${typeSegment}`;
 
-            if (!parentRoute) {
-                console.warn("Ruta padre no encontrada.");
-                return;
-            }
-
-            const basePath = parentRoute.path;
-            const newPath = `${basePath}/${typeSegment}`; // Ej: "/company-soporte-ti/company-micro"
+            console.log("Navegando a:", newPath); // Debug
 
             if (this.$route.path !== newPath) {
                 this.$router.push(newPath);
@@ -86,7 +124,22 @@ export default {
         },
 
         isActive(type) {
-            return this.$route.path.endsWith(this.dynamicSegment(type));
+            // Comprobamos si la URL actual coincide con el tipo
+            if (
+                this.$route.path.includes(`company-${type}`) ||
+                this.$route.path.includes(`clients-${type}`)
+            ) {
+                return true;
+            }
+
+            // Para los equipos, verificamos el parámetro en la URL
+            if (this.$route.path.includes("company-equipment")) {
+                const pathParts = this.$route.path.split("/");
+                const typeIndex = pathParts.length > 3 ? 3 : 0;
+                return pathParts[typeIndex] === type;
+            }
+
+            return false;
         },
     },
 };
@@ -218,7 +271,10 @@ export default {
             </div>
 
             <!--CLIENTES - Empresa-->
-            <div v-if="navbarConfig.clientes || navbarConfig.clientCompany" class="clientes-container">
+            <div
+                v-if="navbarConfig.clientes || navbarConfig.clientCompany"
+                class="clientes-container"
+            >
                 <div
                     v-if="navbarConfig.labelRuc"
                     class="seeker seeker__clientes"
@@ -248,7 +304,10 @@ export default {
             </div>
 
             <!--Clientes - Persona Natural-->
-            <div v-if="navbarConfig.persona || navbarConfig.clientPerson" class="persona-container">
+            <div
+                v-if="navbarConfig.persona || navbarConfig.clientPerson"
+                class="persona-container"
+            >
                 <div
                     v-if="navbarConfig.labelDni"
                     class="seeker seeker__clientes"

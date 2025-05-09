@@ -25,7 +25,7 @@ export default {
     methods: {
         async fetchBranch() {
             // Obtener los datos de microempresas desde la API
-            this.branch = await apiServices.get("branch");
+            this.branch = await apiServices.get("branches");
             console.log(this.branch); // Verifica los datos que se reciben
         },
     },

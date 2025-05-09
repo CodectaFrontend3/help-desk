@@ -6,15 +6,24 @@ import equipmentServices from "../../../services/EquipmentServices";
 export default {
     name: "CompanyEquipment",
     components: { tableComponent },
+    props: {
+        id: {
+            type: String,
+            required: false,
+        },
+        type: {
+            type: String,
+            required: false,
+        },
+    },
     data() {
         return {
             columns: [
-                { label: "Nombre", key: "client_name" },
-                { label: "Teléfono", key: "phone" },
                 { label: "Marca", key: "brand" },
-                { label: "Modelo", key: "model" },
-                { label: "Serie", key: "serial" },
-                { label: "Estado", key: "status" }
+                { label: "Tipo", key: "type" },
+                { label: "Usuario", key: "username" },
+                { label: "Fin Revisión", key: "end_revision", format: true },
+                { label: "Revisión Programada", key: "revision_scheduled", format: true }
             ],
             equipments: [],
             companyId: null,
@@ -25,11 +34,11 @@ export default {
         };
     },
     async created() {
-        // Obtener ID y tipo de la empresa desde los parámetros de la ruta
-        this.companyId = this.$route.params.id;
-        this.companyType = this.$route.params.type;
+        // Priorizar los params de la ruta sobre los props
+        this.companyId = this.$route.params.id || this.id;
+        this.companyType = this.$route.params.type || this.type;
 
-        console.log("Parámetros de la ruta recibidos:", {
+        console.log("Parámetros recibidos:", {
             id: this.companyId,
             type: this.companyType
         });
@@ -38,10 +47,13 @@ export default {
             try {
                 // Normalizar el tipo para asegurar compatibilidad
                 this.normalizeCompanyType();
-
                 console.log("Tipo normalizado:", this.companyType);
 
-                await this.fetchCompanyData();
+                // Cargar datos de la empresa y equipos en paralelo
+                await Promise.all([
+                    this.fetchCompanyData(),
+                    this.fetchEquipments(), // Descomentar para cargar los equipos
+                ]);
             } catch (error) {
                 this.error = `Error al cargar datos: ${error.message}`;
                 console.error("Error completo:", error);
@@ -88,7 +100,7 @@ export default {
         getEndpointByType() {
             switch(this.companyType) {
                 case 'micro':
-                    return `micro-company/${this.companyId}`;
+                    return `micro_company/${this.companyId}`;
                 case 'person':
                     return `natural-person/${this.companyId}`;
                 case 'company':
@@ -128,15 +140,9 @@ export default {
         </div>
 
         <div v-else>
-            <!-- Información de la empresa -->
-            <div v-if="companyData" class="company-info">
-                <h2>{{ companyData.name || companyData.client_name }}</h2>
-                <p><strong>RUC/DNI:</strong> {{ companyData.ruc || companyData.dni }}</p>
-                <p v-if="companyData.address"><strong>Dirección:</strong> {{ companyData.address }}</p>
-                <button class="back-button" @click="$router.go(-1)">
+            <button class="back-button" @click="$router.go(-1)">
                     <i class="pi pi-arrow-left"></i> Volver
                 </button>
-            </div>
 
             <!-- Mostrar mensaje de carga -->
             <div v-if="loading" class="loading-message">

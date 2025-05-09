@@ -1,8 +1,10 @@
 <script>
+import TableComponent from '../../../components/Commons/TableComponent.vue';
 import equipmentServices from '../../../services/EquipmentServices';
 
 export default {
     name: "CompanyEquipmentDetails",
+    components: { TableComponent },
     data() {
         return {
             equipment: null,
@@ -62,8 +64,8 @@ export default {
 
             <div class="equipment-info">
                 <div class="info-row">
-                    <div class="info-label">Nombre:</div>
-                    <div class="info-value">{{ equipment.name }}</div>
+                    <div class="info-label">Marca:</div>
+                    <div class="info-value">{{ equipment.brand }}</div>
                 </div>
 
                 <div class="info-row">
@@ -72,24 +74,19 @@ export default {
                 </div>
 
                 <div class="info-row">
-                    <div class="info-label">Marca:</div>
-                    <div class="info-value">{{ equipment.brand }}</div>
+                    <div class="info-label">Usuario:</div>
+                    <div class="info-value">{{ equipment.username }}</div>
                 </div>
 
                 <div class="info-row">
-                    <div class="info-label">Modelo:</div>
-                    <div class="info-value">{{ equipment.model }}</div>
+                    <div class="info-label">Fin Revisión:</div>
+                    <div class="info-value">{{ equipment.end_revision }}</div>
                 </div>
 
                 <div class="info-row">
-                    <div class="info-label">Número de Serie:</div>
-                    <div class="info-value">{{ equipment.serial }}</div>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-label">Estado:</div>
+                    <div class="info-label">Revisión Programada:</div>
                     <div class="info-value" :class="{'status-active': equipment.status === 'Activo'}">
-                        {{ equipment.status }}
+                        {{ equipment.revision_scheduled }}
                     </div>
                 </div>
 

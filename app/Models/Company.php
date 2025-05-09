@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory; // Permite crear factories para modelos
 
 class Company extends Model
-{   
+{
     use HasFactory; // Permite crear factories para modelos
     protected $fillable = [
         "client_name",
