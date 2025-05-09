@@ -266,6 +266,7 @@ const routes = [
                         //         },
                         //     },
                         // ],
+
                     },
                     {
                         path: "company-person",

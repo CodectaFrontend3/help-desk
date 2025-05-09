@@ -35,11 +35,15 @@ export default {
 </script>
 
 <template>
-    <table-component
+    <div class="company">
+        <table-component
         :data="companies"
         :columns="columns"
         entityType="company"
     />
+    <router-view />
+    </div>
+
 </template>
 
 <style scoped></style>

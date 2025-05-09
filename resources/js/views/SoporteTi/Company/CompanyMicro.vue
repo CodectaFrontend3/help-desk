@@ -36,11 +36,14 @@ export default {
 </script>
 
 <template>
-    <table-component
-        :data="microCompany"
-        :columns="columns"
-        entityType="micro"
-    />
+    <div class="micro">
+        <table-component
+            :data="microCompany"
+            :columns="columns"
+            entityType="micro"
+        />
+        <router-view />
+    </div>
 </template>
 
 <style scoped></style>
