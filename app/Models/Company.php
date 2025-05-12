@@ -24,7 +24,8 @@ class Company extends Model
     {
         return $this->hasMany(Branch::class);
     }
-    public function teams(){
+    public function teams()
+    {
         return $this->hasMany(Team::class,'id_company');
     }
 }
