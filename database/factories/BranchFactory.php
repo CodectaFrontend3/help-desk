@@ -14,7 +14,7 @@ class BranchFactory extends Factory
     public function definition(): array
     {
         return [
-            'company_id' => Company::factory(),
+            'company_id' => Company::exists() ? Company::pluck('id')->random() : Company::factory()->create()->id,
             'branch_name' => $this->faker->name,
             'manager' => $this->faker->name,
             'phone' => $this->faker->phoneNumber,

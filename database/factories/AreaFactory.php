@@ -15,9 +15,9 @@ class AreaFactory extends Factory
     public function definition(): array
     {
         return [
-            'micro_company_id' => MicroCompany::factory(),
-            'company_id'       => Company::factory(),
-            'branch_id'        => Branch::factory(),
+            'company_id' => Company::exists() ? Company::pluck('id')->random() : Company::factory()->create()->id,
+            'branch_id' => Branch::exists() ? Branch::pluck('id')->random() : Branch::factory()->create()->id,
+            'micro_company_id' => MicroCompany::exists() ? MicroCompany::pluck('id')->random() : MicroCompany::factory()->create()->id,
             'area_name'        => $this->faker->word(),
             'contact'          => $this->faker->name(),
             'phone'            => $this->faker->numerify('9########'),

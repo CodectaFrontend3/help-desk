@@ -16,7 +16,7 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'team_id' => Team::factory(),
+            'team_id' => Team::exists() ? Team::pluck('id')->random() : Team::factory()->create()->id,
             'incident_type' => $this->faker->randomElement(['Red', 'Network', 'Hardware', 'Software']),
             'client_name' => $this->faker->name(),
             'company' => $this->faker->company(),
