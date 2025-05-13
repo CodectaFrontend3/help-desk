@@ -3,7 +3,7 @@ import tableComponent from "@/components/Commons/TableComponent.vue";
 import apiServices from "../../../services/ApiServices";
 
 export default {
-    name: "HistorialTickets",
+    name: "TicketsView",
     components: { tableComponent },
     data() {
         return {

@@ -123,12 +123,28 @@ export default {
             }
         },
 
+        navigateToAdminChildren(typeSegment) {
+            const basePath = "/clients-admin";
+            const newPath = `${basePath}/${typeSegment}`;
+
+            console.log("Navegando a:", newPath); // Debug
+
+            if (this.$route.path !== newPath) {
+                this.$router.push(newPath);
+            }
+        },
+
         isActive(type) {
             // Comprobamos si la URL actual coincide con el tipo
             if (
                 this.$route.path.includes(`company-${type}`) ||
                 this.$route.path.includes(`clients-${type}`)
             ) {
+                return true;
+            }
+
+            // Para rutas del admin
+            if (this.$route.path.includes(`/clients-admin/${type}`)) {
                 return true;
             }
 
@@ -149,14 +165,16 @@ export default {
     <nav class="search-container">
         <div v-if="showButtons" class="buttons">
             <button
-                :class="{ active: navbarConfig.clientes === true }"
+                :class="{ active: isActive('companies') }"
                 title="Seleccionar empresa"
+                @click="navigateToAdminChildren('companies')"
             >
                 Empresa
             </button>
             <button
-                :class="{ active: navbarConfig.persona === true }"
+                :class="{ active: isActive('natural-person') }"
                 title="Seleccionar persona natural"
+                @click="navigateToAdminChildren('natural-person')"
             >
                 Persona Natural
             </button>

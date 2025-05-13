@@ -9,7 +9,10 @@ export default {
         return {
             equipment: null,
             loading: true,
-            error: null
+            error: null,
+            activeTab: 'usuario', // Valores posibles: 'usuario', 'hardware', 'software'
+            softwareData: [],
+            hardwareComponents: []
         };
     },
     async created() {
@@ -27,6 +30,61 @@ export default {
             try {
                 // Utilizar el servicio especializado para obtener detalles del equipo
                 this.equipment = await equipmentServices.getEquipmentDetails(id);
+
+                // Simular carga de datos adicionales (software/hardware)
+                if (this.equipment) {
+                    // Simular datos de software que vendrian del backend
+                    this.softwareData = [
+                        {
+                            nombre: 'Antivirus',
+                            licencia: 'xxxxxxxxx',
+                            correo: 'gth@gmail',
+                            contrasena: 'ppppapp',
+                            fec_instalacion: '25 May 2023',
+                            fec_caducidad: '25 May 2024',
+                            proveedor: 'info tec'
+                        },
+                        {
+                            nombre: 'Microsoft Windows',
+                            licencia: '8376478792',
+                            correo: 'asdd@gmail',
+                            contrasena: 'ppppapp',
+                            fec_instalacion: '25 Ene 2020',
+                            fec_caducidad: '25 Ene 2021',
+                            proveedor: 'info tec'
+                        },
+                        {
+                            nombre: 'Adobe',
+                            licencia: '8475637289',
+                            correo: 'asdd@gmail',
+                            contrasena: 'ppppapp',
+                            fec_instalacion: '20 Jun 2023',
+                            fec_caducidad: '25 Jan 2024',
+                            proveedor: 'info tec'
+                        },
+                        {
+                            nombre: 'Adobe pirata',
+                            licencia: '2947373920',
+                            correo: 'dtd@gmail',
+                            contrasena: '',
+                            fec_instalacion: '30 May 2023',
+                            fec_caducidad: '',
+                            proveedor: 'Internet'
+                        }
+                    ];
+
+                    // Simular datos de hardware que vendrian del backend
+                    this.hardwareComponents = [
+                        {
+                            tipo: 'SSD',
+                            fecha_instalacion: '5 May 2024',
+                            descripcion: 'Almacenamiento de SSD de 500gb',
+                            serie: '',
+                            proveedor: 'Tienda X'
+                        }
+                    ];
+                }
+
                 console.log("Detalles del equipo:", this.equipment);
             } catch (error) {
                 console.error("Error al obtener detalles del equipo:", error);
@@ -37,6 +95,9 @@ export default {
         },
         goBack() {
             this.$router.go(-1); // Volver a la página anterior
+        },
+        changeTab(tabName) {
+            this.activeTab = tabName;
         }
     }
 };
@@ -60,9 +121,177 @@ export default {
 
         <!-- Mostrar detalles del equipo -->
         <div v-else-if="equipment" class="equipment-card">
-            <h2>Detalles del Equipo</h2>
+            <h2>Equipos - YYY</h2>
 
-            <div class="equipment-info">
+            <!-- Tabs de navegación -->
+            <div class="equipment-tabs">
+                <button
+                    @click="changeTab('usuario')"
+                    :class="['tab-button', { active: activeTab === 'usuario' }]">
+                    Usuario
+                </button>
+                <button
+                    @click="changeTab('hardware')"
+                    :class="['tab-button', { active: activeTab === 'hardware' }]">
+                    Hardware
+                </button>
+                <button
+                    @click="changeTab('software')"
+                    :class="['tab-button', { active: activeTab === 'software' }]">
+                    Software
+                </button>
+            </div>
+
+            <!-- Tab de Usuario -->
+            <div v-if="activeTab === 'usuario'" class="tab-content">
+                <div class="equipment-user-form">
+                    <div class="equipment-icon">
+                        <img src="/path/to/computer-icon.png" alt="Computer Icon" class="icon-image">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Usuario:</label>
+                            <div class="input-dropdown">
+                                <input type="text" v-model="equipment.username" disabled />
+                                <span class="dropdown-icon">▼</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Área:</label>
+                            <div class="input-dropdown">
+                                <input type="text" value="area" disabled />
+                                <span class="dropdown-icon">▼</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Sucursal:</label>
+                            <input type="text" value="" disabled />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab de Hardware -->
+            <div v-if="activeTab === 'hardware'" class="tab-content">
+                <div class="hardware-content">
+                    <div class="form-row two-columns">
+                        <div class="form-group">
+                            <label>Tipo del equipo:</label>
+                            <input type="text" placeholder="nombre hardware" />
+                        </div>
+                        <div class="form-group">
+                            <label>N° Serie:</label>
+                            <input type="text" placeholder="serial" />
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de compra:</label>
+                            <input type="text" placeholder="fecha de compra" />
+                        </div>
+                    </div>
+
+                    <div class="form-row three-columns">
+                        <div class="form-group">
+                            <label>Marca:</label>
+                            <input type="text" placeholder="marca" />
+                        </div>
+                        <div class="form-group">
+                            <label>Proveedor:</label>
+                            <input type="text" placeholder="proveedor" />
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <div>
+                                <label>Plan:</label>
+                                <input type="checkbox" checked />
+                            </div>
+                            <div>
+                                <label>Prioridad:</label>
+                                <div class="priority-dropdown">
+                                    <span>Alta</span>
+                                    <span class="dropdown-icon">▼</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Descripcion del equipo:</label>
+                            <textarea placeholder="Teclado Lenovo K480, mecánico y ergonómico"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="hardware-components-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Fecha de Instalacion</th>
+                                    <th>Descripcion</th>
+                                    <th>Serie</th>
+                                    <th>Proveedor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(component, index) in hardwareComponents" :key="index">
+                                    <td>{{ component.tipo }}</td>
+                                    <td>{{ component.fecha_instalacion }}</td>
+                                    <td>{{ component.descripcion }}</td>
+                                    <td>{{ component.serie }}</td>
+                                    <td>{{ component.proveedor }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab de Software -->
+            <div v-if="activeTab === 'software'" class="tab-content">
+                <div class="software-content">
+                    <h3>Detalles del Software:</h3>
+
+                    <div class="software-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Licencia</th>
+                                    <th>Correo</th>
+                                    <th>Contraseña</th>
+                                    <th>Fec de instalacion</th>
+                                    <th>Fec de caducidad</th>
+                                    <th>Proveedor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(software, index) in softwareData" :key="index">
+                                    <td>{{ software.nombre }}</td>
+                                    <td>{{ software.licencia }}</td>
+                                    <td>{{ software.correo }}</td>
+                                    <td>{{ software.contrasena }}</td>
+                                    <td>{{ software.fec_instalacion }}</td>
+                                    <td>{{ software.fec_caducidad }}</td>
+                                    <td>{{ software.proveedor }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="button-container">
+                        <button class="back-action">Volver</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info general del equipo (siempre visible) -->
+            <div v-if="false" class="equipment-info">
                 <div class="info-row">
                     <div class="info-label">Marca:</div>
                     <div class="info-value">{{ equipment.brand }}</div>
@@ -131,8 +360,9 @@ export default {
 <style scoped>
 .equipment-details-container {
     padding: 20px;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
+    font-family: Arial, sans-serif;
 }
 
 .back-button {
@@ -164,8 +394,203 @@ export default {
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
     color: #333;
+    text-align: center;
 }
 
+/* Estilo para las pestañas */
+.equipment-tabs {
+    display: flex;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.tab-button.active {
+    background-color: #ffa726;
+    color: white;
+    font-weight: bold;
+}
+
+.tab-button:hover:not(.active) {
+    background-color: #e0e0e0;
+}
+
+.tab-content {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 300px;
+}
+
+/* Estilos para la sección Usuario */
+.equipment-user-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.equipment-icon {
+    margin-bottom: 30px;
+}
+
+.icon-image {
+    width: 120px;
+    height: 120px;
+    /* Usar una imagen de placeholder */
+    background-color: #333;
+    border-radius: 8px;
+}
+
+.form-row {
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #666;
+}
+
+.form-group input, .form-group textarea {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+.input-dropdown {
+    position: relative;
+}
+
+.dropdown-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #666;
+    pointer-events: none;
+}
+
+/* Estilos para hardware */
+.two-columns {
+    flex-wrap: wrap;
+}
+
+.two-columns .form-group {
+    flex: 0 0 48%;
+}
+
+.three-columns {
+    flex-wrap: wrap;
+}
+
+.three-columns .form-group {
+    flex: 0 0 30%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.checkbox-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checkbox-group div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.priority-dropdown {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 3px 10px;
+    border-radius: 4px;
+    gap: 10px;
+}
+
+.hardware-components-table,
+.software-table {
+    width: 100%;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #666;
+}
+
+table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Botón de volver en Software */
+.button-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.back-action {
+    padding: 8px 16px;
+    background-color: #ffa726;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.back-action:hover {
+    background-color: #ff9100;
+}
+
+/* Estilos antiguos */
 .equipment-info {
     display: flex;
     flex-direction: column;

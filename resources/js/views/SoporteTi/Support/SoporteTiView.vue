@@ -1,20 +1,19 @@
 <script>
 import TableComponent from "@/components/Commons/TableComponent.vue";
 import apiServices from "../../../services/ApiServices";
-import PopCliente from "../../../components/Commons/PopCliente.vue";
 
 export default {
     name: "SoporteView",
-    components: { TableComponent, PopCliente },
+    components: { TableComponent},
     data() {
         return {
             showPopup: false,
             columns: [
                 // Asegúrate de definir las columnas
-                { label: "Nombre", key: "branch_name" },
-                { label: "Encargado", key: "manager" },
-                { label: "Teléfono", key: "phone" },
-                { label: "Correo", key: "email" },
+                { label: "Número de plan", key: "plan_number" },
+                { label: "Nombre del plan", key: "name" },
+                { label: "Descripción", key: "description" },
+                { label: "Id", key: "id" },
             ],
             branch: [],
         };
@@ -25,7 +24,7 @@ export default {
     methods: {
         async fetchBranch() {
             // Obtener los datos de microempresas desde la API
-            this.branch = await apiServices.get("branches");
+            this.branch = await apiServices.get("plan");
             console.log(this.branch); // Verifica los datos que se reciben
         },
     },
@@ -34,7 +33,6 @@ export default {
 
 <template>
     <div class="soporte">
-        <h1>PRUEBA DE TABLA DENTRO DE SOPORTE</h1>
         <table-component :data="branch" :columns="columns" />
     </div>
 

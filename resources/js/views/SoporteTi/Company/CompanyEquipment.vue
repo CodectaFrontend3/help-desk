@@ -146,7 +146,7 @@ export default {
 
             <!-- Mostrar mensaje de carga -->
             <div v-if="loading" class="loading-message">
-                Cargando equipos...
+                <div class="loader"></div>
             </div>
 
             <!-- Mostrar mensaje si no hay equipos -->

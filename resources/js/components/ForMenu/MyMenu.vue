@@ -11,48 +11,32 @@ export default {
             return [
                 { label: "Home", icon: "pi pi-fw pi-home", to: "/" },
                 {
-                    label: "Clientes - Empresa - Administrador",
+                    label: "Administrador - Clientes",
                     icon: "pi pi-fw pi-user",
-                    to: "/company-admin",
+                    to: "/clients-admin",
                 },
                 {
-                    label: "Clientes - Persona Natural - Administrador",
+                    label: "Administrador - Plan de soporte",
                     icon: "pi pi-fw pi-users",
-                    to: "/clientespersona",
+                    to: "/admin-support",
                 },
                 {
-                    label: "Plan de soporte - Administrador",
-                    icon: "pi pi-fw pi-users",
-                    to: "/soporte",
-                },
-
-                {
-                    label: "Historial de tickets - Soporte TI",
+                    label: "Soporte TI - Tickets",
                     icon: "pi pi-fw pi-ticket",
-                    to: "/historialtickets",
+                    to: "/tickets",
                 },
                 {
-                    label: "Tickets - Soporte TI",
-                    icon: "pi pi-fw pi-ticket",
-                    to: "/tickets-activos",
-                },
-                {
-                    label: "Tickets urgentes - Soporte TI",
-                    icon: "pi pi-fw pi-ticket",
-                    to: "/ticketsurgentes",
-                },
-                {
-                    label: "Clientes - Soporte TI",
+                    label: "Soporte TI - Clientes",
                     icon: "pi pi-fw pi-users",
                     to: "/clients-soporte-ti",
                 },
                 {
-                    label: "Plan de soporte - Soporte TI",
+                    label: "Soporte TI - Plan de soporte",
                     icon: "pi pi-fw pi-users",
                     to: "/soporte-ti",
                 },
                 {
-                    label: "Empresa - Soporte TI",
+                    label: "Soporte TI - Empresa",
                     icon: "pi pi-fw pi-users",
                     to: "/company-soporte-ti",
                 },
