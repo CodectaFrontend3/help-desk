@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AccountRegisterSeeder::class);
         $this->call(MachineSeeder::class);
         $this->call(AccountWorkerSeeder::class);
-        $this->call(SoftwareTeamSeeder::class);
+        $this->call(SoftwareMachineSeeder::class);
         $this->call(CompanySeeder::class);
         $this->call(BranchSeeder::class);
         $this->call(MicroCompanySeeder::class);

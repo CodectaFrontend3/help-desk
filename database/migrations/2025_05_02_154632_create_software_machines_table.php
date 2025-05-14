@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('software_teams', function (Blueprint $table) {
+        Schema::create('software_machines', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_software')->nullable()->constrained('softwares')->nullOnDelete();
             $table->foreignId('id_machine')->nullable()->constrained('machines')->nullOnDelete();
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('software_teams');
+        Schema::dropIfExists('software_machines');
     }
 };

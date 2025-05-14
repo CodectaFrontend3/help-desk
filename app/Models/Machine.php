@@ -31,10 +31,13 @@ class Machine extends Model
     public function plans(){
         return $this->belongsTo(Plan::class,'id_plan');
     }
-    public function softwareTeams(){
-        return $this->hasMany(SoftwareTeam::class,'id_machine');
+    public function softwareMachines(){
+        return $this->hasMany(SoftwareMachine::class,'id_machine');
     }
     public function accountWorkers(){
         return $this->hasOne(AccountWorker::class,'id_machine');
+    }
+    public function hardwares(){
+        return $this->hasMany(Hardware::class,'id_machine');
     }
 }

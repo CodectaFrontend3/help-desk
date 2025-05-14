@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SoftwareTeam extends Model
+class SoftwareMachine extends Model
 {
     use HasFactory;
-    protected $table = 'software_teams';
+    protected $table = 'software_machines';
     protected $fillable = [
         'id_software','id_machine'
     ];

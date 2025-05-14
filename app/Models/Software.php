@@ -13,7 +13,7 @@ class Software extends Model
         'name','license','email','password','supplier','installation_date','expiration_date'
     ];
 
-    public function softwareTeams(){
-        return $this->hasMany(SoftwareTeam::class,'id_software');
+    public function softwareMachines(){
+        return $this->hasMany(SoftwareMachine::class,'id_software');
     }
 }

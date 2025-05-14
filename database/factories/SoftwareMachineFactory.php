@@ -4,15 +4,15 @@ namespace Database\Factories;
 
 use App\Models\Machine;
 use App\Models\Software;
-use App\Models\SoftwareTeam;
+use App\Models\SoftwareMachine;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SoftwareTeam>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SoftwareMachine>
  */
-class SoftwareTeamFactory extends Factory
+class SoftwareMachineFactory extends Factory
 {
-    protected $model = SoftwareTeam::class;
+    protected $model = SoftwareMachine::class;
     public function definition(): array
     {
         $software = Software::pluck('id')->toArray();

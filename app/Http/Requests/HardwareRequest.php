@@ -23,6 +23,7 @@ class HardwareRequest extends FormRequest
     {
         return [
             'id_RH' => 'required|integer|exists:register_hardwares,id',
+            'id_machine' => 'required|integer|exists:machines,id',
             'type_team' => 'required|string|max:50',
             'serial_number' => 'required|integer',
             'buy_date' => 'required|date',
