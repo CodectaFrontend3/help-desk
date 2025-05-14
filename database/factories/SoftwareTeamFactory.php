@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Machine;
 use App\Models\Software;
 use App\Models\SoftwareTeam;
-use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,10 +16,10 @@ class SoftwareTeamFactory extends Factory
     public function definition(): array
     {
         $software = Software::pluck('id')->toArray();
-        $team = Team::pluck('id')->toArray();
+        $machine = Machine::pluck('id')->toArray();
         return [
             'id_software' => $this->faker->randomElement($software) ?? Software::factory(),
-            'id_team' => $this->faker->randomElement($team) ?? Team::factory()
+            'id_machine' => $this->faker->randomElement($machine) ?? Machine::factory()
         ];
     }
 }

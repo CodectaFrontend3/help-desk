@@ -17,6 +17,7 @@ use App\Http\Controllers\SoftwareTeamController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactRefController;
+use App\Http\Controllers\MachineController;
 use App\Http\Controllers\TicketController;
 
 
@@ -33,7 +34,7 @@ Route::apiResource('/accountRegister', AccountRegisterController::class);
 Route::apiResource('/micro_company', MicroCompanyController::class);
 Route::apiResource('/company', CompanyController::class);
 Route::apiResource('/natural-person', NaturalPersonController::class);
-Route::apiResource('/team', TeamController::class);
+Route::apiResource('/machine', MachineController::class);
 Route::apiResource('/hardware', HardwareController::class);
 Route::apiResource('/softwareTeam', SoftwareTeamController::class);
 Route::apiResource('/accountWorker', AccountWorkerController::class);

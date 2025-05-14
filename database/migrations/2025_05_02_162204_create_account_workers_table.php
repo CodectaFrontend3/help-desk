@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('account_workers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_team')->nullable()->constrained('teams')->nullOnDelete()->unique();
+            $table->foreignId('id_machine')->nullable()->constrained('machines')->nullOnDelete()->unique();
             $table->string('username');
             $table->string('area');
             $table->string('emailT');

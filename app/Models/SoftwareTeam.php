@@ -10,12 +10,12 @@ class SoftwareTeam extends Model
     use HasFactory;
     protected $table = 'software_teams';
     protected $fillable = [
-        'id_software','id_team'
+        'id_software','id_machine'
     ];
     public function softwares(){
         return $this->belongsTo(Software::class,'id_software');
     }
-    public function teams(){
-        return $this->belongsTo(Team::class,'id_team');
+    public function machines(){
+        return $this->belongsTo(Machine::class,'id_machine');
     }
 }

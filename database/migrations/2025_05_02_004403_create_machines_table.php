@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('teams', function (Blueprint $table) {
-            $table->id();
+        Schema::create('machines', function (Blueprint $table) {
+             $table->id();
             $table->foreignId('id_clientG')->nullable()->constrained('clients_g')->nullOnDelete();
             $table->foreignId('id_company')->nullable()->constrained('companies')->nullOnDelete();
             $table->foreignId('id_microcompany')->nullable()->constrained('micro_companies')->nullOnDelete();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('teams');
+        Schema::dropIfExists('machines');
     }
 };

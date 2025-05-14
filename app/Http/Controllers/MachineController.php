@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TeamRequest;
-use App\Models\Team;
+use App\Http\Requests\MachineRequest;
+use App\Models\Machine;
 use Illuminate\Http\Request;
 
-class TeamController extends Controller
+class MachineController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return response()->json(Team::all());
+        return response()->json(Machine::all());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(TeamRequest $request)
+    public function store(MachineRequest $request)
     {
-        $equipo = Team::create($request->validated());
+        $equipo = Machine::create($request->validated());
         return response()->json($equipo, 201);
     }
 
@@ -30,7 +30,7 @@ class TeamController extends Controller
      */
     public function show(string $id)
     {
-        $equipo = Team::findOrFail($id);
+        $equipo = Machine::findOrFail($id);
         return response()->json($equipo);
 
     }
@@ -38,9 +38,9 @@ class TeamController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(TeamRequest $request, string $id)
+    public function update(MachineRequest $request, string $id)
     {
-        $equipo = Team::findOrFail($id);
+        $equipo = Machine::findOrFail($id);
         $equipo->update($request->validated());
         return response()->json($equipo, 200);
     }
@@ -50,10 +50,9 @@ class TeamController extends Controller
      */
     public function destroy(string $id)
     {
-        $equipo = Team::findOrFail($id);
+        $equipo = Machine::findOrFail($id);
         $equipo->delete();
         return response()->noContent();
     }
-
 
 }

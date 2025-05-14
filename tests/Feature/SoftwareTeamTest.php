@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\Machine;
 use App\Models\SoftwareTeam;
 use App\Models\Software;
-use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -16,18 +16,18 @@ it('list of all software teams', function () {
     $response->assertJsonCount(3);
 });
 
-it('a team can have many software teams',function(){
-    $team = Team::factory()->create();
+it('a machine can have many software teams',function(){
+    $machine = Machine::factory()->create();
 
-    $softwareTeam1= SoftwareTeam::factory()->create(['id_team' => $team->id]);
-    $softwareTeam2= SoftwareTeam::factory()->create(['id_team' => $team->id]);
+    $softwareTeam1= SoftwareTeam::factory()->create(['id_machine' => $machine->id]);
+    $softwareTeam2= SoftwareTeam::factory()->create(['id_machine' => $machine->id]);
 
-    $team->load('softwareTeams');
+    $machine->load('softwareTeams');
 
-    $this->assertCount(2,$team->softwareTeams);
+    $this->assertCount(2,$machine->softwareTeams);
 
-    $this->assertTrue($team->softwareTeams->contains($softwareTeam1));
-    $this->assertTrue($team->softwareTeams->contains($softwareTeam2));
+    $this->assertTrue($machine->softwareTeams->contains($softwareTeam1));
+    $this->assertTrue($machine->softwareTeams->contains($softwareTeam2));
 });
 
 it('a software can have many software teams',function(){
@@ -46,11 +46,11 @@ it('a software can have many software teams',function(){
 
 it('create a new software team', function () {
     $software = Software::factory()->create();
-    $team = Team::factory()->create();
+    $machine = Machine::factory()->create();
 
     $data = [
         'id_software' => $software->id,
-        'id_team' => $team->id,
+        'id_machine' => $machine->id,
     ];
 
     $response = $this->postJson(route('softwareTeam.store'), $data);
@@ -74,11 +74,11 @@ it('update a software team', function () {
     $softwareTeam = SoftwareTeam::factory()->create();
 
     $newSoftware = Software::factory()->create();
-    $newTeam = Team::factory()->create();
+    $newMachine = Machine::factory()->create();
 
     $data = [
         'id_software' => $newSoftware->id,
-        'id_team' => $newTeam->id,
+        'id_machine' => $newMachine->id,
     ];
 
     $response = $this->putJson(route('softwareTeam.update', ['softwareTeam' => $softwareTeam->id]), $data);

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('software_teams', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_software')->nullable()->constrained('softwares')->nullOnDelete();
-            $table->foreignId('id_team')->nullable()->constrained('teams')->nullOnDelete();
+            $table->foreignId('id_machine')->nullable()->constrained('machines')->nullOnDelete();
             $table->timestamps();
         });
     }

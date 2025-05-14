@@ -23,7 +23,7 @@ class SoftwareTeamRequest extends FormRequest
     {
         return [
             'id_software' => 'required|integer|exists:softwares,id',
-            'id_team' => 'required|integer|exists:teams,id'
+            'id_machine' => 'required|integer|exists:machines,id'
         ];
     }
 }

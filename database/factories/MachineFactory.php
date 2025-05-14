@@ -7,15 +7,18 @@ use App\Models\Company;
 use App\Models\MicroCompany;
 use App\Models\NaturalPerson;
 use App\Models\Plan;
-use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Team>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Machine>
  */
-class TeamFactory extends Factory
+class MachineFactory extends Factory
 {
-    protected $model = Team::class;
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         $clientG = ClientG::pluck('id')->toArray();

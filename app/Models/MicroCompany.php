@@ -16,8 +16,8 @@ class MicroCompany extends Model
         "phone",
         "email",
     ];
-    public function teams()
+    public function machines()
     {
-        return $this->hasMany(Team::class,'id_microcompany');
+        return $this->hasMany(Machine::class,'id_microcompany');
     }
 }

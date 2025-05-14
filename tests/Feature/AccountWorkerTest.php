@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\AccountWorker;
-use App\Models\Team;
+use App\Models\Machine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -15,22 +15,22 @@ it('list of all workers account', function () {
     $response->assertJsonCount(3);
 });
 
-it('a team can have a  worker account',function(){
-    $equipo = Team::factory()->create();
-    $cuentaTrabajador = AccountWorker::factory()->create(['id_team'=>$equipo->id]);
+it('a machine can have a  worker account',function(){
+    $machine = Machine::factory()->create();
+    $accountWorker = AccountWorker::factory()->create(['id_machine'=>$machine->id]);
 
-    $equipo->load('accountWorkers');
+    $machine->load('accountWorkers');
 
-    $this->assertNotNull($equipo->accountWorkers);
-    $this->assertTrue($equipo->accountWorkers->is($cuentaTrabajador));
+    $this->assertNotNull($machine->accountWorkers);
+    $this->assertTrue($machine->accountWorkers->is($accountWorker));
 
 });
 
 it('create a new worker account', function () {
-    $equipo = Team::factory()->create();
+    $machine = Machine::factory()->create();
 
     $data = AccountWorker::factory()->make([
-        'id_team' => $equipo->id,
+        'id_machine' => $machine->id,
     ])->toArray();
 
     $response = $this->postJson(route('accountWorker.store'), $data);
@@ -42,32 +42,32 @@ it('create a new worker account', function () {
 });
 
 it('show a specify worker account', function () {
-    $cuenta = AccountWorker::factory()->create();
+    $account = AccountWorker::factory()->create();
 
-    $response = $this->getJson(route('accountWorker.show', ['accountWorker' => $cuenta->id]));
+    $response = $this->getJson(route('accountWorker.show', ['accountWorker' => $account->id]));
 
     $response->assertOk()
-             ->assertJsonFragment(['id' => $cuenta->id]);
+             ->assertJsonFragment(['id' => $account->id]);
 });
 
 it('update a worker account', function () {
-    $cuenta = AccountWorker::factory()->create();
+    $account = AccountWorker::factory()->create();
 
-    $nuevaArea = 'Recursos Humanos';
-    $response = $this->putJson(route('accountWorker.update', ['accountWorker' => $cuenta->id]), [
-        ...$cuenta->toArray(),
-        'area' => $nuevaArea,
+    $newArea = 'Recursos Humanos';
+    $response = $this->putJson(route('accountWorker.update', ['accountWorker' => $account->id]), [
+        ...$account->toArray(),
+        'area' => $newArea,
     ]);
 
     $response->assertOk();
-    $this->assertDatabaseHas('account_workers', ['area' => $nuevaArea]);
+    $this->assertDatabaseHas('account_workers', ['area' => $newArea]);
 });
 
 it('delete a worker account', function () {
-    $cuenta = AccountWorker::factory()->create();
+    $account = AccountWorker::factory()->create();
 
-    $response = $this->deleteJson(route('accountWorker.destroy', ['accountWorker' => $cuenta->id]));
+    $response = $this->deleteJson(route('accountWorker.destroy', ['accountWorker' => $account->id]));
 
     $response->assertNoContent();
-    $this->assertDatabaseMissing('account_workers', ['id' => $cuenta->id]);
+    $this->assertDatabaseMissing('account_workers', ['id' => $account->id]);
 });

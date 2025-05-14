@@ -17,7 +17,7 @@ class Plan extends Model
         "description"
     ];
 
-    public function teams(){
-        return $this->hasMany(Team::class,'id_plan');
+    public function machines(){
+        return $this->hasMany(Machine::class,'id_plan');
     }
 }

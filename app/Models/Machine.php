@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Team extends Model
+class Machine extends Model
 {
     use HasFactory;
 
-    protected $table = 'teams';
+    protected $table = 'machines';
 
     protected $fillable = [
         'id_clientG','id_company','id_microcompany','id_personN','id_plan','type',
@@ -32,9 +32,9 @@ class Team extends Model
         return $this->belongsTo(Plan::class,'id_plan');
     }
     public function softwareTeams(){
-        return $this->hasMany(SoftwareTeam::class,'id_team');
+        return $this->hasMany(SoftwareTeam::class,'id_machine');
     }
     public function accountWorkers(){
-        return $this->hasOne(AccountWorker::class,'id_team');
+        return $this->hasOne(AccountWorker::class,'id_machine');
     }
 }
