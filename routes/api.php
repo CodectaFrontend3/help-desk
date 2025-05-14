@@ -31,19 +31,21 @@ Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $reques
 // })->middleware('auth:sanctum');
 
 //routes en ingles
-Route::apiResource('clientG', ClientGController::class);
-Route::apiResource('/registerHardware', RegisterHardwareController::class);
-Route::apiResource('/plan', PlanController::class);
-Route::apiResource('/software', SoftwareController::class);
-Route::apiResource('/accountRegister', AccountRegisterController::class);
-Route::apiResource('/micro_company', MicroCompanyController::class);
-Route::apiResource('/company', CompanyController::class);
-Route::apiResource('/natural-person', NaturalPersonController::class);
-Route::apiResource('/team', TeamController::class);
-Route::apiResource('/hardware', HardwareController::class);
-Route::apiResource('/softwareTeam', SoftwareTeamController::class);
-Route::apiResource('/accountWorker', AccountWorkerController::class);
-Route::apiResource('/branches', BranchController::class);
-Route::resource('/areas', AreaController::class);
-Route::resource('/contact_refs', ContactRefController::class);
-Route::apiResource('/tickets', TicketController::class);
+Route::middleware(['auth:sanctum', 'expiration'])->group(function () {
+    Route::apiResource('clientG', ClientGController::class);
+    Route::apiResource('registerHardware', RegisterHardwareController::class);
+    Route::apiResource('plan', PlanController::class);
+    Route::apiResource('software', SoftwareController::class);
+    Route::apiResource('accountRegister', AccountRegisterController::class);
+    Route::apiResource('micro_company', MicroCompanyController::class);
+    Route::apiResource('company', CompanyController::class);
+    Route::apiResource('natural-person', NaturalPersonController::class);
+    Route::apiResource('team', TeamController::class);
+    Route::apiResource('hardware', HardwareController::class);
+    Route::apiResource('softwareTeam', SoftwareTeamController::class);
+    Route::apiResource('accountWorker', AccountWorkerController::class);
+    Route::apiResource('branches', BranchController::class);
+    Route::resource('areas', AreaController::class);
+    Route::resource('contact_refs', ContactRefController::class);
+    Route::apiResource('tickets', TicketController::class);
+});

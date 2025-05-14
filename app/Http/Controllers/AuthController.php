@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -19,9 +22,13 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-        $token = $user->createToken('token')->plainTextToken;
+        $token = $user->createToken('token');
 
-        return response()->json(['token' => $token]);
+        $tokenModel = $token->accessToken;
+        $tokenModel->expires_at = Carbon::now()->addWeeks(2);
+        $tokenModel->save();
+
+        return response()->json(['token' => $token->plainTextToken]);
     }
 
     public function register(Request $request)
@@ -35,18 +42,21 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        
-        $token = $user->createToken('token')->plainTextToken;
 
         $user->assignRole('client');
 
-        return response()->json(['user' => $user, 'token' => $token], 201);
+        $token = $user->createToken('token');
+
+        $tokenModel = $token->accessToken;
+        $tokenModel->expires_at = Carbon::now()->addWeeks(2);
+        $tokenModel->save();
+
+        return response()->json(['user' => $user, 'token' => $token->plainTextToken], 201);
     }
 
     public function show(Request $request)
