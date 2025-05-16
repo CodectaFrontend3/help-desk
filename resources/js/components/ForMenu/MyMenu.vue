@@ -9,7 +9,9 @@ export default {
         ...mapState(["userType"]),
         model() {
             return [
-                { label: "Home", icon: "pi pi-fw pi-home", to: "/" },
+                { label: "Home - Clientes (Gerente y sus trabajadores)", icon: "pi pi-fw pi-home", to: "/" },
+                { label: "Home - Administrador", icon: "pi pi-fw pi-home", to: "/home-admin" },
+                { label: "Home - Soporte Técnico", icon: "pi pi-fw pi-home", to: "/home-support" },
                 {
                     label: "Administrador - Clientes",
                     icon: "pi pi-fw pi-user",

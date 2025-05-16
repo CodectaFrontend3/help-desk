@@ -40,7 +40,6 @@ export default {
 
 <template>
     <div class="tickets">
-        <table-component :data="tickets" :columns="columns" />
         <router-view />
     </div>
 </template>

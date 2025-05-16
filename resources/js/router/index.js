@@ -10,10 +10,21 @@ const routes = [
         path: "/",
         component: AppLayout,
         children: [
+            // VISTAS DE INICIO
             {
                 path: "",
                 name: "Inicio",
-                component: () => import("@/views/HomeView.vue"),
+                component: () => import("@/views/HomeClients.vue"),
+            },
+            {
+                path: "home-admin",
+                name: "HomeAdmin",
+                component: () => import("@/views/Admin/HomeAdmin.vue"),
+            },
+            {
+                path: "home-support",
+                name: "HomeSupport",
+                component: () => import("@/views/SoporteTi/HomeSupport.vue"),
             },
 
             // CLIENTES - ADMINISTRADOR

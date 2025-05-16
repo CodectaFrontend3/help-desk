@@ -3,14 +3,16 @@ export default {
     name: "NavBar",
     data() {
         return {
-            sekker: true,
+            sekker: true, // Probablemente una bandera para controlar el estado de algo en la barra de navegación (nombre no muy descriptivo)
         };
     },
     computed: {
-        // Obtenemos la configuración del navbar desde la ruta actual
+        // Obtiene la configuración del navbar desde los metadatos de la ruta actual
         navbarConfig() {
             return this.$route.meta.navbarConfig || {};
         },
+
+        // Muestra los botones relacionados con soporte TI si alguno de los flags en el meta de la ruta está activo
         showButtonsTi() {
             const config = this.$route.meta?.navbarConfig;
             return (
@@ -20,15 +22,19 @@ export default {
                 config?.companyEquipment === true
             );
         },
+
+        // Muestra botones si los metadatos de la ruta indican que estamos viendo personas o clientes
         showButtons() {
             const config = this.$route.meta?.navbarConfig;
             return config?.persona === true || config?.clientes === true;
         },
 
-        // Solo mostrar los botones en estas rutas (puedes personalizarlas)
+        // Solo muestra el botón "Agregar" si el usuario tiene el rol de "admin"
         showAdd() {
             return this.$route.meta?.role === "admin";
         },
+
+        // Verifica si estamos en una ruta de tickets activos o soporte técnico TI
         isTicketActive() {
             return (
                 this.$route.name === "Tickets activos" ||
@@ -37,7 +43,10 @@ export default {
         },
     },
     methods: {
-        // Determina qué tipo de empresa está seleccionada
+        /**
+         * Determina el tipo de entidad actualmente activa según la URL.
+         * Retorna: "micro", "company", "person" o un tipo extraído de la URL si estamos en equipos.
+         */
         currentType() {
             const path = this.$route.path;
             if (
@@ -56,9 +65,8 @@ export default {
             )
                 return "person";
 
-            // Si estamos en la ruta de equipos
+            // Si estamos en la ruta de equipos, extrae el tipo del cuarto segmento de la URL
             if (path.includes("company-equipment")) {
-                // Extraer el tipo de la URL
                 const pathParts = path.split("/");
                 const typeIndex = pathParts.length > 3 ? 3 : 0;
                 return pathParts[typeIndex] || "company";
@@ -67,9 +75,12 @@ export default {
             return null;
         },
 
-        // Determinar la ruta base para la navegación
+        /**
+         * Determina la ruta base desde la cual se navega según el contexto actual.
+         * Se utiliza para construir rutas hijas más adelante.
+         */
         getBaseRoute() {
-            // Si estamos en la ruta de clientes de soporte TI
+            // Si estamos en rutas de clientes
             if (
                 this.$route.path.includes("clients-soporte-ti") ||
                 this.$route.path.includes("clients-micro") ||
@@ -79,7 +90,7 @@ export default {
                 return "/clients-soporte-ti";
             }
 
-            // Si estamos en la ruta de equipos, necesitamos volver a la ruta principal
+            // Si estamos en rutas de equipos
             if (
                 this.$route.path.includes("company-equipment") ||
                 this.$route.path.includes("equipment-details")
@@ -87,7 +98,7 @@ export default {
                 return "/company-soporte-ti";
             }
 
-            // Encuentra la ruta padre que tiene hijos
+            // Buscar una ruta padre con hijos
             const parentRoute = this.$route.matched
                 .slice()
                 .reverse()
@@ -103,8 +114,10 @@ export default {
             return parentRoute.path;
         },
 
+        /**
+         * Construye el segmento dinámico del tipo (micro, company, person) según si es cliente o empresa
+         */
         dynamicSegment(type) {
-            // Determinar si estamos en la sección de clientes o empresas
             if (this.$route.path.includes("clients")) {
                 return `clients-${type}`;
             } else {
@@ -112,30 +125,41 @@ export default {
             }
         },
 
+        /**
+         * Navega a una subruta basada en el tipo de entidad.
+         * Ej: /company-soporte-ti/company o /clients-soporte-ti/micro
+         */
         navigateToChildren(typeSegment) {
             const basePath = this.getBaseRoute();
             const newPath = `${basePath}/${typeSegment}`;
 
-            console.log("Navegando a:", newPath); // Debug
+            console.log("Navegando a:", newPath); // Para depuración
 
             if (this.$route.path !== newPath) {
                 this.$router.push(newPath);
             }
         },
 
+        /**
+         * Navega a subrutas administrativas bajo `/clients-admin/`
+         * Ej: /clients-admin/company
+         */
         navigateToAdminChildren(typeSegment) {
             const basePath = "/clients-admin";
             const newPath = `${basePath}/${typeSegment}`;
 
-            console.log("Navegando a:", newPath); // Debug
+            console.log("Navegando a:", newPath); // Para depuración
 
             if (this.$route.path !== newPath) {
                 this.$router.push(newPath);
             }
         },
 
+        /**
+         * Verifica si un tipo está activo en la URL actual
+         * Retorna true si la URL contiene el tipo indicado
+         */
         isActive(type) {
-            // Comprobamos si la URL actual coincide con el tipo
             if (
                 this.$route.path.includes(`company-${type}`) ||
                 this.$route.path.includes(`clients-${type}`)
@@ -143,12 +167,12 @@ export default {
                 return true;
             }
 
-            // Para rutas del admin
+            // Verificación para rutas administrativas
             if (this.$route.path.includes(`/clients-admin/${type}`)) {
                 return true;
             }
 
-            // Para los equipos, verificamos el parámetro en la URL
+            // Verificación especial para rutas de equipos
             if (this.$route.path.includes("company-equipment")) {
                 const pathParts = this.$route.path.split("/");
                 const typeIndex = pathParts.length > 3 ? 3 : 0;
@@ -160,6 +184,7 @@ export default {
     },
 };
 </script>
+
 
 <template>
     <nav class="search-container">
