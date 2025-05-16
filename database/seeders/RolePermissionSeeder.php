@@ -14,14 +14,13 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = [
-            'view ClientG',
-            'create ClientG',
-            'edit ClientG',
-            'view Software',
-            'create Software',
-            'edit Software',
-        ];
+       
+        $models = ['ClientG','Software'];
+        $permissions = [];
+
+        foreach($models as $model){
+            $permissions = array_merge($permissions, ["view $model","create $model","edit $model","delete $model"]);
+        }
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
