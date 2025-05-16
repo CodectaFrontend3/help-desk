@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\ContactRef;
 use App\Models\Company;
-use App\Models\MicroCompany;
 use App\Models\NaturalPerson;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,9 +17,8 @@ class ContactRefFactory extends Factory
     public function definition(): array
     {
         return [
-            'company_id' => Company::factory(),  
-            'micro_company_id' => MicroCompany::factory(),  
-            'natural_person_id' => NaturalPerson::factory(), 
+            'company_id' => Company::exists() ? Company::pluck('id')->random() : Company::factory()->create()->id,  
+            'natural_person_id' => NaturalPerson::exists() ? NaturalPerson::pluck('id')->random() : NaturalPerson::factory()->create()->id, 
             'name' => $this->faker->name(),
             'address' => $this->faker->address(),
             'email' => $this->faker->email(),

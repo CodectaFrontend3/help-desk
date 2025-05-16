@@ -23,7 +23,6 @@ class ContactRefRequest extends FormRequest
     {
         return [
             'company_id'=> 'required|exists:companies,id',
-            'micro_company_id'=> 'required|exists:micro_companies,id',
             'natural_person_id'=> 'required|exists:natural_persons,id',
             'name'=> 'required|string|max:255',
             'address'=> 'required|string|max:255',

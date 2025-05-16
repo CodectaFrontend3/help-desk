@@ -10,7 +10,7 @@ class Ticket extends Model
     use HasFactory;
     protected $table = 'tickets';
     protected $fillable = [
-        'team_id',
+        'machine_id',
         'incident_type',
         'client_name',
         'company',
@@ -20,9 +20,9 @@ class Ticket extends Model
         'registration_date',
     ];
 
-    public function team()
+    public function machines()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsTo(Machine::class,'machine_id');
     }
     
 }

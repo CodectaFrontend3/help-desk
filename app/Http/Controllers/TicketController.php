@@ -11,14 +11,14 @@ class TicketController extends Controller
     // Mostrar todos los tickets
     public function index()
     {
-        $tickets = Ticket::with('team')->get();
+        $tickets = Ticket::with('machines')->get();
         return response()->json($tickets);
     }
 
     // Mostrar un ticket específico
     public function show($id)
     {
-        $ticket = Ticket::with('team')->findOrFail($id);
+        $ticket = Ticket::with('machines')->findOrFail($id);
         return response()->json($ticket);
     }
 

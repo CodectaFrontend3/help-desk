@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('hardwares', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_RH')->nullable()->constrained('register_hardwares')->nullOnDelete();
+            $table->foreignId('id_machine')->nullable()->constrained('machines')->nullOnDelete();
             $table->string('type_team');
             $table->integer('serial_number');
             $table->dateTime('buy_date');
