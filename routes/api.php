@@ -3,7 +3,6 @@
 use App\Http\Controllers\AccountRegisterController;
 use App\Http\Controllers\AccountWorkerController;
 use App\Http\Controllers\BranchController;
-use App\Http\Controllers\MicroCompanyController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\NaturalPersonController;
@@ -29,7 +28,6 @@ Route::apiResource('/registerHardware', RegisterHardwareController::class);
 Route::apiResource('/plan', PlanController::class);
 Route::apiResource('/software', SoftwareController::class);
 Route::apiResource('/accountRegister', AccountRegisterController::class);
-Route::apiResource('/micro_company', MicroCompanyController::class);
 Route::apiResource('/company', CompanyController::class);
 Route::apiResource('/natural-person', NaturalPersonController::class);
 Route::apiResource('/machine', MachineController::class);

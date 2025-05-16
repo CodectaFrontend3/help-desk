@@ -12,7 +12,7 @@ class Machine extends Model
     protected $table = 'machines';
 
     protected $fillable = [
-        'id_clientG','id_company','id_microcompany','id_personN','id_plan','type',
+        'id_clientG','id_company','id_personN','id_plan','type',
         'brand','username','end_revision','revision_scheduled'
     ];
 
