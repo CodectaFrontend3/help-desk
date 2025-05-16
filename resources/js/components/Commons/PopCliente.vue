@@ -41,7 +41,7 @@
                                     <label>Nombre:</label>
                                     <input
                                         type="text"
-                                        v-model="cliente.nombreCompleto"
+                                        v-model="cliente.name"
                                         disabled
                                     />
                                 </div>
@@ -58,7 +58,7 @@
                                     <label>Telefono:</label>
                                     <input
                                         type="text"
-                                        v-model="cliente.telefono"
+                                        v-model="cliente.phone"
                                         disabled
                                     />
                                 </div>
@@ -67,7 +67,7 @@
                                     <label>Correo:</label>
                                     <input
                                         type="email"
-                                        v-model="cliente.correo"
+                                        v-model="cliente.email"
                                         disabled
                                     />
                                 </div>
@@ -245,9 +245,9 @@
                     </div>
                 </div>
             </transition>
-        </div>
-    </transition>
-</template>
+            </div>
+        </transition>
+    </template>
 
 <script>
 import axios from "axios";
@@ -302,14 +302,20 @@ export default {
             this.$emit("close");
         },
         loadClienteData() {
-            // Aquí podrías hacer una llamada a una API para cargar los datos del cliente
-            // basado en this.clienteId
             console.log("Cargando datos para cliente ID:", this.clienteId);
 
-            // Si el cliente ya tenía una foto de perfil cargada previamente
-            if (this.cliente.fotoPerfil) {
-                this.previewImage = this.cliente.fotoPerfil;
-            }
+            axios.get(`/api/natural_persons/${this.clienteId}`)
+                .then(response => {
+                    this.cliente = response.data;
+
+                    // Si tiene foto, mostrarla
+                    if (this.cliente.fotoPerfil) {
+                        this.previewImage = this.cliente.fotoPerfil;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al cargar los datos del cliente:", error);
+                });
         },
         handleFileUpload(event) {
             const file = event.target.files[0];

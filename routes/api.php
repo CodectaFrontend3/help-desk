@@ -26,6 +26,7 @@ Route::get('/user', function (Request $request) {
 
 //routes en ingles
 Route::apiResource('/clientG', ClientGController::class);
+Route::apiResource('/natural_persons', NaturalPersonController::class);
 Route::apiResource('/registerHardware', RegisterHardwareController::class);
 Route::apiResource('/plan', PlanController::class);
 Route::apiResource('/software', SoftwareController::class);

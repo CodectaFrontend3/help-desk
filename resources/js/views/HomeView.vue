@@ -2,7 +2,7 @@
 import Titulo from "@/components/ForMenu/Titulos.vue"; // Ajusta la ruta si es necesario
 
 export default {
-  name: "HomeView",
+  name: "Inicio",   
   components: { Titulo },
   data() {
     return {

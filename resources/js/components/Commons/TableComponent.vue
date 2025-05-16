@@ -1,17 +1,18 @@
 <script>
 import PopCliente from "../Commons/PopCliente.vue";
+import PopCompany from "../Commons/PopCompany.vue";
 import Paginator from "primevue/paginator";
 
 export default {
     name: "TableComponent",
     components: {
         PopCliente,
+        PopCompany,
         Paginator,
     },
     props: {
         columns: Array,
         data: Array,
-        // Propiedad para indicar el tipo de entidad (micro, company, person, equipment)
         entityType: {
             type: String,
             default: "company",
@@ -40,21 +41,12 @@ export default {
             return this.$route.meta.navbarConfig?.companySoporteTi === true;
         },
         viewEquipment(row) {
-            // Verificar que el ID exista
             const id = row.id || row._id;
-
             if (!id) {
-                console.error(
-                    "Error: No se pudo obtener el ID del registro",
-                    row
-                );
+                console.error("Error: No se pudo obtener el ID del registro", row);
                 return;
             }
 
-            console.log("Navegando a detalles de equipos para:", row);
-            console.log("ID:", id, "Tipo:", this.entityType);
-
-            // Si el tipo de entidad es "equipment", navegar a los detalles del equipo
             if (this.entityType === "equipment") {
                 const companyId = this.$route.params.id;
                 this.$router.push({
@@ -65,35 +57,32 @@ export default {
                     },
                 });
             } else {
-                // Determinar el tipo correcto para la navegación
                 let type = this.entityType;
+                if (this.$route.name === "CompanyMicro") type = "micro";
+                else if (this.$route.name === "CompanyPerson") type = "person";
+                else type = "company";
 
-                // Convertir los nombres de componentes a tipos válidos para la URL
-                if (this.$route.name === "CompanyMicro") {
-                    type = "micro";
-                } else if (this.$route.name === "CompanyPerson") {
-                    type = "person";
-                } else {
-                    type = "company";
-                }
-
-                // Navegar a la ruta de equipos de la empresa con el ID y tipo
                 this.$router.push({
                     name: "Equipos de Empresa",
-                    params: {
-                        id: id,
-                        type: type,
-                    },
+                    params: { id: id, type: type },
                 });
             }
         },
         viewClient(row) {
-            this.selectedClientId = row.id || row._id;
+            const id = row.id || row._id;
+            if (!id) {
+                console.error("No se pudo obtener el ID del cliente", row);
+                return;
+            }
+
+            console.log("Mostrando detalles del cliente ID:", id);
+            this.selectedClientId = id;
             this.showPopup = true;
         },
     },
 };
 </script>
+
 
 <template>
     <div class="table-container">
@@ -108,10 +97,7 @@ export default {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        v-for="(row, rowIndex) in paginatedData"
-                        :key="rowIndex"
-                    >
+                    <tr v-for="(row, rowIndex) in paginatedData" :key="rowIndex">
                         <td v-for="(col, colIndex) in columns" :key="colIndex">
                             {{ row[col.key] }}
                         </td>
@@ -119,7 +105,7 @@ export default {
                             <button
                                 v-if="!showButtons()"
                                 class="pi pi-eye"
-                                title="Ver registro"
+                                title="Ver cliente"
                                 @click="viewClient(row)"
                             ></button>
                             <button
@@ -134,7 +120,7 @@ export default {
             </table>
         </div>
 
-        <!-- Paginador funcional -->
+        <!-- Paginador -->
         <Paginator
             :rows="rows"
             :totalRecords="data.length"
@@ -144,12 +130,18 @@ export default {
             class="paginator"
         />
 
-        <!-- Popup -->
+        <!-- Popup cliente -->
         <PopCliente
+            v-if="entityType === 'person'"
             :visible="showPopup"
             :cliente-id="selectedClientId"
             @close="showPopup = false"
         />
+        <PopCompany
+            v-if="entityType === 'company'"
+            :visible="showPopup"
+            :empresa-id="selectedClientId"
+            @close="showPopup = false" />
     </div>
 </template>
 

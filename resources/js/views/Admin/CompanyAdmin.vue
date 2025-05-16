@@ -1,10 +1,11 @@
 <script>
 import tableComponent from "@/components/Commons/TableComponent.vue";
+import PopCompany from "../../components/Commons/PopCompany.vue";
 import apiServices from "../../services/ApiServices";
 
 export default {
     name: "EmpresaClientes",
-    components: { tableComponent },
+    components: { tableComponent, PopCompany },
     data() {
         return {
             columns: [
