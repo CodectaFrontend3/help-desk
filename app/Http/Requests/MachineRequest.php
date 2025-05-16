@@ -24,7 +24,6 @@ class MachineRequest extends FormRequest
         return [
             'id_clientG' => 'required|integer|exists:clients_g,id',
             'id_company' => 'required|integer|exists:companies,id',
-            'id_microcompany' => 'required|integer|exists:micro_companies,id',
             'id_personN' => 'required|integer|exists:natural_persons,id',
             'id_plan' => 'required|integer|exists:plans,id',
             'type' => 'required|string|max:100',

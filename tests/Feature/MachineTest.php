@@ -3,7 +3,6 @@
 use App\Models\ClientG;
 use App\Models\Company;
 use App\Models\Machine;
-use App\Models\MicroCompany;
 use App\Models\NaturalPerson;
 use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -45,18 +44,6 @@ it('a company can have multiple machines', function () {
     $this->assertTrue($company->machines->contains($machine2));
 });
 
-it('a microcompany can have multiple machines', function () {
-    $microcompany = MicroCompany::factory()->create();
-
-    $machine1 = Machine::factory()->create(['id_microcompany' => $microcompany->id]);
-    $machine2 = Machine::factory()->create(['id_microcompany' => $microcompany->id]);
-
-    $microcompany->load('machines');
-
-    $this->assertCount(2, $microcompany->machines);
-    $this->assertTrue($microcompany->machines->contains($machine1));
-    $this->assertTrue($microcompany->machines->contains($machine2));
-});
 
 it('a natural person can have multiple machines', function () {
     $person = NaturalPerson::factory()->create();
@@ -87,14 +74,12 @@ it('a plan can have multiple machines', function () {
 it('create a new machine', function () {
     $client = ClientG::factory()->create();
     $company = Company::factory()->create();
-    $microcompany = MicroCompany::factory()->create();
     $person = NaturalPerson::factory()->create();
     $plan = Plan::factory()->create();
 
     $data = [
         'id_clientG' => $client->id,
         'id_company' => $company->id,
-        'id_microcompany' => $microcompany->id,
         'id_personN' => $person->id,
         'id_plan' => $plan->id,
         'type' => 'Laptop',

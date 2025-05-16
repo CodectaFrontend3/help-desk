@@ -23,14 +23,12 @@ class MachineFactory extends Factory
     {
         $clientG = ClientG::pluck('id')->toArray();
         $company = Company::pluck('id')->toArray();
-        $microCompany = MicroCompany::pluck('id')->toArray();
         $naturalPerson = NaturalPerson::pluck('id')->toArray();
         $plan = Plan::pluck('id')->toArray();
         
         return [
             'id_clientG' => $this->faker->randomElement($clientG) ?? ClientG::factory(),
             'id_company' => $this->faker->randomElement($company) ?? Company::factory(),
-            'id_microcompany' => $this->faker->randomElement($microCompany) ?? MicroCompany::factory(),
             'id_personN' => $this->faker->randomElement($naturalPerson) ?? NaturalPerson::factory(),
             'id_plan' => $this->faker->randomElement($plan) ?? Plan::factory(),
             'type' => $this->faker->word(),

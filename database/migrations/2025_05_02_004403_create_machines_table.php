@@ -15,7 +15,6 @@ return new class extends Migration
              $table->id();
             $table->foreignId('id_clientG')->nullable()->constrained('clients_g')->nullOnDelete();
             $table->foreignId('id_company')->nullable()->constrained('companies')->nullOnDelete();
-            $table->foreignId('id_microcompany')->nullable()->constrained('micro_companies')->nullOnDelete();
             $table->foreignId('id_personN')->nullable()->constrained('natural_persons')->nullOnDelete();
             $table->foreignId('id_plan')->nullable()->constrained('plans')->nullOnDelete();
             $table->string('type');

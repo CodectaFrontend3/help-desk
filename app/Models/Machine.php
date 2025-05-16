@@ -22,9 +22,7 @@ class Machine extends Model
     public function companies(){
         return $this->belongsTo(Company::class,'id_company');
     }
-    public function microCompanies(){
-        return $this->belongsTo(MicroCompany::class,'id_microcompany');
-    }
+
     public function naturalPersons(){
         return $this->belongsTo(NaturalPerson::class,'id_personN');
     }

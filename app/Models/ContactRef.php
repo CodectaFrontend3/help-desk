@@ -11,7 +11,6 @@ class ContactRef extends Model
     protected $table = 'contact_refs';
     protected $fillable = [
         'company_id',
-        'micro_company_id',
         'natural_person_id',
         'name',
         'address',
@@ -23,11 +22,6 @@ class ContactRef extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
-    }
-
-    public function microCompany()
-    {
-        return $this->belongsTo(MicroCompany::class);
     }
 
     public function naturalPerson()

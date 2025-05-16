@@ -12,7 +12,6 @@ class Area extends Model
     protected $table = 'areas';
 
     protected $fillable = [
-        'micro_company_id',
         'company_id',
         'branch_id',
         'area_name',
@@ -24,11 +23,6 @@ class Area extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class); // usa 'branch_id'
-    }
-
-    public function microCompany()
-    {
-        return $this->belongsTo(MicroCompany::class); // usa 'micro_company_id'
     }
 
     public function company()
