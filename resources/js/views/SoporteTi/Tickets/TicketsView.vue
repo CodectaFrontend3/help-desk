@@ -3,7 +3,7 @@ import tableComponent from "@/components/Commons/TableComponent.vue";
 import apiServices from "../../../services/ApiServices";
 
 export default {
-    name: "HistorialTickets",
+    name: "TicketsView",
     components: { tableComponent },
     data() {
         return {
@@ -40,7 +40,6 @@ export default {
 
 <template>
     <div class="tickets">
-        <table-component :data="tickets" :columns="columns" />
         <router-view />
     </div>
 </template>

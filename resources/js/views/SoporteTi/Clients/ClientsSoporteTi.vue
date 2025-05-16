@@ -10,11 +10,6 @@ export default {
 
         };
     },
-    computed: {
-    hasChildRoute() {
-        return this.$route.path !== "/clients-soporte-ti";
-    },
-}
 
 
 };
@@ -22,9 +17,8 @@ export default {
 
 <template>
     <div class="content-area">
-        <h1 v-if="!hasChildRoute">BIENVENIDO A LA SECCIÓN DE CLIENTES PARA SOPORTE TI, ELIJA UNA DE LAS OPCIONES QUE TIENE AL COSTADO DEL BUSCADOR</h1>
         <router-view />
-        </div>
+    </div>
 </template>
 
 <style scoped></style>

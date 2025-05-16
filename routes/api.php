@@ -29,8 +29,9 @@ Route::apiResource('/plan', PlanController::class);
 Route::apiResource('/software', SoftwareController::class);
 Route::apiResource('/accountRegister', AccountRegisterController::class);
 Route::apiResource('/company', CompanyController::class);
-Route::apiResource('/natural-person', NaturalPersonController::class);
 Route::apiResource('/machine', MachineController::class);
+Route::apiResource('/company', CompanyController::class);
+Route::apiResource('/natural-person', NaturalPersonController::class);
 Route::apiResource('/hardware', HardwareController::class);
 Route::apiResource('/softwareMachine', SoftwareMachineController::class);
 Route::apiResource('/accountWorker', AccountWorkerController::class);
@@ -38,3 +39,4 @@ Route::apiResource('/branches', BranchController::class);
 Route::resource('/areas', AreaController::class);
 Route::resource('/contact_refs', ContactRefController::class);
 Route::apiResource('/tickets', TicketController::class);
+

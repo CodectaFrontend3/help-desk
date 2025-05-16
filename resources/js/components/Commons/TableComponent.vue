@@ -56,7 +56,13 @@ export default {
 
             // Si el tipo de entidad es "equipment", navegar a los detalles del equipo
             if (this.entityType === "equipment") {
-                const companyId = this.$route.params.id;
+                // Extraer el ID de la empresa desde la URL actual
+                const urlParts = this.$route.path.split('/');
+                const companyIdIndex = urlParts.indexOf('company-equipment') + 1;
+                const companyId = urlParts[companyIdIndex] || this.$route.params.id;
+
+                console.log("Navegando a detalles de equipo con companyId:", companyId, "equipmentId:", id);
+
                 this.$router.push({
                     name: "Detalles de Equipo",
                     params: {
@@ -68,14 +74,16 @@ export default {
                 // Determinar el tipo correcto para la navegación
                 let type = this.entityType;
 
-                // Convertir los nombres de componentes a tipos válidos para la URL
-                if (this.$route.name === "CompanyMicro") {
+                // Mapear el nombre de la ruta al tipo correcto
+                if (this.$route.name === "CompanyMicro" || this.$route.name.includes("Microempresa")) {
                     type = "micro";
-                } else if (this.$route.name === "CompanyPerson") {
+                } else if (this.$route.name === "CompanyPerson" || this.$route.name.includes("Persona")) {
                     type = "person";
                 } else {
                     type = "company";
                 }
+
+                console.log("Navegando a equipos de empresa con ID:", id, "Tipo:", type);
 
                 // Navegar a la ruta de equipos de la empresa con el ID y tipo
                 this.$router.push({
@@ -91,6 +99,30 @@ export default {
             this.selectedClientId = row.id || row._id;
             this.showPopup = true;
         },
+        // Nuevo método para formatear fechas
+        formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString; // Si no es una fecha válida, retornar el string original
+
+            return date.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        },
+        // Método para procesar el valor de la celda según corresponda
+        getCellValue(row, column) {
+            const value = row[column.key];
+
+            if (column.format && value) {
+                if (column.key === 'end_revision' || column.key === 'revision_scheduled') {
+                    return this.formatDate(value);
+                }
+            }
+
+            return value;
+        }
     },
 };
 </script>
@@ -113,7 +145,7 @@ export default {
                         :key="rowIndex"
                     >
                         <td v-for="(col, colIndex) in columns" :key="colIndex">
-                            {{ row[col.key] }}
+                            {{ getCellValue(row, col) }}
                         </td>
                         <td class="acciones">
                             <button

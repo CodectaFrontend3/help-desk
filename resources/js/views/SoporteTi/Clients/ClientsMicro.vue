@@ -9,7 +9,7 @@ export default {
         return {
             columns: [
                 // Asegúrate de definir las columnas
-                { label: "Nombre", key: "name" },
+                { label: "Nombre", key: "client_name" },
                 { label: "RUC", key: "ruc" },
                 { label: "Dirección", key: "address" },
                 { label: "Teléfono", key: "phone" },
@@ -24,7 +24,7 @@ export default {
     methods: {
         async fetchMicroCompany() {
             // Obtener los datos de microempresas desde la API
-            this.microCompany = await apiServices.get("micro-company");
+            this.microCompany = await apiServices.get("micro_company");
             console.log(this.microCompany); // Verifica los datos que se reciben
         },
     },
