@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TeamRequest extends FormRequest
+class MachineRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,6 @@ class TeamRequest extends FormRequest
         return [
             'id_clientG' => 'required|integer|exists:clients_g,id',
             'id_company' => 'required|integer|exists:companies,id',
-            'id_microcompany' => 'required|integer|exists:micro_companies,id',
             'id_personN' => 'required|integer|exists:natural_persons,id',
             'id_plan' => 'required|integer|exists:plans,id',
             'type' => 'required|string|max:100',

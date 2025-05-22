@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Hardware;
+use App\Models\Machine;
 use App\Models\RegisterHardware;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -15,8 +16,11 @@ class HardwareFactory extends Factory
 
     public function definition(): array
     {
+        $registerHardware = RegisterHardware::pluck('id')->toArray();
+        $machine = Machine::pluck('id')->toArray();
         return [
-            'id_RH' => RegisterHardware::factory(),
+            'id_RH' => $this->faker->randomElement($registerHardware) ?? RegisterHardware::factory(),
+            'id_machine' => $this->faker->randomElement($machine) ?? Machine::factory(),
             'type_team' => $this->faker->word(),
             'serial_number' => $this->faker->randomNumber(6),
             'buy_date' => $this->faker->dateTime()->format('Y-m-d H:i:s'),

@@ -14,8 +14,9 @@ class AccountRegisterFactory extends Factory
     protected $model = AccountRegister::class;
     public function definition(): array
     {
+        $clientG = ClientG::pluck('id')->toArray();
         return [
-            'id_clientG' => ClientG::factory(),
+            'id_clientG' => $this->faker->randomElement($clientG) ?? ClientG::factory(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => $this->faker->password(8)
         ];

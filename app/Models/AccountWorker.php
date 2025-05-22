@@ -10,10 +10,10 @@ class AccountWorker extends Model
     use HasFactory;
     protected $table = 'account_workers';
     protected $fillable =[
-        'id_team','username','area','emailT','password',
+        'id_machine','username','area','emailT','password',
         'branch'
     ];
-    public function teams(){
-        return$this->belongsTo(Equipo::class,'id_team');
+    public function machines(){
+        return$this->belongsTo(Machine::class,'id_machine');
     }
 }

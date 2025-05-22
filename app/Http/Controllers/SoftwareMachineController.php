@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SoftwareTeamRequest;
-use App\Models\SoftwareTeam;
+use App\Http\Requests\SoftwareMachineRequest;
+use App\Models\SoftwareMachine;
 use Illuminate\Http\Request;
 
-class SoftwareTeamController extends Controller
+class SoftwareMachineController extends Controller
 {
-    /**
+        /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return response()->json(SoftwareTeam::all());
+        return response()->json(SoftwareMachine::all());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(SoftwareTeamRequest $request)
+    public function store(SoftwareMachineRequest $request)
     {
-        $softwareEquipo = SoftwareTeam::create($request->validated());
+        $softwareEquipo = SoftwareMachine::create($request->validated());
         return response()->json($softwareEquipo, 201);
     }
 
@@ -30,7 +30,7 @@ class SoftwareTeamController extends Controller
      */
     public function show(string $id)
     {
-        $softwareEquipo = SoftwareTeam::findOrFail($id);
+        $softwareEquipo = SoftwareMachine::findOrFail($id);
         return response()->json($softwareEquipo);
 
     }
@@ -38,9 +38,9 @@ class SoftwareTeamController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(SoftwareTeamRequest $request, string $id)
+    public function update(SoftwareMachineRequest $request, string $id)
     {
-        $softwareEquipo = SoftwareTeam::findOrFail($id);
+        $softwareEquipo = SoftwareMachine::findOrFail($id);
         $softwareEquipo->update($request->validated());
         return response()->json($softwareEquipo, 200);
     }
@@ -50,9 +50,8 @@ class SoftwareTeamController extends Controller
      */
     public function destroy(string $id)
     {
-        $softwareEquipo = SoftwareTeam::findOrFail($id);
+        $softwareEquipo = SoftwareMachine::findOrFail($id);
         $softwareEquipo->delete();
         return response()->noContent();
     }
-
 }

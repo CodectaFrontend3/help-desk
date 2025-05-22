@@ -3,13 +3,13 @@ import tableComponent from "@/components/Commons/TableComponent.vue";
 import apiServices from "../../../services/ApiServices";
 
 export default {
-    name: "MicroEmpresa",
+    name: "CompanyMicro",
     components: { tableComponent },
     data() {
         return {
             columns: [
-                // Asegúrate de definir las columnas
-                { label: "Nombre", key: "name" },
+                // Columnas definidas
+                { label: "Nombre", key: "client_name" },
                 { label: "RUC", key: "ruc" },
                 { label: "Dirección", key: "address" },
                 { label: "Teléfono", key: "phone" },
@@ -23,16 +23,24 @@ export default {
     },
     methods: {
         async fetchMicroCompany() {
-            // Obtener los datos de microempresas desde la API
-            this.microCompany = await apiServices.get("micro-company");
-            console.log(this.microCompany); // Verifica los datos que se reciben
+            try {
+                // Obtener los datos de microempresas desde la API
+                this.microCompany = await apiServices.get("micro-company");
+                console.log("Microempresas cargadas:", this.microCompany);
+            } catch (error) {
+                console.error("Error al cargar microempresas:", error);
+            }
         },
     },
 };
 </script>
 
 <template>
-    <table-component :data="microCompany" :columns="columns" />
+    <table-component
+        :data="microCompany"
+        :columns="columns"
+        entityType="micro"
+    />
 </template>
 
 <style scoped></style>

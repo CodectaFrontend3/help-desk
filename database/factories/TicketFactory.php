@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Machine;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Team;
 use App\Models\Ticket;
 
 /**
@@ -16,7 +16,7 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'team_id' => Team::factory(),
+            'machine_id' => Machine::exists() ? Machine::pluck('id')->random() : Machine::factory()->create()->id,
             'incident_type' => $this->faker->randomElement(['Red', 'Network', 'Hardware', 'Software']),
             'client_name' => $this->faker->name(),
             'company' => $this->faker->company(),

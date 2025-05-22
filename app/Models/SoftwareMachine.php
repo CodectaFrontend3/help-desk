@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SoftwareTeam extends Model
+class SoftwareMachine extends Model
 {
     use HasFactory;
-    protected $table = 'software_teams';
+    protected $table = 'software_machines';
     protected $fillable = [
-        'id_software','id_team'
+        'id_software','id_machine'
     ];
     public function softwares(){
         return $this->belongsTo(Software::class,'id_software');
     }
-    public function teams(){
-        return $this->belongsTo(Team::class,'id_team');
+    public function machines(){
+        return $this->belongsTo(Machine::class,'id_machine');
     }
 }

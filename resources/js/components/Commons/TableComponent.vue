@@ -11,11 +11,11 @@ export default {
     props: {
         columns: Array,
         data: Array,
-        // Propiedad para indicar el tipo de entidad (micro, company, person)
+        // Propiedad para indicar el tipo de entidad (micro, company, person, equipment)
         entityType: {
             type: String,
-            default: "company"
-        }
+            default: "company",
+        },
     },
     data() {
         return {
@@ -37,33 +37,60 @@ export default {
             this.rows = event.rows;
         },
         showButtons() {
-            return this.$route.meta.navbarConfig.companySoporteTi === true;
+            return this.$route.meta.navbarConfig?.companySoporteTi === true;
         },
         viewEquipment(row) {
             // Verificar que el ID exista
             const id = row.id || row._id;
 
             if (!id) {
-                console.error("Error: No se pudo obtener el ID del registro", row);
+                console.error(
+                    "Error: No se pudo obtener el ID del registro",
+                    row
+                );
                 return;
             }
 
             console.log("Navegando a detalles de equipos para:", row);
             console.log("ID:", id, "Tipo:", this.entityType);
 
-            // Navegar a la ruta de detalles de equipos con el ID
-            this.$router.push({
-                name: "Equipos de Empresa",
-                params: {
-                    id: id,
-                    type: this.entityType
+            // Si el tipo de entidad es "equipment", navegar a los detalles del equipo
+            if (this.entityType === "equipment") {
+                const companyId = this.$route.params.id;
+                this.$router.push({
+                    name: "Detalles de Equipo",
+                    params: {
+                        companyId: companyId,
+                        equipmentId: id,
+                    },
+                });
+            } else {
+                // Determinar el tipo correcto para la navegación
+                let type = this.entityType;
+
+                // Convertir los nombres de componentes a tipos válidos para la URL
+                if (this.$route.name === "CompanyMicro") {
+                    type = "micro";
+                } else if (this.$route.name === "CompanyPerson") {
+                    type = "person";
+                } else {
+                    type = "company";
                 }
-            });
+
+                // Navegar a la ruta de equipos de la empresa con el ID y tipo
+                this.$router.push({
+                    name: "Equipos de Empresa",
+                    params: {
+                        id: id,
+                        type: type,
+                    },
+                });
+            }
         },
         viewClient(row) {
             this.selectedClientId = row.id || row._id;
             this.showPopup = true;
-        }
+        },
     },
 };
 </script>

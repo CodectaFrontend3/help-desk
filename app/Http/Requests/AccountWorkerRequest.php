@@ -22,7 +22,7 @@ class AccountWorkerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_team' => 'required|exists:teams,id',
+            'id_machine' => 'required|exists:machines,id',
             'username'=> 'required|string|max:50',
             'area'=> 'required|string|max:50',
             'emailT' => 'required|email|max:50',

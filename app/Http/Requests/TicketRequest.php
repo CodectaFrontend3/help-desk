@@ -22,7 +22,7 @@ class TicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'team_id' => 'required|exists:teams,id',
+            'machine_id' => 'required|exists:machines,id',
             'incident_type' => 'required|string|max:255',
             'client_name' => 'required|string|max:255',
             'company' => 'required|string|max:255',
