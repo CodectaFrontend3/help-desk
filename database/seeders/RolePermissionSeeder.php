@@ -14,13 +14,12 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-       
         $models = ['ClientG','Software'];
-        $permissions = [];
+        $terms = ['view','create','edit','delete'];
+        $extra = ['view alvert'];
 
-        foreach($models as $model){
-            $permissions = array_merge($permissions, ["view $model","create $model","edit $model","delete $model"]);
-        }
+        $permissions = $this->generatePermissions($models, $terms,$extra);
+        //$permissions = [''];
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
@@ -30,16 +29,35 @@ class RolePermissionSeeder extends Seeder
         $technical = Role::firstOrCreate(['name' => 'technical']);
         $admin = Role::firstOrCreate(['name' => 'admin']);
 
-        $client->syncPermissions([
-            'view ClientG',
-            'view Software',
-        ]);
+        $modelsClient = ['ClientG','Software'];
+        $termsClient = ['view'];
+        $permissionsClient = $this->generatePermissions($modelsClient, $termsClient);
+        //$permissionsClient = ['edit Software'];
+        $client->syncPermissions($permissionsClient);
 
-        $technical->syncPermissions([
-            'view ClientG', 'create ClientG', 'edit ClientG',
-            'view Software', 'create Software', 'edit Software',
-        ]);
+        $modelsTechnical = ['ClientG','Software'];
+        $termsTechnical = ['view','create'];
+        $permTechnicalExtra = ['edit Software'];
+        $permissionsTechnical = $this->generatePermissions($modelsTechnical, $termsTechnical, $permTechnicalExtra);
+        //unset($permissionsTechnical[array_search('delete ClientG', $permissionsTechnical)]);
+        $technical->syncPermissions($permissionsTechnical);
 
-        $admin->syncPermissions($technical->permissions);
+        $admin->syncPermissions($permissions);
+    }
+
+    private function generatePermissions(array $models, array $terms, array $extra = []): array
+    {
+        $permissions = [];
+        foreach ($models as $model) {
+            foreach ($terms as $term) {
+                $permissions[] = "$term $model";
+            }
+        }
+
+        if (!empty($extra)) {
+            $permissions = array_merge($permissions, $extra);
+        }
+
+        return $permissions;
     }
 }
