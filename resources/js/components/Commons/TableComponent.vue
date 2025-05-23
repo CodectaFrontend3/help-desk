@@ -13,10 +13,6 @@ export default {
     props: {
         columns: Array,
         data: Array,
-        entityType: {
-            type: String,
-            default: "company",
-        },
     },
     data() {
         return {
@@ -31,6 +27,12 @@ export default {
         paginatedData() {
             return this.data.slice(this.first, this.first + this.rows);
         },
+        entityType() {
+        const routeName = this.$route.name;
+        if (routeName === "Clientes - Persona natural") return "person";
+        if (routeName === "Clientes - Empresa - Administrador") return "company";
+        return "company"; // valor por defecto
+    },
     },
     methods: {
         onPageChange(event) {
@@ -60,7 +62,7 @@ export default {
                 let type = this.entityType;
                 if (this.$route.name === "CompanyMicro") type = "micro";
                 else if (this.$route.name === "CompanyPerson") type = "person";
-                else type = "company";
+                else type = "person";
 
                 this.$router.push({
                     name: "Equipos de Empresa",
@@ -76,6 +78,8 @@ export default {
             }
 
             console.log("Mostrando detalles del cliente ID:", id);
+
+            console.log("--------------------------------------------------------------------------------------s")
             this.selectedClientId = id;
             this.showPopup = true;
         },
@@ -140,7 +144,7 @@ export default {
         <PopCompany
             v-if="entityType === 'company'"
             :visible="showPopup"
-            :empresa-id="selectedClientId"
+            :cliente-id="selectedClientId"
             @close="showPopup = false" />
     </div>
 </template>

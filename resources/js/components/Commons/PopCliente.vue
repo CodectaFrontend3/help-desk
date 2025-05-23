@@ -271,7 +271,7 @@ export default {
                 nombreCompleto: "Ana Maria Cortez",
                 dni: "876567",
                 telefono: "98765432",
-                correo: "asda@gmail.com",
+                correo: "asdy@gmail.com",
                 password: "123456",
                 contactos: [
                     {
@@ -307,6 +307,9 @@ export default {
             axios.get(`/api/natural_persons/${this.clienteId}`)
                 .then(response => {
                     this.cliente = response.data;
+                    console.log(data);
+                    console.log("------849894965656565");
+
 
                     // Si tiene foto, mostrarla
                     if (this.cliente.fotoPerfil) {
@@ -357,7 +360,7 @@ export default {
                 if (newVal) {
                     this.loadClienteData();
                 }
-            },
+            }
         },
     },
 };

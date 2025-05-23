@@ -47,7 +47,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Dni:</label>
+                                    <label>RUC:</label>
                                     <input
                                         type="text"
                                         v-model="cliente.ruc"
@@ -268,11 +268,11 @@ export default {
         return {
             activeTab: "datos",
             cliente: {
-                nombre: "Ana Cortez",
+                client_name: "Ana Corte",
                 nombreCompleto: "Ana Maria Cortez",
                 dni: "876567",
                 telefono: "98765432",
-                correo: "asda@gmail.com",
+                correo: "asdy@gmail.com",
                 password: "123456",
                 contactos: [
                     {
@@ -307,6 +307,7 @@ export default {
 
             axios.get(`/api/company/${this.clienteId}`)
                 .then(response => {
+                    console.log("Respuesta de la API:", response.data);
                     this.cliente = response.data;
 
                     // Si tiene foto, mostrarla
@@ -355,6 +356,7 @@ export default {
         clienteId: {
             immediate: true,
             handler(newVal) {
+                console.log("Watcher activado con clienteId:", newVal);
                 if (newVal) {
                     this.loadClienteData();
                 }
