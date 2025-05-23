@@ -37,7 +37,8 @@ class RolePermissionSeeder extends Seeder
         //$permissionsClient = ['edit Software'];
         $client->syncPermissions($permissionsClient);
 
-        $modelsTechnical = ['ClientG', 'Software','RegisterHardware'];
+        $modelsTechnical = ['ClientG', 'Software','Plan','RegisterHardware','AccountRegister','Company','NaturalPerson','Branch','Machine','SoftwareMachine',
+                'AccountWorker','Area','Hardware','ContactRef','Ticket'];
         $termsTechnical = ['view','create'];
         $permTechnicalExtra = ['edit Software'];
         $permissionsTechnical = $this->generatePermissions($modelsTechnical, $termsTechnical, $permTechnicalExtra);
