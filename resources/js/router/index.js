@@ -8,10 +8,26 @@ import ClientsSoporteTi from "../views/SoporteTi/Clients/ClientsSoporteTi.vue";
 const routes = [
     {
         path: "/",
+        name: "Login",
+        component: () => import("@/views/Login/Login.vue"),
+        meta: {
+            layout: "none", 
+        },
+    },
+    {
+        path: "/forgot-password",
+        name: "ForgotPassword",
+        component: () => import("@/views/Login/ForgotPassword.vue"),
+        meta: {
+            layout: "none", 
+        },
+    },
+    {
+        path: "/app",
         component: AppLayout,
         children: [
             {
-                path: "",
+                path: "home",
                 name: "Inicio",
                 component: () => import("@/views/HomeView.vue"),
             },

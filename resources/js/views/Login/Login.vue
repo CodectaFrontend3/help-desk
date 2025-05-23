@@ -35,7 +35,7 @@
 
           <div class="forgot">
             <p>
-              ¿Olvidaste tu contraseña?<br /><a href="#">Te ayudamos</a>
+              ¿Olvidaste tu contraseña?<br /><a href="/forgot-password">Te ayudamos</a>
             </p>
           </div>
         </form>
