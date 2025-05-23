@@ -9,7 +9,7 @@ use App\Http\Requests\AreaRequest;
 class AreaController extends PermissionController
 {
     public function __construct(){
-        $this->permisos('ClientG');
+        $this->permisos('Area');
     }
     public function index()
     {
