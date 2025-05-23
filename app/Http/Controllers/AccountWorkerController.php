@@ -6,8 +6,11 @@ use App\Http\Requests\AccountWorkerRequest;
 use App\Models\AccountWorker;
 use Illuminate\Http\Request;
 
-class AccountWorkerController extends Controller
+class AccountWorkerController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('AccountWorker');
+    }
     /**
      * Display a listing of the resource.
      */

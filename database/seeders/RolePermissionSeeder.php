@@ -14,7 +14,8 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $models = ['ClientG','Software'];
+        $models = ['ClientG', 'Software','Plan','RegisterHardware','AccountRegister','Company','NaturalPerson','Branch','Machine','SoftwareMachine',
+                'AccountWorker','Area','Hardware','ContactRef','Ticket'];
         $terms = ['view','create','edit','delete'];
         $extra = ['view alvert'];
 
@@ -29,13 +30,14 @@ class RolePermissionSeeder extends Seeder
         $technical = Role::firstOrCreate(['name' => 'technical']);
         $admin = Role::firstOrCreate(['name' => 'admin']);
 
-        $modelsClient = ['ClientG','Software'];
+        $modelsClient = ['ClientG', 'Software','Plan','RegisterHardware','AccountRegister','Company','NaturalPerson','Branch','Machine','SoftwareMachine',
+                'AccountWorker','Area','Hardware','ContactRef','Ticket'];
         $termsClient = ['view'];
         $permissionsClient = $this->generatePermissions($modelsClient, $termsClient);
         //$permissionsClient = ['edit Software'];
         $client->syncPermissions($permissionsClient);
 
-        $modelsTechnical = ['ClientG','Software'];
+        $modelsTechnical = ['ClientG', 'Software','RegisterHardware'];
         $termsTechnical = ['view','create'];
         $permTechnicalExtra = ['edit Software'];
         $permissionsTechnical = $this->generatePermissions($modelsTechnical, $termsTechnical, $permTechnicalExtra);
@@ -55,7 +57,8 @@ class RolePermissionSeeder extends Seeder
         }
 
         if (!empty($extra)) {
-            $permissions = array_merge($permissions, $extra);
+            $permissionswithextra = array_merge($permissions, $extra);
+            return $permissionswithextra;
         }
 
         return $permissions;

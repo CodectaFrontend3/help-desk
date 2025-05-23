@@ -6,8 +6,11 @@ use App\Models\Branch;
 use Illuminate\Http\Request;
 use App\Http\Requests\BranchRequest;
 
-class BranchController extends Controller
+class BranchController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('Branch');
+    }
     /**
      * Display a listing of the resource.
      */

@@ -6,8 +6,11 @@ use App\Models\NaturalPerson;
 use Illuminate\Http\Request;
 use App\Http\Requests\NaturalPersonRequest;
 
-class NaturalPersonController extends Controller
+class NaturalPersonController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('NaturalPerson');
+    }
     /**
      * Display a listing of the resource.
      */

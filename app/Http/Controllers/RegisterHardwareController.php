@@ -6,8 +6,11 @@ use App\Http\Requests\RegisterHardwareRequest;
 use App\Models\RegisterHardware;
 use Illuminate\Http\Request;
 
-class RegisterHardwareController extends Controller
+class RegisterHardwareController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('RegisterHardware');
+    }
     /**
      * Display a listing of the resource.
      */

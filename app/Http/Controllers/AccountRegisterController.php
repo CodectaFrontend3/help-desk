@@ -6,8 +6,11 @@ use App\Models\AccountRegister;
 use App\Http\Requests\AccountRegisterRequest;
 use Illuminate\Http\Request;
 
-class AccountRegisterController extends Controller
+class AccountRegisterController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('AccountRegister');
+    }
     /**
      * Display a listing of the resource.
      */
