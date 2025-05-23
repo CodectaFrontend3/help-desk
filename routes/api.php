@@ -17,6 +17,7 @@ use App\Http\Controllers\ContactRefController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\SoftwareMachineController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\MailController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -40,3 +41,7 @@ Route::resource('/areas', AreaController::class);
 Route::resource('/contact_refs', ContactRefController::class);
 Route::apiResource('/tickets', TicketController::class);
 
+
+
+//Ruta de Mail
+Route::post('/Mail', [MailController::class, 'send'])->name('send.mail');
