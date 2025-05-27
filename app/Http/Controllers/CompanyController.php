@@ -6,8 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Http\Requests\CompanyRequest;
 
-class CompanyController extends Controller
+class CompanyController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('Company');
+    }
     /**
      * Display a listing of the resource.
      */

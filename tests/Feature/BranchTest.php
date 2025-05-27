@@ -5,6 +5,7 @@ use App\Models\Company;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+beforeEach(function () {$this->setTestUserWithPermissions("Branch");});
 
 // Test: listar todas las sucursales
 it('list all the branches with their company', function () {

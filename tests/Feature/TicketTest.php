@@ -5,6 +5,7 @@ use App\Models\Ticket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+beforeEach(function () {$this->setTestUserWithPermissions("Ticket");});
 
 // Test: crear un ticket
 it('create a ticket', function () {

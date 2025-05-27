@@ -4,6 +4,7 @@ use App\Models\Company;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+beforeEach(function () {$this->setTestUserWithPermissions("Company");});
 
 it('list all companies', function () {
     Company::factory()->count(3)->create();

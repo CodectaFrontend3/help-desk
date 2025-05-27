@@ -6,8 +6,11 @@ use App\Models\Area;
 use Illuminate\Http\Request;
 use App\Http\Requests\AreaRequest;
 
-class AreaController extends Controller
+class AreaController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('Area');
+    }
     public function index()
     {
         return response()->json(Area::all());

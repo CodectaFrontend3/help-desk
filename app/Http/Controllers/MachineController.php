@@ -6,8 +6,11 @@ use App\Http\Requests\MachineRequest;
 use App\Models\Machine;
 use Illuminate\Http\Request;
 
-class MachineController extends Controller
+class MachineController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('Machine');
+    }
     /**
      * Display a listing of the resource.
      */

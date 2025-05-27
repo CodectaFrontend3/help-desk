@@ -4,6 +4,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+beforeEach(function () {$this->setTestUserWithPermissions("ClientG");});
+
 it('list of all clients g',function(){
     ClientG::factory()->count(3)->create();
 
