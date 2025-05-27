@@ -40,6 +40,7 @@ export default {
         :data="companies"
         :columns="columns"
         entityType="company"
+        :available-actions="['equipment']"
     />
     <router-view />
     </div>

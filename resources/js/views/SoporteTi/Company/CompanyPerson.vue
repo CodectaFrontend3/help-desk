@@ -39,6 +39,7 @@ export default {
             :data="person"
             :columns="columns"
             entityType="person"
+            :available-actions="['equipment']"
         />
         <router-view />
     </div>

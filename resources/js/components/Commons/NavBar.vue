@@ -31,29 +31,23 @@ export default {
 
         // Solo muestra el botón "Agregar" si el usuario tiene el rol de "admin"
         showAdd() {
-            return this.$route.meta?.role === "admin";
+            return this.$route.meta?.role === "admin"|| this.$route.meta?.role === "manager" || this.$route.meta?.role === "worker";
         },
 
         // Verifica si estamos en una ruta de tickets activos o soporte técnico TI
         isTicketActive() {
             return (
-                this.$route.name === "Tickets activos" ||
-                this.$route.name === "Soporte técnico - Soporte TI"
+                this.$route.name === "Tickets activos" || this.$route.name === "Soporte técnico - Soporte TI"
             );
         },
     },
     methods: {
         /**
          * Determina el tipo de entidad actualmente activa según la URL.
-         * Retorna: "micro", "company", "person" o un tipo extraído de la URL si estamos en equipos.
+         * Retorna: "company", "person" o un tipo extraído de la URL si estamos en equipos.
          */
         currentType() {
             const path = this.$route.path;
-            if (
-                path.includes("company-micro") ||
-                path.includes("clients-micro")
-            )
-                return "micro";
             if (
                 path.includes("company-company") ||
                 path.includes("clients-company")
@@ -83,7 +77,6 @@ export default {
             // Si estamos en rutas de clientes
             if (
                 this.$route.path.includes("clients-soporte-ti") ||
-                this.$route.path.includes("clients-micro") ||
                 this.$route.path.includes("clients-company") ||
                 this.$route.path.includes("clients-person")
             ) {
@@ -209,13 +202,6 @@ export default {
 
         <div v-if="showButtonsTi" class="buttons-ti">
             <button
-                :class="{ active: isActive('micro') }"
-                title="Seleccionar microempresa"
-                @click="navigateToChildren(dynamicSegment('micro'))"
-            >
-                Microempresa
-            </button>
-            <button
                 :class="{ active: isActive('company') }"
                 title="Seleccionar empresa"
                 @click="navigateToChildren(dynamicSegment('company'))"
@@ -234,25 +220,11 @@ export default {
         <div class="search">
             <!-- Tickets-->
             <div v-if="navbarConfig.tickets" class="tickets-container">
-                <div
-                    v-if="navbarConfig.labelIncidente"
-                    class="seeker seeker__tickets"
-                    :class="{ width__sekker: isTicketActive }"
-                >
-                    <label for="empresa">{{
-                        navbarConfig.labelIncidente
-                    }}</label>
-                    <input
-                        type="text"
-                        title="Buscar empresa"
-                        placeholder="Ingrese el incidente"
-                    />
+                <div v-if="navbarConfig.labelIncidente" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
+                    <label for="empresa">{{ navbarConfig.labelIncidente }}</label>
+                    <input type="text" title="Buscar empresa" placeholder="Ingrese el incidente"/>
                 </div>
-                <div
-                    v-if="navbarConfig.labelArea"
-                    class="seeker seeker__tickets"
-                    :class="{ width__sekker: isTicketActive }"
-                >
+                <div v-if="navbarConfig.labelArea" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
                     <label for="empresa">{{ navbarConfig.labelArea }}</label>
                     <select v-if="navbarConfig.labelArea">
                         <option disabled selected id="empresa">
@@ -264,44 +236,18 @@ export default {
                     </select>
                 </div>
 
-                <div
-                    v-if="navbarConfig.labelFecha"
-                    class="seeker seeker__tickets"
-                    :class="{ width__sekker: isTicketActive }"
-                >
-                    <label for="fecha" class="date-label">{{
-                        navbarConfig.labelFecha
-                    }}</label>
+                <div v-if="navbarConfig.labelFecha" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
+                    <label for="fecha" class="date-label">{{ navbarConfig.labelFecha }}</label>
                     <div class="date">
-                        <input
-                            id="date"
-                            type="date"
-                            title="Fecha de inicio"
-                            class="date-input"
-                            placeholder="Desde"
-                        />
+                        <input id="date" type="date" title="Fecha de inicio" class="date-input" placeholder="Desde"/>
                         <p class="date-separator">al</p>
-                        <input
-                            type="date"
-                            title="Fecha de fin"
-                            class="date-input"
-                            placeholder="Hasta"
-                        />
+                        <input type="date" title="Fecha de fin" class="date-input" placeholder="Hasta"/>
                     </div>
                 </div>
-                <div
-                    v-if="navbarConfig.labelEstado"
-                    class="seeker seeker__tickets"
-                    :class="{ width__sekker: isTicketActive }"
-                >
-                    <label class="seeker__label" for="empresa">{{
-                        navbarConfig.labelEstado
-                    }}</label>
+                <div v-if="navbarConfig.labelEstado" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
+                    <label class="seeker__label" for="empresa">{{ navbarConfig.labelEstado }}</label>
                     <div class="select-wrapper">
-                        <select
-                            v-if="navbarConfig.labelEstado"
-                            class="seeker__select"
-                        >
+                        <select v-if="navbarConfig.labelEstado" class="seeker__select">
                             <option disabled selected id="empresa">
                                 Elegir estado del incidente
                             </option>
@@ -314,10 +260,7 @@ export default {
             </div>
 
             <!--CLIENTES - Empresa-->
-            <div
-                v-if="navbarConfig.clientes || navbarConfig.clientCompany"
-                class="clientes-container"
-            >
+            <div v-if="navbarConfig.clientes || navbarConfig.clientCompany" class="clientes-container">
                 <div
                     v-if="navbarConfig.labelRuc"
                     class="seeker seeker__clientes"
@@ -347,10 +290,7 @@ export default {
             </div>
 
             <!--Clientes - Persona Natural-->
-            <div
-                v-if="navbarConfig.persona || navbarConfig.clientPerson"
-                class="persona-container"
-            >
+            <div v-if="navbarConfig.persona || navbarConfig.clientPerson" class="persona-container">
                 <div
                     v-if="navbarConfig.labelDni"
                     class="seeker seeker__clientes"
@@ -380,42 +320,28 @@ export default {
             <!-- SOPORTE TI -->
             <div v-if="navbarConfig.soporteTi" class="soporte-container">
                 <!-- RUC -->
-                <div
-                    v-if="navbarConfig.ruc"
-                    class="seeker seeker__soporte"
-                    :class="{ width__sekker: isTicketActive }"
-                >
+                <div v-if="navbarConfig.ruc" class="seeker seeker__soporte" :class="{ width__sekker: isTicketActive }">
                     <label for="soporte-ruc">{{ navbarConfig.ruc }}</label>
-                    <input
-                        id="soporte-ruc"
-                        type="text"
-                        title="Buscar empresa"
-                        placeholder="Ingrese el RUC"
-                    />
+                    <input id="soporte-ruc" type="text" title="Buscar empresa" placeholder="Ingrese el RUC" />
                 </div>
                 <!-- EMPRESA -->
-                <div
-                    v-if="navbarConfig.company"
-                    class="seeker seeker__soporte"
-                    :class="{ width__sekker: isTicketActive }"
-                >
+                <div v-if="navbarConfig.company" class="seeker seeker__soporte" :class="{ width__sekker: isTicketActive }">
                     <label for="soporte-ruc">{{ navbarConfig.company }}</label>
-                    <input
-                        id="soporte-ruc"
-                        type="text"
-                        title="Buscar empresa"
-                        placeholder="Ingrese el nombre de la empresa"
-                    />
+                    <input id="soporte-ruc" type="text" title="Buscar empresa" placeholder="Ingrese el nombre de la empresa"/>
+                </div>
+            </div>
+
+            <div v-if="navbarConfig.equipment" class="seeker seeker__equipment" :class="{ width__sekker: isTicketActive }">
+                <label for="dateRange" class="dateRange__label">{{ navbarConfig.dateRange }}:</label>
+                <div class="date">
+                    <input id="dateRange" type="date" title="Fecha de inicio" class="date-input" placeholder="Desde"/>
+                    <p class="date-separator">al</p>
+                    <input type="date" title="Fecha de fin" class="date-input" placeholder="Hasta"/>
                 </div>
             </div>
 
             <!--Seeker General-->
-            <div
-                class="seeker seeker__general"
-                :class="{
-                    width__sekker: this.$route.name === 'Tickets activos',
-                }"
-            >
+            <div class="seeker seeker__general" :class="{ width__sekker: this.$route.name === 'Tickets activos',}">
                 <input type="text" title="Buscar" placeholder="Search" />
                 <span class="icon pi pi-search"></span>
             </div>
@@ -481,10 +407,10 @@ export default {
     background-color: var(--highlight-color);
     transition: 0.2s ease-in-out;
 }
-.buttons-ti button:nth-child(1) {
+.buttons-ti button:first-child {
     border-radius: 10px 0 0 10px;
 }
-.buttons-ti button:nth-child(3) {
+.buttons-ti button:last-child {
     border-radius: 0 10px 10px 0;
 }
 .buttons-ti button:hover,
@@ -660,5 +586,13 @@ p {
     flex-direction: column;
     text-align: left;
     gap: 6px;
+}
+.seeker__equipment {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.seeker__equipment label {
+    text-wrap: nowrap;
 }
 </style>

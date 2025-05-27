@@ -14,7 +14,7 @@
 
 <script>
 import tableComponent from "@/components/Commons/TableComponent.vue";
-import apiServices from "../../../services/ApiServices";
+import apiServices from "../../services/ApiServices";
 
 export default {
     name: "TicketsView",
@@ -23,9 +23,8 @@ export default {
         return {
             columns: [
                 { label: "ID", key: "id" },
-                { label: "ID del equipo", key: "machine_id" },
                 { label: "Tipo de incidente", key: "incident_type" },
-                { label: "Nombre", key: "client_name" },
+                { label: "Usuario", key: "client_name" },
                 { label: "Empresa", key: "company" },
                 { label: "Área", key: "area" },
                 { label: "Sucursal", key: "branch" },

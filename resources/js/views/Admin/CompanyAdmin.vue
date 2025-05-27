@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-    <table-component :data="company" :columns="columns" />
+    <table-component :data="company" :columns="columns" :available-actions="['edit']"/>
 </template>
 
 <style scoped></style>

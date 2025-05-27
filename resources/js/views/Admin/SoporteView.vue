@@ -34,7 +34,7 @@ export default {
 
 <template>
     <div class="soporte">
-        <table-component :data="branch" :columns="columns" />
+        <table-component :data="branch" :columns="columns" :available-actions="['edit']"/>
     </div>
 
 </template>

@@ -1,7 +1,6 @@
 <template>
     <div class="tickets">
-        <table-component :data="tickets" :columns="columns" :available-actions="['chat']" entity-type="ticket"
-            @chat="handleChatAction">
+        <table-component :data="tickets" :columns="columns" :available-actions="['chat']" entity-type="ticket"  @chat="handleChatAction">
             <!-- Slot para dar color según el estado -->
             <template #state="{ value }">
                 <span class="status" :class="stateClass(value)">
@@ -22,15 +21,12 @@ export default {
     data() {
         return {
             columns: [
-                { label: "ID", key: "id" },
-                { label: "ID del equipo", key: "machine_id" },
-                { label: "Tipo de incidente", key: "incident_type" },
-                { label: "Nombre", key: "client_name" },
-                { label: "Empresa", key: "company" },
-                { label: "Área", key: "area" },
-                { label: "Sucursal", key: "branch" },
-                { label: "Estado", key: "state" },
                 { label: "Fecha de registro", key: "registration_date" },
+                { label: "Tipo de incidente", key: "incident_type" },
+                { label: "Estado", key: "state" },
+                { label: "Última actualización", key: "" },
+                { label: "Tiempo de respuesta", key: "" },
+
             ],
             tickets: [],
         };

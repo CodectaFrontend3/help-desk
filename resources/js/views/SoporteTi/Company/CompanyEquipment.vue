@@ -161,6 +161,7 @@ export default {
                     :data="equipments"
                     :columns="columns"
                     entityType="equipment"
+                    :available-actions="['equipment']"
                 />
             </div>
         </div>

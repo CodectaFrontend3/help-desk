@@ -39,4 +39,3 @@ Route::apiResource('/branches', BranchController::class);
 Route::resource('/areas', AreaController::class);
 Route::resource('/contact_refs', ContactRefController::class);
 Route::apiResource('/tickets', TicketController::class);
-

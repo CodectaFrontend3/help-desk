@@ -15,10 +15,12 @@ export default {
                 { label: "Correo", key: "email" },
             ],
             naturalPerson: [],
+            plan: [],
         };
     },
     async created() {
         await this.fetchNaturalPerson(); // Llamada a la API cuando el componente se crea
+        await this.fetchPlan(); // Llamada a la API cuando el componente se crea
     },
     methods: {
         async fetchNaturalPerson() {
@@ -26,13 +28,18 @@ export default {
             this.naturalPerson = await apiServices.get("natural-person");
             console.log(this.naturalPerson); // Verifica los datos que se reciben
         },
+        async fetchPlan() {
+            // Obtener los datos de microempresas desde la API
+            this.plan  = await apiServices.get("plan");
+            console.log(this.plan); // Verifica los datos que se reciben
+        },
     },
 };
 </script>
 
 <template>
     <div class="natural-person">
-        <table-component :data="naturalPerson" :columns="columns" />
+        <table-component :data="naturalPerson" :columns="columns" :available-actions="['view']"/>
     </div>
 </template>
 

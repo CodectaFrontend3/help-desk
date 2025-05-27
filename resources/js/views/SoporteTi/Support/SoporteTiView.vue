@@ -13,19 +13,18 @@ export default {
                 { label: "Número de plan", key: "plan_number" },
                 { label: "Nombre del plan", key: "name" },
                 { label: "Descripción", key: "description" },
-                { label: "Id", key: "id" },
             ],
-            branch: [],
+            plan: [],
         };
     },
     async created() {
-        await this.fetchBranch(); // Llamada a la API cuando el componente se crea
+        await this.fetchPlan(); // Llamada a la API cuando el componente se crea
     },
     methods: {
-        async fetchBranch() {
+        async fetchPlan() {
             // Obtener los datos de microempresas desde la API
-            this.branch = await apiServices.get("plan");
-            console.log(this.branch); // Verifica los datos que se reciben
+            this.plan  = await apiServices.get("plan");
+            console.log(this.plan); // Verifica los datos que se reciben
         },
     },
 };
@@ -33,7 +32,7 @@ export default {
 
 <template>
     <div class="soporte">
-        <table-component :data="branch" :columns="columns" />
+        <table-component :data="plan" :columns="columns" :available-actions="['']"/>
     </div>
 
 </template>

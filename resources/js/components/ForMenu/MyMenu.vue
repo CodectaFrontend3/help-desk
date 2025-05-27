@@ -13,6 +13,11 @@ export default {
                 { label: "Home - Administrador", icon: "pi pi-fw pi-home", to: "/home-admin" },
                 { label: "Home - Soporte Técnico", icon: "pi pi-fw pi-home", to: "/home-support" },
                 {
+                    label: "Administrador - Tickets",
+                    icon: "pi pi-fw pi-ticket",
+                    to: "/admin-tickets",
+                },
+                {
                     label: "Administrador - Clientes",
                     icon: "pi pi-fw pi-user",
                     to: "/clients-admin",
@@ -41,6 +46,16 @@ export default {
                     label: "Soporte TI - Empresa",
                     icon: "pi pi-fw pi-users",
                     to: "/company-soporte-ti",
+                },
+                {
+                    label: "Gerente y Empleados - tickets",
+                    icon: "pi pi-fw pi-users",
+                    to: "/client-tickets",
+                },
+                {
+                    label: "Gerente y Empleados - Equipos",
+                    icon: "pi pi-fw pi-users",
+                    to: "/client-equipments",
                 },
             ];
         },

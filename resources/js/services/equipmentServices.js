@@ -20,7 +20,7 @@ const EquipmentServices = {
             }
 
             // Usar el nuevo endpoint para todos los tipos de entidad
-            const endpoint = 'team';
+            const endpoint = 'machine';
 
             console.log(`Solicitando equipos para ${entityType} con ID ${entityId}. Endpoint: ${endpoint}`);
 
@@ -61,7 +61,7 @@ const EquipmentServices = {
             }
 
             console.log(`Solicitando detalles del equipo con ID ${equipmentId}`);
-            return await apiServices.get(`team/${equipmentId}`);
+            return await apiServices.get(`machine/${equipmentId}`);
         } catch (error) {
             console.error(`Error al obtener detalles del equipo ${equipmentId}:`, error);
             throw error;

@@ -1,6 +1,6 @@
 <script>
-import TableComponent from '../../../components/Commons/TableComponent.vue';
-import equipmentServices from '../../../services/EquipmentServices';
+import TableComponent from '@/components/Commons/TableComponent.vue';
+import equipmentServices from '../../../services/equipmentServices';
 
 export default {
     name: "CompanyEquipmentDetails",
@@ -146,7 +146,7 @@ export default {
             <div v-if="activeTab === 'usuario'" class="tab-content">
                 <div class="equipment-user-form">
                     <div class="equipment-icon">
-                        <img src="/path/to/computer-icon.png" alt="Computer Icon" class="icon-image">
+                        <img src="@/components//assets/computadora.png" alt="Computer Icon" class="icon-image">
                     </div>
 
                     <div class="form-row">
@@ -360,9 +360,9 @@ export default {
 <style scoped>
 .equipment-details-container {
     padding: 20px;
-    max-width: 1000px;
+    flex: 1;
     margin: 0 auto;
-    font-family: Arial, sans-serif;
+    min-width: 70%;
 }
 
 .back-button {
