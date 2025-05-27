@@ -4,7 +4,7 @@
             <transition name="slide-fade">
                 <div class="popup-container" v-if="visible">
                     <div class="popup-header">
-                        <h2>{{ cliente.nombre }}</h2>
+                        <h2>{{ cliente.name }}</h2>
                     </div>
                     <div class="tabs">
                         <button
@@ -143,13 +143,13 @@
                                                 ) in cliente.contactos"
                                                 :key="index"
                                             >
-                                                <td>{{ contacto.nombre }}</td>
+                                                <td>{{ contacto.name }}</td>
                                                 <td>
-                                                    {{ contacto.direccion }}
+                                                    {{ contacto.address }}
                                                 </td>
                                                 <td>{{ contacto.email }}</td>
-                                                <td>{{ contacto.telefono }}</td>
-                                                <td>{{ contacto.rol }}</td>
+                                                <td>{{ contacto.phone }}</td>
+                                                <td>{{ contacto.area }}</td>
                                                 <td>
                                                     <input
                                                         type="checkbox"
@@ -191,13 +191,13 @@
                                                 ) in cliente.contactos"
                                                 :key="index"
                                             >
-                                                <td>{{ contacto.nombre }}</td>
+                                                <td>{{ contacto.name }}</td>
                                                 <td>
-                                                    {{ contacto.direccion }}
+                                                    {{ contacto.address }}
                                                 </td>
                                                 <td>{{ contacto.email }}</td>
-                                                <td>{{ contacto.telefono }}</td>
-                                                <td>{{ contacto.rol }}</td>
+                                                <td>{{ contacto.phone }}</td>
+                                                <td>{{ contacto.area }}</td>
                                                 <td>
                                                     <input
                                                         type="checkbox"
@@ -304,10 +304,13 @@ export default {
         loadClienteData() {
             console.log("Cargando datos para cliente ID:", this.clienteId);
 
-            axios.get(`/api/natural_persons/${this.clienteId}`)
+            axios.get(`/api/natural-person/${this.clienteId}`)
                 .then(response => {
                     this.cliente = response.data;
-                    console.log(data);
+                    if (!this.cliente.contactos) {
+                        this.cliente.contactos = [];
+                    }
+                    console.log(this.cliente);
                     console.log("------849894965656565");
 
 
@@ -315,6 +318,10 @@ export default {
                     if (this.cliente.fotoPerfil) {
                         this.previewImage = this.cliente.fotoPerfil;
                     }
+                    return axios.get(`/api/natural-persons/${this.clienteId}/contactos`);
+                })
+                .then(response => {
+                    this.cliente.contactos = response.data;
                 })
                 .catch(error => {
                     console.error("Error al cargar los datos del cliente:", error);

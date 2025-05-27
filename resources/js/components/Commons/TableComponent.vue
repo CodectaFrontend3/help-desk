@@ -77,6 +77,35 @@ export default {
         paginatedData() {
             return this.data.slice(this.first, this.first + this.rows);
         },
+        // Computed para obtener los botones que deben mostrarse
+        visibleButtons() {
+            if (!this.showButtons()) return [];
+
+            return this.availableActions
+                .filter(actionKey => this.buttonConfig[actionKey])
+                .map(actionKey => ({
+                    key: actionKey,
+                    ...this.buttonConfig[actionKey]
+                }));
+        },
+        // Verificar si el usuario es admin
+        isAdmin() {
+            return this.currentUser && (this.currentUser.role === 'admin' || this.currentUser.isAdmin === true);
+        },
+        // Verificar si debe mostrar el checkbox (solo admin)
+        shouldShowCheckbox() {
+            return this.showSelectionCheckbox && this.isAdmin;
+        },
+        // Estado intermedio del checkbox principal
+        isIndeterminate() {
+            return this.selectedRows.length > 0 && this.selectedRows.length < this.paginatedData.length;
+        },
+        entityType() {
+            const routeName = this.$route.name;
+            if (routeName === "Clientes - Persona natural") return "person";
+            if (routeName === "Clientes - Empresa - Administrador") return "company";
+            return "company"; // valor por defecto
+        },
     },
     methods: {
         onPageChange(event) {
@@ -369,10 +398,16 @@ export default {
 
         <!-- Popup -->
         <PopCliente
+            v-if="entityType === 'person'"
             :visible="showPopup"
             :cliente-id="selectedClientId"
             @close="showPopup = false"
         />
+        <PopCompany
+            v-if="entityType === 'company'"
+            :visible="showPopup"
+            :cliente-id="selectedClientId"
+            @close="showPopup = false" />
     </div>
 </template>
 

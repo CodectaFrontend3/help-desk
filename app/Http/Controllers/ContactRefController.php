@@ -53,4 +53,12 @@ class ContactRefController extends Controller
         $contactRef->delete();
         return response()->json(null, 204);
     }
+    /**
+     * Obtener natural person id :v.
+     */
+    public function getByPerson($id)
+    {
+        $contactos = ContactRef::where('natural_person_id', $id)->get();
+        return response()->json($contactos);
+    }
 }
