@@ -1,17 +1,17 @@
 <?php
 
+use App\Models\Machine;
 use App\Models\Ticket;
-use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 // Test: crear un ticket
 it('create a ticket', function () {
-    $team = Team::factory()->create();
+    $machine = Machine::factory()->create();
 
     $response = $this->postJson('/api/tickets', [
-        'team_id' => $team->id,
+        'machine_id' => $machine->id,
         'incident_type' => 'Network',
         'client_name' => 'Carlos Ruiz',
         'company' => 'Empresa X',
@@ -41,7 +41,7 @@ it('list all tickets', function () {
 });
 
 // Test: ver un ticket específico
-it('muestra un ticket por su ID', function () {
+it('show a specify tickets', function () {
     $ticket = Ticket::factory()->create([
         'client_name' => 'Ana Torres',
         'state' => 'En Proceso',
@@ -61,7 +61,7 @@ it('update a ticket', function () {
     $ticket = Ticket::factory()->create();
 
     $response = $this->putJson("/api/tickets/{$ticket->id}", [
-        'team_id' => $ticket->team_id,
+        'machine_id' => $ticket->machine_id,
         'incident_type' => 'Hardware',
         'client_name' => 'María López',
         'company' => 'Tech SA',

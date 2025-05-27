@@ -3,19 +3,16 @@
 use App\Models\Area;
 use App\Models\Branch;
 use App\Models\Company;
-use App\Models\MicroCompany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 // Test: crear un área
-it('ceate an area', function () {
+it('create an area', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
 
     $response = $this->postJson('/api/areas', [
-        'micro_company_id' => $microCompany->id,
         'company_id' => $company->id,
         'branch_id' => $branch->id,
         'area_name' => 'Área de Prueba',
@@ -36,12 +33,10 @@ it('ceate an area', function () {
 // Test: listar todas las áreas
 it('list all areas with their information', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
 
     Area::factory()->count(3)->create([
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'branch_id' => $branch->id,
     ]);
 
@@ -54,11 +49,9 @@ it('list all areas with their information', function () {
 // Test: ver un área específica
 it('show an area with its information', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
     $area = Area::factory()->create([
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'branch_id' => $branch->id,
     ]);
 
@@ -72,42 +65,37 @@ it('show an area with its information', function () {
 });
 
 // Test: actualizar un área
-it('updatw an area', function () {
+it('update an area', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
 
     $area = Area::factory()->create([
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'branch_id' => $branch->id,
     ]);
 
     $response = $this->putJson("/api/areas/{$area->id}", [
-        'company_id'       => $company->id,
-        'micro_company_id' => $microCompany->id,
-        'branch_id'        => $branch->id,
-        'area_name'        => 'Área Actualizada',
-        'contact'          => 'Ana López',
-        'phone'            => '912345678',
-        'email'            => 'ana@empresa.com',
+        'company_id' => $company->id,
+        'branch_id' => $branch->id,
+        'area_name' => 'Área Actualizada',
+        'contact' => 'Ana López',
+        'phone' => '912345678',
+        'email' => 'ana@empresa.com',
     ]);
 
     $response->assertStatus(200)
              ->assertJsonFragment([
                  'area_name' => 'Área Actualizada',
-                 'contact'   => 'Ana López',
+                 'contact' => 'Ana López',
              ]);
 });
 
 // Test: eliminar un área
 it('delete an area', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $branch = Branch::factory()->create(['company_id' => $company->id]);
     $area = Area::factory()->create([
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'branch_id' => $branch->id,
     ]);
 

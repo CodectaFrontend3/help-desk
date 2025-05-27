@@ -11,10 +11,10 @@ export default {
             showPopup: false,
             columns: [
                 // Asegúrate de definir las columnas
-                { label: "Nombre", key: "branch_name" },
-                { label: "Encargado", key: "manager" },
-                { label: "Teléfono", key: "phone" },
-                { label: "Correo", key: "email" },
+                { label: "Número de plan", key: "plan_number" },
+                { label: "Nombre del plan", key: "name" },
+                { label: "Descripción", key: "description" },
+                { label: "Id", key: "id" },
             ],
             branch: [],
         };
@@ -25,7 +25,7 @@ export default {
     methods: {
         async fetchBranch() {
             // Obtener los datos de microempresas desde la API
-            this.branch = await apiServices.get("branch");
+            this.branch = await apiServices.get("plan");
             console.log(this.branch); // Verifica los datos que se reciben
         },
     },
@@ -34,8 +34,7 @@ export default {
 
 <template>
     <div class="soporte">
-        <h1>ESTA ES LA TABLA DE SUCURSALES DEL FORMULARIO CREAR EMPRESA</h1>
-        <table-component :data="branch" :columns="columns" />
+        <table-component :data="branch" :columns="columns" :available-actions="['edit']"/>
     </div>
 
 </template>

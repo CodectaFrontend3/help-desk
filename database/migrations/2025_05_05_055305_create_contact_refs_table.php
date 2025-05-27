@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('contact_refs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
-            $table->foreignId('micro_company_id')->constrained('micro_companies')->onDelete('cascade');
             $table->foreignId('natural_person_id')->constrained('natural_persons')->onDelete('cascade');
             $table->string('name');
             $table->string('address');

@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\Area;
 use App\Models\Branch;
 use App\Models\Company;
-use App\Models\MicroCompany;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AreaFactory extends Factory
@@ -15,9 +14,8 @@ class AreaFactory extends Factory
     public function definition(): array
     {
         return [
-            'micro_company_id' => MicroCompany::factory(),
-            'company_id'       => Company::factory(),
-            'branch_id'        => Branch::factory(),
+            'company_id' => Company::exists() ? Company::pluck('id')->random() : Company::factory()->create()->id,
+            'branch_id' => Branch::exists() ? Branch::pluck('id')->random() : Branch::factory()->create()->id,
             'area_name'        => $this->faker->word(),
             'contact'          => $this->faker->name(),
             'phone'            => $this->faker->numerify('9########'),

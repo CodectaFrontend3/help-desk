@@ -19,37 +19,30 @@ const EquipmentServices = {
                 entityType = 'company';
             }
 
-            // Determinar el endpoint correcto según el tipo de entidad
-            let endpoint = '';
-
-            switch(entityType.toLowerCase()) {
-                case 'micro':
-                    endpoint = `micro-company/${entityId}/equipments`;
-                    break;
-                case 'person':
-                    endpoint = `natural-person/${entityId}/equipments`;
-                    break;
-                case 'company':
-                    endpoint = `company/${entityId}/equipments`;
-                    break;
-                default:
-                    console.warn(`Tipo de entidad no reconocido: ${entityType}, usando 'company' por defecto`);
-                    endpoint = `company/${entityId}/equipments`;
-            }
+            // Usar el nuevo endpoint para todos los tipos de entidad
+            const endpoint = 'machine';
 
             console.log(`Solicitando equipos para ${entityType} con ID ${entityId}. Endpoint: ${endpoint}`);
 
-            // Añadir manejo de error específico para respuestas HTML
-            try {
-                return await apiServices.get(endpoint);
-            } catch (apiError) {
-                // Si el error es debido a recibir HTML en lugar de JSON
-                if (apiError.message && apiError.message.includes('HTML en lugar de JSON')) {
-                    console.error(`El endpoint ${endpoint} está devolviendo HTML. Posible problema de configuración en el servidor o ruta incorrecta.`);
-                    throw new Error(`No se pudieron obtener los equipos. Verifique la configuración del servidor para el endpoint ${endpoint}`);
-                }
-                throw apiError;
-            }
+            // Obtener todos los equipos y luego filtrar por la entidad seleccionada
+            const allEquipments = await apiServices.get(endpoint);
+
+            // Mapear los tipos de entidad a los campos correspondientes en la tabla teams
+            const fieldMap = {
+                'company': 'id_company',
+                'micro': 'id_microcompany',
+                'person': 'id_personN'
+            };
+
+            const idField = fieldMap[entityType.toLowerCase()] || 'id_company';
+
+            const filteredEquipments = allEquipments.filter(equipment =>
+                equipment[idField] && equipment[idField].toString() === entityId.toString()
+            );
+
+            console.log(`Se encontraron ${filteredEquipments.length} equipos para la entidad`);
+
+            return filteredEquipments;
         } catch (error) {
             console.error(`Error al obtener equipos para ${entityType} con ID ${entityId}:`, error);
             throw error;
@@ -68,7 +61,7 @@ const EquipmentServices = {
             }
 
             console.log(`Solicitando detalles del equipo con ID ${equipmentId}`);
-            return await apiServices.get(`equipment/${equipmentId}`);
+            return await apiServices.get(`machine/${equipmentId}`);
         } catch (error) {
             console.error(`Error al obtener detalles del equipo ${equipmentId}:`, error);
             throw error;

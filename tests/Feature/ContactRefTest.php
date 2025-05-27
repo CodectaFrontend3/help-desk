@@ -2,7 +2,6 @@
 
 use App\Models\ContactRef;
 use App\Models\Company;
-use App\Models\MicroCompany;
 use App\Models\NaturalPerson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -11,12 +10,10 @@ uses(RefreshDatabase::class);
 // Test: crear un contacto
 it('create a contact', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
 
     $response = $this->postJson('/api/contact_refs', [
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'natural_person_id' => $naturalPerson->id,
         'name' => 'Juan Pérez',
         'address' => 'Calle Ficticia 123',
@@ -37,12 +34,10 @@ it('create a contact', function () {
 // Test: listar todos los contactos
 it('list all contacts', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
 
     ContactRef::factory()->count(3)->create([
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'natural_person_id' => $naturalPerson->id,
     ]);
 
@@ -55,11 +50,9 @@ it('list all contacts', function () {
 // Test: ver un contacto específico
 it('show a contact specific', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
     $contactRef = ContactRef::factory()->create([
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'natural_person_id' => $naturalPerson->id,
     ]);
 
@@ -75,17 +68,14 @@ it('show a contact specific', function () {
 // Test: actualizar un contacto
 it('update a contact', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
     $contactRef = ContactRef::factory()->create([
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'natural_person_id' => $naturalPerson->id,
     ]);
 
     $response = $this->putJson("/api/contact_refs/{$contactRef->id}", [
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'natural_person_id' => $naturalPerson->id,
         'name' => 'Carlos López',
         'address' => 'Calle Actualizada 456',
@@ -104,11 +94,9 @@ it('update a contact', function () {
 // Test: eliminar un contacto
 it('delete a contact', function () {
     $company = Company::factory()->create();
-    $microCompany = MicroCompany::factory()->create();
     $naturalPerson = NaturalPerson::factory()->create();
     $contactRef = ContactRef::factory()->create([
         'company_id' => $company->id,
-        'micro_company_id' => $microCompany->id,
         'natural_person_id' => $naturalPerson->id,
     ]);
 

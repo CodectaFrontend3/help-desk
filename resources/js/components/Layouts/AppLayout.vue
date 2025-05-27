@@ -33,7 +33,7 @@ export default {
     watch: {
         // Observamos el objeto $route completo para cambios en la ruta
         $route(to, from) {
-            if (to.name === "Inicio") {
+            if (to.name === "Inicio" || to.name === "HomeAdmin" || to.name === "HomeSupport") {
                 this.showTitle = false;
                 this.showNavBar = false;
             } else {
@@ -44,7 +44,7 @@ export default {
     },
     mounted() {
         // Inicia la lógica cuando se monta el componente
-        if (this.$route.name === "Inicio") {
+        if (this.$route.name === "Inicio" || this.$route.name === "HomeAdmin" || this.$route.name === "HomeSupport") {
             this.showTitle = false;
             this.showNavBar = false;
         }

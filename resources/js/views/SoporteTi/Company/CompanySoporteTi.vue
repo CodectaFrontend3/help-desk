@@ -18,21 +18,14 @@ export default {
             microCompany: [],
         };
     },
-    computed: {
-    hasChildRoute() {
-        return this.$route.path !== "/company-soporte-ti";
-    },
-}
-
 
 };
 </script>
 
 <template>
     <div class="content-area">
-        <h1 v-if="!hasChildRoute">BIENVENIDO A LA SECCIÓN DE EMPRESA PARA SOPORTE TI, ELIJA UNA DE LAS OPCIONES QUE TIENE AL COSTADO DEL BUSCADOR</h1>
         <router-view />
-        </div>
+    </div>
 </template>
 
 <style scoped></style>

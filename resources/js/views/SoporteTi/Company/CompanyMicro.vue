@@ -25,7 +25,7 @@ export default {
         async fetchMicroCompany() {
             try {
                 // Obtener los datos de microempresas desde la API
-                this.microCompany = await apiServices.get("micro-company");
+                this.microCompany = await apiServices.get("micro_company");
                 console.log("Microempresas cargadas:", this.microCompany);
             } catch (error) {
                 console.error("Error al cargar microempresas:", error);
@@ -36,11 +36,14 @@ export default {
 </script>
 
 <template>
-    <table-component
-        :data="microCompany"
-        :columns="columns"
-        entityType="micro"
-    />
+    <div class="micro">
+        <table-component
+            :data="microCompany"
+            :columns="columns"
+            entityType="micro"
+        />
+        <router-view />
+    </div>
 </template>
 
 <style scoped></style>

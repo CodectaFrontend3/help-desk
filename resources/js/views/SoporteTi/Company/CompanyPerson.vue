@@ -34,11 +34,15 @@ export default {
 </script>
 
 <template>
-    <table-component
-        :data="person"
-        :columns="columns"
-        entityType="person"
-    />
+    <div class="natural__person">
+        <table-component
+            :data="person"
+            :columns="columns"
+            entityType="person"
+            :available-actions="['equipment']"
+        />
+        <router-view />
+    </div>
 </template>
 
 <style scoped></style>

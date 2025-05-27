@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Hardware;
+use App\Models\Machine;
 use App\Models\RegisterHardware;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -15,7 +16,7 @@ it('list of all hardware', function () {
     $response->assertJsonCount(3);
 });
 
-it('A Hardware Register can have many Hardware', function () {
+it('a hardware register can have many Hardware', function () {
     $register = RegisterHardware::factory()->create();
 
     $hardware1 = Hardware::factory()->create(['id_RH' => $register->id]);
@@ -26,6 +27,18 @@ it('A Hardware Register can have many Hardware', function () {
     $this->assertCount(2, $register->hardwares);
     $this->assertTrue($register->hardwares->contains($hardware1));
     $this->assertTrue($register->hardwares->contains($hardware2));
+});
+it('a machine can have many Hardware', function () {
+    $machine = Machine::factory()->create();
+
+    $hardware1 = Hardware::factory()->create(['id_machine' => $machine->id]);
+    $hardware2 = Hardware::factory()->create(['id_machine' => $machine->id]);
+
+    $machine->load('hardwares');
+
+    $this->assertCount(2, $machine->hardwares);
+    $this->assertTrue($machine->hardwares->contains($hardware1));
+    $this->assertTrue($machine->hardwares->contains($hardware2));
 });
 
 it('create a new hardware', function () {

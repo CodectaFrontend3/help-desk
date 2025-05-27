@@ -9,52 +9,53 @@ export default {
         ...mapState(["userType"]),
         model() {
             return [
-                { label: "Home", icon: "pi pi-fw pi-home", to: "/" },
+                { label: "Home - Clientes (Gerente y sus trabajadores)", icon: "pi pi-fw pi-home", to: "/" },
+                { label: "Home - Administrador", icon: "pi pi-fw pi-home", to: "/home-admin" },
+                { label: "Home - Soporte Técnico", icon: "pi pi-fw pi-home", to: "/home-support" },
                 {
-                    label: "Clientes - Empresa - Administrador",
+                    label: "Administrador - Tickets",
+                    icon: "pi pi-fw pi-ticket",
+                    to: "/admin-tickets",
+                },
+                {
+                    label: "Administrador - Clientes",
                     icon: "pi pi-fw pi-user",
-                    to: "/company-admin",
+                    to: "/clients-admin",
                 },
                 {
-                    label: "Clientes - Persona Natural - Administrador",
+                    label: "Administrador - Plan de soporte",
                     icon: "pi pi-fw pi-users",
-                    to: "/clientespersona",
+                    to: "/admin-support",
                 },
                 {
-                    label: "Plan de soporte - Administrador",
-                    icon: "pi pi-fw pi-users",
-                    to: "/soporte",
-                },
-
-                {
-                    label: "Historial de tickets - Soporte TI",
+                    label: "Soporte TI - Tickets",
                     icon: "pi pi-fw pi-ticket",
-                    to: "/historialtickets",
+                    to: "/tickets",
                 },
                 {
-                    label: "Tickets - Soporte TI",
-                    icon: "pi pi-fw pi-ticket",
-                    to: "/tickets-activos",
-                },
-                {
-                    label: "Tickets urgentes - Soporte TI",
-                    icon: "pi pi-fw pi-ticket",
-                    to: "/ticketsurgentes",
-                },
-                {
-                    label: "Clientes - Soporte TI",
+                    label: "Soporte TI - Clientes",
                     icon: "pi pi-fw pi-users",
                     to: "/clients-soporte-ti",
                 },
                 {
-                    label: "Plan de soporte - Soporte TI",
+                    label: "Soporte TI - Plan de soporte",
                     icon: "pi pi-fw pi-users",
                     to: "/soporte-ti",
                 },
                 {
-                    label: "Empresa - Soporte TI",
+                    label: "Soporte TI - Empresa",
                     icon: "pi pi-fw pi-users",
                     to: "/company-soporte-ti",
+                },
+                {
+                    label: "Gerente y Empleados - tickets",
+                    icon: "pi pi-fw pi-users",
+                    to: "/client-tickets",
+                },
+                {
+                    label: "Gerente y Empleados - Equipos",
+                    icon: "pi pi-fw pi-users",
+                    to: "/client-equipments",
                 },
             ];
         },

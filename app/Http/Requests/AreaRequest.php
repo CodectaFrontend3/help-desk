@@ -22,7 +22,6 @@ class AreaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'micro_company_id' => 'required|exists:micro_companies,id',
             'company_id'       => 'required|exists:companies,id',
             'branch_id'        => 'required|exists:branches,id',
             'area_name'        => 'required|string|max:255',
