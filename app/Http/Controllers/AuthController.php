@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Carbon\Carbon;
 
 class AuthController extends Controller
@@ -40,7 +38,8 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            $error = $validator->errors()->first();
+            return view('register', ['error' => $error]);
         }
         $user = User::create([
             'name' => $request->name,
@@ -59,8 +58,9 @@ class AuthController extends Controller
         return response()->json(['user' => $user, 'token' => $token->plainTextToken], 201);
     }
 
-    public function show(Request $request)
+    public function viewRegister()
     {
-        return $request->user();
+        return view('register');
     }
+
 }

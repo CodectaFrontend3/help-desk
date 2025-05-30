@@ -30,6 +30,8 @@ Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $reques
 // })->middleware('auth:sanctum');
 
 //routes en ingles
+
+Route::apiResource('/ellogin', ClientGController::class);
 Route::middleware(['auth:sanctum', 'expiration'])->group(function () {
     Route::apiResource('/clientG', ClientGController::class);
     Route::apiResource('/registerHardware', RegisterHardwareController::class);
