@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->foreignId('natural_person_id')->constrained('natural_persons')->onDelete('cascade');
+             $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
             $table->string('name');
             $table->string('address');
             $table->string('email');
