@@ -21,7 +21,8 @@ use App\Http\Controllers\TicketController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-Route::get('/natural-persons/{id}/contactos', [ContactRefController::class, 'getByPerson']);
+Route::get('/natural-persons/{id}/contactos', [ContactRefController::class, 'getByPersonNP']);
+Route::get('/companies/{id}/contactos', [ContactRefController::class, 'getByPersonC']);
 
 //routes en ingles
 Route::apiResource('/clientG', ClientGController::class);
@@ -30,8 +31,9 @@ Route::apiResource('/plan', PlanController::class);
 Route::apiResource('/software', SoftwareController::class);
 Route::apiResource('/accountRegister', AccountRegisterController::class);
 Route::apiResource('/company', CompanyController::class);
+Route::apiResource('/companies', CompanyController::class);
 Route::apiResource('/machine', MachineController::class);
-Route::apiResource('/company', CompanyController::class);
+Route::apiResource('/companies', CompanyController::class);
 Route::apiResource('/natural-persons', NaturalPersonController::class);
 Route::apiResource('/natural-person', NaturalPersonController::class);
 Route::apiResource('/hardware', HardwareController::class);

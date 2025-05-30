@@ -4,7 +4,17 @@ export default {
     data() {
         return {
             sekker: true, // Probablemente una bandera para controlar el estado de algo en la barra de navegación (nombre no muy descriptivo)
+            searchQuery: '',
         };
+    },
+    mounted() {
+    axios.get('/../routes/api.php')
+      .then(response => {
+        this.cliente = response.data;
+      })
+      .catch(error => {
+        console.error('Error al cargar clientes:', error);
+      });
     },
     computed: {
         // Obtiene la configuración del navbar desde los metadatos de la ruta actual
@@ -38,6 +48,15 @@ export default {
         isTicketActive() {
             return (
                 this.$route.name === "Tickets activos" || this.$route.name === "Soporte técnico - Soporte TI"
+            );
+        },
+        datosFiltrados() {
+            if (!this.searchQuery) return this.cliente;
+
+            return this.cliente.filter(obj =>
+            Object.values(obj).some(valor =>
+                String(valor).toLowerCase().includes(this.searchQuery.toLowerCase())
+            )
             );
         },
     },
@@ -173,6 +192,10 @@ export default {
             }
 
             return false;
+        },
+        buscar() {
+            console.log('Buscando:', this.searchQuery);
+            // Aquí puedes ejecutar una API o usar `datosFiltrados`, etc.
         },
     },
 };
@@ -342,7 +365,7 @@ export default {
 
             <!--Seeker General-->
             <div class="seeker seeker__general" :class="{ width__sekker: this.$route.name === 'Tickets activos',}">
-                <input type="text" title="Buscar" placeholder="Search" />
+                <input type="text" title="Buscar" placeholder="Search" v-model="searchQuery" @keyup.enter="buscar"/>
                 <span class="icon pi pi-search"></span>
             </div>
             <button v-if="showAdd" title="Agregar registro" class="add">

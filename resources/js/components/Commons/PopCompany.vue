@@ -143,13 +143,13 @@
                                                 ) in cliente.contactos"
                                                 :key="index"
                                             >
-                                                <td>{{ contacto.nombre }}</td>
+                                                <td>{{ contacto.name }}</td>
                                                 <td>
-                                                    {{ contacto.direccion }}
+                                                    {{ contacto.address }}
                                                 </td>
                                                 <td>{{ contacto.email }}</td>
-                                                <td>{{ contacto.telefono }}</td>
-                                                <td>{{ contacto.rol }}</td>
+                                                <td>{{ contacto.phone }}</td>
+                                                <td>{{ contacto.area }}</td>
                                                 <td>
                                                     <input
                                                         type="checkbox"
@@ -191,13 +191,13 @@
                                                 ) in cliente.contactos"
                                                 :key="index"
                                             >
-                                                <td>{{ contacto.nombre }}</td>
+                                                <td>{{ contacto.name }}</td>
                                                 <td>
-                                                    {{ contacto.direccion }}
+                                                    {{ contacto.address }}
                                                 </td>
                                                 <td>{{ contacto.email }}</td>
-                                                <td>{{ contacto.telefono }}</td>
-                                                <td>{{ contacto.rol }}</td>
+                                                <td>{{ contacto.phone }}</td>
+                                                <td>{{ contacto.area }}</td>
                                                 <td>
                                                     <input
                                                         type="checkbox"
@@ -309,11 +309,21 @@ export default {
                 .then(response => {
                     console.log("Respuesta de la API:", response.data);
                     this.cliente = response.data;
+                    if (!this.cliente.contactos) {
+                        this.cliente.contactos = [];
+                    }
+                     console.log(this.cliente);
+                    console.log("------849894965656565");
 
                     // Si tiene foto, mostrarla
                     if (this.cliente.fotoPerfil) {
                         this.previewImage = this.cliente.fotoPerfil;
                     }
+                    return axios.get(`/api/companies/${this.clienteId}/contactos`);
+                })
+                .then(response => {
+                    // Asignar contactos a cliente.contactos
+                    this.cliente.contactos = response.data || [];
                 })
                 .catch(error => {
                     console.error("Error al cargar los datos del cliente:", error);
@@ -356,7 +366,6 @@ export default {
         clienteId: {
             immediate: true,
             handler(newVal) {
-                console.log("Watcher activado con clienteId:", newVal);
                 if (newVal) {
                     this.loadClienteData();
                 }
@@ -466,6 +475,7 @@ table td {
     padding: 8px;
     border: 1px solid #ddd;
     text-align: left;
+    font-size: 12px;
 }
 
 table th {

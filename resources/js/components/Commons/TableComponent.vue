@@ -104,6 +104,7 @@ export default {
             const routeName = this.$route.name;
             if (routeName === "Clientes - Persona natural") return "person";
             if (routeName === "Clientes - Empresa - Administrador") return "company";
+            if (routeName === "Clientes - Persona Natural - Soporte TI") return "c-person";
             return "company"; // valor por defecto
         },
     },
@@ -398,7 +399,7 @@ export default {
 
         <!-- Popup -->
         <PopCliente
-            v-if="entityType === 'person'"
+            v-if="entityType === 'person' || entityType === 'c-person'"
             :visible="showPopup"
             :cliente-id="selectedClientId"
             @close="showPopup = false"

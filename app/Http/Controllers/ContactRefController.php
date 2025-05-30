@@ -56,9 +56,14 @@ class ContactRefController extends Controller
     /**
      * Obtener natural person id :v.
      */
-    public function getByPerson($id)
+    public function getByPersonNP($id)
     {
         $contactos = ContactRef::where('natural_person_id', $id)->get();
+        return response()->json($contactos);
+    }
+    public function getByPersonC($id)
+    {
+        $contactos = ContactRef::where('company_id', $id)->get();
         return response()->json($contactos);
     }
 }

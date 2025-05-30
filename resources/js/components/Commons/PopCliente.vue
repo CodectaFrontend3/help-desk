@@ -473,6 +473,7 @@ table td {
     padding: 8px;
     border: 1px solid #ddd;
     text-align: left;
+    font-size: 12px;
 }
 
 table th {
