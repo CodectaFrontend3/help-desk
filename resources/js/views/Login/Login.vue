@@ -44,32 +44,44 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import { ref, onMounted } from 'vue';
 
-const email = ref('');
-const password = ref('');
-const remember = ref(false);
-const showPassword = ref(false);
+export default {
+  setup() {
+    const email = ref('');
+    const password = ref('');
+    const remember = ref(false);
+    const showPassword = ref(false);
 
-const togglePassword = () => {
-  showPassword.value = !showPassword.value;
+    const togglePassword = () => {
+      showPassword.value = !showPassword.value;
+    };
+
+    const handleSubmit = () => {
+      alert(`Usuario: ${email.value}, Contraseña: ${password.value}, Recordar: ${remember.value}`);
+    };
+
+    onMounted(() => {
+      email.value = 'prueba@ejemplo.com';
+      password.value = '12345678';
+      remember.value = true;
+    });
+
+    return {
+      email,
+      password,
+      remember,
+      showPassword,
+      togglePassword,
+      handleSubmit,
+    };
+  }
 };
-
-const handleSubmit = () => {
-  alert(Usuario: ${email.value}, Contraseña: ${password.value}, Recordar: ${remember.value});
-};
-
-onMounted(() => {
-  email.value = 'prueba@ejemplo.com';
-  password.value = '12345678';
-  remember.value = true;
-});
 </script>
 
-<style scoped>
-/* (Se mantiene igual todo el CSS original, puedes pegarlo directamente aquí) */
 
+<style scoped>
 * {
   margin: 0;
   padding: 0;
@@ -88,17 +100,19 @@ html {
   display: flex;
   height: 100vh;
   min-height: 600px;
+  background-color: #454545;
+  width: 100%;
 }
 
 .left {
-  width: 50%;
+  flex: 1;
   background: #f89e1b;
-  clip-path: polygon(0 0, 100% 0, 50% 50%, 100% 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 80% 50%, 100% 100%, 0 100%);
   min-width: 300px;
 }
 
 .right {
-  width: 50%;
+  flex: 1;
   background: #454545;
   display: flex;
   justify-content: center;
@@ -108,86 +122,90 @@ html {
 
 .login-box {
   background-color: #454545;
-  padding: 2px;
+  padding: 20px;
   border-radius: 8px;
   text-align: center;
-  height: 100%;
   max-height: 500px;
   width: 80%;
-  max-width: 1000px;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 .login-box h2 {
-  font: Inter;
+  font-family: Inter, sans-serif;
   padding: 20px;
   color: white;
-  font-size: 64px;
+  font-size: 32px;
   background-color: #5c5c5c;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
+  border-radius: 8px;
 }
 
 .login-box label {
   display: block;
-  align-items: center;
   color: white;
-  margin: 10px 0 5px;
-  width: 100%;
-  font-size: 30px;
+  margin: 15px 0 8px;
+  font-size: 18px;
+  text-align: left;
 }
 
 .login-box input[type='email'],
 .login-box input[type='text'] {
-  padding: 5px;
-  border: black;
+  padding: 12px;
+  border: 2px solid #ccc;
   border-radius: 20px;
-  font-size: 28px;
-  margin-bottom: 10px;
-  width: 50%;
+  font-size: 16px;
+  margin-bottom: 15px;
+  width: 100%;
 }
 
 .login-box input[type='password'] {
-  padding: 5px;
-  border: black;
+  padding: 12px;
+  border: 2px solid #ccc;
   border-radius: 20px;
-  font-size: 28px;
-  margin-bottom: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
   width: 100%;
+  padding-right: 40px;
 }
 
 .password-wrapper {
   position: relative;
-  display: inline-block;
-  width: 50%;
+  width: 100%;
 }
 
 .password-wrapper input {
-  padding-right: 30px;
   width: 100%;
 }
 
 .eye {
   position: absolute;
   right: 15px;
-  top: 9px;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
+  font-size: 18px;
 }
 
 .remember {
   display: flex;
+  align-items: center;
   color: white;
-  font-size: 20px;
+  font-size: 16px;
   margin-bottom: 20px;
-  width: 50%;
-  margin-left: 180px;
+  gap: 8px;
 }
 
 .remember input {
   width: auto;
-  font-size: 16px;
   accent-color: #fca326;
+}
+
+.remember label {
+  margin: 0;
+  font-size: 16px;
 }
 
 .btn {
@@ -198,24 +216,53 @@ html {
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
-  font-size: 20px;
-  width: 53%;
-  margin: 0 auto;
+  font-size: 18px;
+  width: 100%;
+  margin-bottom: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #e68e0a;
 }
 
 .forgot {
-  margin-top: 15px;
-  font-size: 20px;
+  font-size: 16px;
   color: white;
 }
 
 .forgot a {
   color: #f89e1b;
   font-weight: bold;
-  font-size: 20px;
   text-decoration: none;
 }
 
-/* Agrega aquí los media queries igual que en tu HTML original */
+.forgot a:hover {
+  text-decoration: underline;
+}
 
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .left {
+    height: 200px;
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 100%);
+  }
+  
+  .right {
+    flex: 1;
+  }
+  
+  .login-box {
+    width: 90%;
+    max-width: none;
+  }
+  
+  .login-box h2 {
+    font-size: 24px;
+  }
+}
 </style>
