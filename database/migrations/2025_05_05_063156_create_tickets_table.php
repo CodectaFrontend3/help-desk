@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('area');
             $table->string('branch');
             $table->string('state');
+            $table->boolean('is_supervised');
             $table->date('registration_date');
             $table->timestamps();
         });
