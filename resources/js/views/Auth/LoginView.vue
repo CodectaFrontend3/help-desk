@@ -3,13 +3,13 @@
         <div class="left"></div>
         <div class="right">
             <div class="login-box">
-                <h2>INICIO DE SESION</h2>
+                <h2>INICIO DE SESIÓN</h2>
                 <form @submit.prevent="handleSubmit">
                     <label for="email">Usuario (Correo electrónico)</label>
                     <input
                         type="email"
                         id="email"
-                        v-model="email"
+                        v-model="form.email"
                         placeholder="Correo electrónico"
                         required
                         :disabled="authStore.loading"
@@ -20,8 +20,8 @@
                         <input
                             :type="showPassword ? 'text' : 'password'"
                             id="password"
-                            v-model="password"
-                            placeholder=""
+                            v-model="form.password"
+                            placeholder="Ingresa tu contraseña"
                             required
                             :disabled="authStore.loading"
                         />
@@ -32,7 +32,7 @@
                         <input
                             type="checkbox"
                             id="remember"
-                            v-model="remember"
+                            v-model="form.remember"
                         />
                         <label for="remember">Recordar contraseña</label>
                     </div>
@@ -40,6 +40,11 @@
                     <!-- Mostrar errores de login -->
                     <div v-if="errorMessage" class="error-message">
                         {{ errorMessage }}
+                    </div>
+
+                    <!-- Mostrar mensaje de éxito -->
+                    <div v-if="successMessage" class="success-message">
+                        {{ successMessage }}
                     </div>
 
                     <button
@@ -63,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
@@ -71,11 +76,16 @@ const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
 
-const email = ref('');
-const password = ref('');
-const remember = ref(false);
+// Estado reactivo del formulario
+const form = reactive({
+    email: '',
+    password: '',
+    remember: false
+});
+
 const showPassword = ref(false);
 const errorMessage = ref('');
+const successMessage = ref('');
 
 const togglePassword = () => {
     showPassword.value = !showPassword.value;
@@ -83,45 +93,77 @@ const togglePassword = () => {
 
 const handleSubmit = async () => {
     try {
+        // Limpiar mensajes anteriores
         errorMessage.value = '';
+        successMessage.value = '';
 
-        const credentials = {
-            email: email.value,
-            password: password.value,
-            remember: remember.value
-        };
+        // Validaciones básicas del frontend
+        if (!form.email || !form.password) {
+            errorMessage.value = 'Por favor completa todos los campos';
+            return;
+        }
+
+        if (!isValidEmail(form.email)) {
+            errorMessage.value = 'Por favor ingresa un email válido';
+            return;
+        }
 
         // Llamar al método login del store
-        await authStore.login(credentials);
+        const result = await authStore.login({
+            email: form.email,
+            password: form.password,
+            remember: form.remember
+        });
 
-        // Redirigir según el rol del usuario
-        const redirectPath = route.query.redirect || getDefaultRouteByRole(authStore.user.role);
-        router.push(redirectPath);
+        if (result.success) {
+            successMessage.value = 'Inicio de sesión exitoso';
+
+            // Pequeña pausa para mostrar el mensaje de éxito
+            setTimeout(() => {
+                // Redirigir según el rol del usuario o la URL de redirección
+                const redirectPath = route.query.redirect || getDefaultRouteByRole(authStore.user.role);
+                router.push(redirectPath);
+            }, 1000);
+        }
 
     } catch (error) {
-        errorMessage.value = error.message || 'Error al iniciar sesión. Verifica tus credenciales.';
+        console.error('Error en login:', error);
+
+        // Manejar diferentes tipos de errores
+        if (error.message.includes('401') || error.message.includes('Credenciales')) {
+            errorMessage.value = 'Email o contraseña incorrectos';
+        } else if (error.message.includes('422') || error.message.includes('validación')) {
+            errorMessage.value = 'Datos de entrada inválidos';
+        } else if (error.message.includes('network') || error.message.includes('Network')) {
+            errorMessage.value = 'Error de conexión. Verifica tu internet';
+        } else {
+            errorMessage.value = error.message || 'Error al iniciar sesión. Intenta nuevamente';
+        }
     }
 };
 
 const getDefaultRouteByRole = (role) => {
-    switch (role) {
-        case 'admin':
-            return '/admin/dashboard';
-        case 'TiSupport':
-            return '/support/dashboard';
-        case 'client':
-            return '/client';
-        default:
-            return '/';
-    }
+    const roleRoutes = {
+        'admin': '/admin/home-admin',
+        'TiSupport': '/support/home-support',
+        'client': '/client'
+    };
+
+    return roleRoutes[role] || '/';
 };
 
+const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+
+// Auto-llenado para desarrollo (remover en producción)
 onMounted(() => {
-    // Solo para desarrollo - quitar en producción
+    // Solo para desarrollo
     if (import.meta.env.DEV) {
-        email.value = 'prueba@ejemplo.com';
-        password.value = '12345678';
-        remember.value = true;
+        form.email = 'mario@gmail.com';
+        form.password = '12345678';
+        form.remember = true;
     }
 });
 </script>

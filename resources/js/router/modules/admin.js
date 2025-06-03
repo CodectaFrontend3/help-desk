@@ -7,8 +7,8 @@ import AdminTickets from "@/views/Admin/AdminTickets.vue";
 
 export default [
     {
-        path: "dashboard",
-        name: "AdminDashboard",
+        path: "home-admin",
+        name: "HomeAdmin",
         component: HomeAdmin,
         meta: { title: "Panel de Administración", roles: ["admin"] },
     },

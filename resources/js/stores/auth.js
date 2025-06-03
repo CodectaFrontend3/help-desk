@@ -1,217 +1,195 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
+import ApiService from "@/services/ApiServices";
 
-export const useAuthStore = defineStore('auth', () => {
-  // Estado
-  const user = ref(null)
-  const token = ref(null)
-  const loading = ref(false)
+export const useAuthStore = defineStore("auth", () => {
+    // Estado
+    const user = ref(null);
+    const token = ref(null);
+    const loading = ref(false);
+    const checkingAuth = ref(false);
 
-  // Getters computados
-  const isAuthenticated = computed(() => !!token.value && !!user.value)
-  const userRole = computed(() => user.value?.role || null)
+    // Getters computados
+    const isAuthenticated = computed(() => !!token.value && !!user.value);
+    const userRole = computed(() => user.value?.role || null);
 
-  // Simulación de usuarios para desarrollo
-  const mockUsers = [
-    {
-      id: 1,
-      email: 'admin@ejemplo.com',
-      password: '12345678',
-      name: 'Administrador',
-      role: 'admin'
-    },
-    {
-      id: 2,
-      email: 'soporte@ejemplo.com',
-      password: '12345678',
-      name: 'Soporte TI',
-      role: 'TiSupport'
-    },
-    {
-      id: 3,
-      email: 'cliente@ejemplo.com',
-      password: '12345678',
-      name: 'Cliente',
-      role: 'client'
-    },
-    {
-      id: 4,
-      email: 'prueba@ejemplo.com',
-      password: '12345678',
-      name: 'Usuario Prueba',
-      role: 'client'
-    }
-  ]
+    // Función para obtener datos del usuario desde la API
+    // Ahora usa ApiService.get
+    const fetchUserProfile = async (authToken) => {
+        try {
+            // ApiService.setAuthToken se llama antes de cada petición autenticada para asegurar que el token esté en los headers de Axios. Sin embargo, como ApiService ya tiene un interceptor que añade el token de localStorage, no es estrictamente necesario llamarlo aquí si el token ya está en localStorage. Para consistencia, lo dejamos para la primera vez que se carga el perfil.
+            ApiService.setAuthToken(authToken); // Asegura que ApiService use este token
 
-  // Función para simular login (reemplazar con API real)
-  const mockLogin = async (credentials) => {
-    // Simular delay de red
-    await new Promise(resolve => setTimeout(resolve, 1000))
+            const userData = await ApiService.get("/user"); // Usa el método GET de ApiService
+            return userData;
+        } catch (error) {
+            console.error("Error obteniendo perfil de usuario:", error);
+            throw error;
+        }
+    };
 
-    const user = mockUsers.find(u =>
-      u.email === credentials.email && u.password === credentials.password
-    )
+    // Acciones
+    const login = async (credentials) => {
+        loading.value = true;
+        try {
+            // Usamos ApiService.post para la petición de login
+            const loginResponse = await ApiService.post("/login", {
+                email: credentials.email,
+                password: credentials.password,
+            });
 
-    if (!user) {
-      throw new Error('Credenciales inválidas')
-    }
+            let userData = null;
+            if (loginResponse.token) {
+                // Una vez que tenemos el token del login, lo establecemos en ApiService
+                // para que las futuras peticiones lo incluyan automáticamente.
+                ApiService.setAuthToken(loginResponse.token);
 
-    return {
-      token: `mock-token-${user.id}-${Date.now()}`,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
-    }
-  }
+                try {
+                    userData = await fetchUserProfile(loginResponse.token); // Pasamos el token explícitamente a fetchUserProfile
+                } catch (error) {
+                    console.warn(
+                        "No se pudo obtener el perfil completo, usando datos básicos"
+                    );
+                    userData = {
+                        email: credentials.email,
+                        name: credentials.email.split("@")[0],
+                        role: "client", // rol por defecto
+                    };
+                }
+            }
 
-  // Acciones
-  const login = async (credentials) => {
-    loading.value = true
-    try {
-      let data
+            // Guardar token y usuario
+            token.value = loginResponse.token;
+            user.value = userData;
 
-      // Si estás en desarrollo, usar login simulado
-      if (import.meta.env.DEV || !import.meta.env.VITE_API_URL) {
-        data = await mockLogin(credentials)
-      } else {
-        // Producción - llamada real a la API
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(credentials),
-        })
+            // Persistir en localStorage si el usuario eligió recordar
+            if (credentials.remember) {
+                localStorage.setItem("token", loginResponse.token);
+                localStorage.setItem("user", JSON.stringify(userData));
+                localStorage.setItem("remember", "true");
+            } else {
+                // Si no quiere recordar, usar sessionStorage
+                sessionStorage.setItem("token", loginResponse.token);
+                sessionStorage.setItem("user", JSON.stringify(userData));
+            }
 
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.message || 'Credenciales inválidas')
+            return {
+                success: true,
+                token: loginResponse.token,
+                user: userData,
+            };
+        } catch (error) {
+            console.error("Error en login:", error);
+            // ApiService ya maneja muchos errores, pero aquí puedes relanzar para UI.
+            throw new Error(error.message || "Error al iniciar sesión");
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const logout = async () => {
+        try {
+            // Si hay un token, intentamos cerrar sesión en el backend.
+            // ApiService ya tiene el token en sus headers si lo establecimos antes.
+            if (token.value) {
+                try {
+                    await ApiService.post("/logout"); // Usa el método POST de ApiService para logout
+                } catch (error) {
+                    console.warn("Error al hacer logout en servidor:", error);
+                }
+            }
+        } finally {
+            // Limpiar estado local siempre
+            user.value = null;
+            token.value = null;
+
+            // Limpiar el token también de ApiService
+            ApiService.clearAuthToken();
+
+            // Limpiar almacenamiento
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("remember");
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("user");
+        }
+    };
+
+    const checkAuth = async () => {
+        let savedToken = localStorage.getItem("token");
+        let savedUser = localStorage.getItem("user");
+
+        if (!savedToken) {
+            savedToken = sessionStorage.getItem("token");
+            savedUser = sessionStorage.getItem("user");
         }
 
-        data = await response.json()
-      }
+        if (savedToken && savedUser) {
+            try {
+                token.value = savedToken;
+                user.value = JSON.parse(savedUser);
 
-      // Guardar token y usuario
-      token.value = data.token
-      user.value = data.user
+                // IMPORTANTE: Establece el token en ApiService cuando lo recuperas del almacenamiento
+                ApiService.setAuthToken(savedToken); //
 
-      // Persistir en localStorage si el usuario eligió recordar
-      if (credentials.remember) {
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
-        localStorage.setItem('remember', 'true')
-      } else {
-        // Si no quiere recordar, usar sessionStorage
-        sessionStorage.setItem('token', data.token)
-        sessionStorage.setItem('user', JSON.stringify(data.user))
-      }
+                const isValid = await checkAuthStatus();
+                return isValid;
+            } catch (error) {
+                console.error("Error al parsear usuario guardado:", error);
+                logout();
+                return false;
+            }
+        }
 
-      return data
-    } catch (error) {
-      console.error('Error en login:', error)
-      throw error
-    } finally {
-      loading.value = false
-    }
-  }
+        return false;
+    };
 
-  const logout = () => {
-    // Limpiar estado
-    user.value = null
-    token.value = null
+    const initializeAuth = () => {
+        return checkAuth();
+    };
 
-    // Limpiar almacenamiento
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    localStorage.removeItem('remember')
-    sessionStorage.removeItem('token')
-    sessionStorage.removeItem('user')
-  }
+    const checkAuthStatus = async () => {
+        if (!token.value) return false;
 
-  const initializeAuth = () => {
-    // Intentar recuperar de localStorage primero
-    let savedToken = localStorage.getItem('token')
-    let savedUser = localStorage.getItem('user')
-    let isRemembered = localStorage.getItem('remember')
+        try {
+            // ApiService ya tiene el token si checkAuth lo estableció o si viene de un login.
+            const userData = await ApiService.get("/user"); // Usa ApiService.get
+            user.value = userData;
+            return true;
+        } catch (error) {
+            console.error("Error verificando estado de autenticación:", error);
+            logout();
+            return false;
+        }
+    };
 
-    // Si no está en localStorage, verificar sessionStorage
-    if (!savedToken) {
-      savedToken = sessionStorage.getItem('token')
-      savedUser = sessionStorage.getItem('user')
-    }
+    const hasRole = (requiredRole) => {
+        if (!user.value) return false;
+        if (Array.isArray(requiredRole)) {
+            return requiredRole.includes(user.value.role);
+        }
+        return user.value.role === requiredRole;
+    };
 
-    if (savedToken && savedUser) {
-      token.value = savedToken
-      try {
-        user.value = JSON.parse(savedUser)
-      } catch (error) {
-        console.error('Error parsing saved user:', error)
-        logout()
-      }
-    }
-  }
+    const hasAnyRole = (roles) => {
+        if (!user.value || !Array.isArray(roles)) return false;
+        return roles.includes(user.value.role);
+    };
 
-  const checkAuthStatus = async () => {
-    if (!token.value) return false
+    
 
-    try {
-      // En desarrollo, simplemente verificar si el token existe
-      if (import.meta.env.DEV || !import.meta.env.VITE_API_URL) {
-        return !!user.value
-      }
-
-      // En producción, verificar con el servidor
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token.value}`,
-        },
-      })
-
-      if (!response.ok) {
-        logout()
-        return false
-      }
-
-      const userData = await response.json()
-      user.value = userData
-      return true
-    } catch (error) {
-      console.error('Error checking auth status:', error)
-      logout()
-      return false
-    }
-  }
-
-  const hasRole = (requiredRole) => {
-    if (!user.value) return false
-    if (Array.isArray(requiredRole)) {
-      return requiredRole.includes(user.value.role)
-    }
-    return user.value.role === requiredRole
-  }
-
-  const hasAnyRole = (roles) => {
-    if (!user.value || !Array.isArray(roles)) return false
-    return roles.includes(user.value.role)
-  }
-
-  return {
-    // Estado
-    user,
-    token,
-    loading,
-    // Getters
-    isAuthenticated,
-    userRole,
-    // Acciones
-    login,
-    logout,
-    initializeAuth,
-    checkAuthStatus,
-    hasRole,
-    hasAnyRole,
-  }
-})
+    return {
+        user,
+        token,
+        loading,
+        isAuthenticated,
+        userRole,
+        login,
+        logout,
+        initializeAuth,
+        checkAuth,
+        checkAuthStatus,
+        hasRole,
+        hasAnyRole,
+    };
+});

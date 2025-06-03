@@ -23,7 +23,24 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $request->user());
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    // Obtener el usuario autenticado
+    $user = $request->user();
+
+    // Obtener el primer rol del usuario (si tiene roles)
+    $firstRole = $user->getRoleNames()->first(); // Solo el primer rol
+
+    // Convertir el usuario a array y eliminar la clave 'roles'
+    $userArray = $user->toArray();
+    unset($userArray['roles']);  // Eliminar la propiedad 'roles'
+
+    // Añadir el primer rol al array
+    $userArray['role'] = $firstRole;
+
+    // Devolver la respuesta JSON con el primer rol
+    return response()->json($userArray);
+});
+
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
