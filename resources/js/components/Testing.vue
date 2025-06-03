@@ -4,8 +4,8 @@
   <div class="main">
     <Titulos title="Gestión de Registros" />
     <div class="content">
-      <NavBar />
-      <table-component />
+      <NavBar @filtro-aplicado="filtrarTabla"/>
+      <TableComponent :filtro="filtroActual"/>
     </div>
 
   </div>
@@ -17,6 +17,7 @@ import TableComponent from "@/components/Commons/TableComponent.vue";
 import MyMenu from "@/components/ForMenu/MyMenu.vue";
 import Titulos from "@/components/ForMenu/Titulos.vue";
 import NavBar from "@/components/Commons/NavBar.vue";
+import TableComponent from "./Commons/TableComponent.vue";
 export default {
     name: 'Testing',
     components: {
@@ -27,9 +28,14 @@ export default {
     },
   data() {
       return {
-
+        filtroActual: '',
       }
+  },
+  methods: {
+  filtrarTabla(filtro) {
+    this.filtroActual = filtro;
   }
+}
 }
 </script>
 

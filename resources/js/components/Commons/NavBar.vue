@@ -1,20 +1,37 @@
 <script>
+import axios from 'axios';
 export default {
     name: "NavBar",
     data() {
         return {
             sekker: true, // Probablemente una bandera para controlar el estado de algo en la barra de navegación (nombre no muy descriptivo)
             searchQuery: '',
+            cliente: [],
         };
     },
     mounted() {
-    axios.get('/../routes/api.php')
-      .then(response => {
-        this.cliente = response.data;
-      })
-      .catch(error => {
-        console.error('Error al cargar clientes:', error);
-      });
+      let endpoint = '';
+
+        // Puedes ajustar esto según las rutas de tu router
+        const currentPath = this.$route.path;
+
+        if (currentPath.includes('/clients')) {
+            endpoint = '/api/clientes'; // ejemplo para vista de clientes
+        } else if (currentPath.includes('/company')) {
+            endpoint = '/api/empresas'; // ejemplo para vista de empresas
+        } else if (currentPath.includes('/soporte-ti')) {
+            endpoint = '/api/soporte-clientes'; // ejemplo para soporte técnico
+        } else {
+            endpoint = '/api/clientes'; // por defecto
+        }
+
+        axios.get(endpoint)
+            .then(response => {
+            this.cliente = response.data;
+            })
+            .catch(error => {
+            console.error('Error al cargar datos:', error);
+            });
     },
     computed: {
         // Obtiene la configuración del navbar desde los metadatos de la ruta actual
@@ -195,6 +212,7 @@ export default {
         },
         buscar() {
             console.log('Buscando:', this.searchQuery);
+            this.$emit('filtro-aplicado', this.searchQuery); // enviar el filtro al padre
             // Aquí puedes ejecutar una API o usar `datosFiltrados`, etc.
         },
     },
@@ -367,12 +385,16 @@ export default {
             <div class="seeker seeker__general" :class="{ width__sekker: this.$route.name === 'Tickets activos',}">
                 <input type="text" title="Buscar" placeholder="Search" v-model="searchQuery" @keyup.enter="buscar"/>
                 <span class="icon pi pi-search"></span>
+
             </div>
+
             <button v-if="showAdd" title="Agregar registro" class="add">
                 <span class="pi pi-plus"></span>
                 <span>Agregar</span>
             </button>
+
         </div>
+
     </nav>
 </template>
 

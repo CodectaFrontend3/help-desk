@@ -18,6 +18,14 @@ export default {
             type: String,
             default: "company",
         },
+        searchTerm: {
+            type: String,
+            default: ''
+        },
+         filtro: {
+            type: String,
+            default: ''
+        }
     },
     data() {
         return {
@@ -28,6 +36,7 @@ export default {
             selectedClientId: null,
             selectedRows: [], // Array para almacenar las filas seleccionadas
             selectAll: false, // Estado del checkbox "Seleccionar todo"
+            filteredData: [],
             // Configuración centralizada de botones
             buttonConfig: {
                 view: {
@@ -106,6 +115,14 @@ export default {
             if (routeName === "Clientes - Empresa - Administrador") return "company";
             if (routeName === "Clientes - Persona Natural - Soporte TI") return "c-person";
             return "company"; // valor por defecto
+        },
+        datosFiltrados() {
+            if (!this.filtro) return this.datosOriginales; // Asume que tienes `datosOriginales`
+            return this.datosOriginales.filter(item =>
+            Object.values(item).some(valor =>
+                String(valor).toLowerCase().includes(this.filtro.toLowerCase())
+            )
+            );
         },
     },
     methods: {
@@ -390,13 +407,13 @@ export default {
         <!-- Paginador funcional -->
         <Paginator
             :rows="rows"
-            :totalRecords="data.length"
+            :totalRecords="filteredData.length"
             :first="first"
             :rowsPerPageOptions="rowsPerPageOptions"
             @page="onPageChange"
             class="paginator"
         />
-
+        <!--:totalRecords="data.length"-->
         <!-- Popup -->
         <PopCliente
             v-if="entityType === 'person' || entityType === 'c-person'"
