@@ -34,6 +34,7 @@ it('show a specific software', function () {
              ->assertJsonFragment(['id' => $software->id]);
 });
 
+<<<<<<< HEAD
 it('update a software', function () {
     $software = Software::factory()->create();
 
@@ -54,4 +55,25 @@ it('delete a software', function () {
 
     $response->assertNoContent();
     $this->assertDatabaseMissing('softwares', ['id' => $software->id]);
+=======
+it('puede actualizar un software', function () {
+    $software = Software::factory()->create();
+
+    $nuevoProveedor = 'Proveedor Modificado';
+    $data = [...$software->toArray(), 'proveedor' => $nuevoProveedor];
+
+    $response = $this->putJson("/api/software/{$software->id}", $data);
+
+    $response->assertNoContent();
+    $this->assertDatabaseHas('software', ['proveedor' => $nuevoProveedor]);
+});
+
+it('puede eliminar un software', function () {
+    $software = Software::factory()->create();
+
+    $response = $this->deleteJson("/api/software/{$software->id}");
+
+    $response->assertNoContent();
+    $this->assertDatabaseMissing('software', ['id' => $software->id]);
+>>>>>>> feature/software
 });
