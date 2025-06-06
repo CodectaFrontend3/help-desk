@@ -6,8 +6,11 @@ use App\Http\Requests\SoftwareRequest;
 use App\Models\Software;
 use Illuminate\Http\Request;
 
-class SoftwareController extends Controller
+class SoftwareController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('Software');
+    }
     /**
      * Display a listing of the resource.
      */

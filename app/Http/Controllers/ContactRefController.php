@@ -6,8 +6,11 @@ use App\Models\ContactRef;
 use App\Http\Requests\ContactRefRequest;
 use Illuminate\Http\Request;
 
-class ContactRefController extends Controller
+class ContactRefController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('ContactRef');
+    }
     /**
      * Display a listing of the resource.
      */

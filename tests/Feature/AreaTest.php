@@ -6,6 +6,7 @@ use App\Models\Company;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+beforeEach(function () {$this->setTestUserWithPermissions("Area");});
 
 // Test: crear un área
 it('create an area', function () {

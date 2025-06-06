@@ -6,8 +6,11 @@ use App\Http\Requests\ClientGRequest;
 use App\Models\ClientG;
 use Illuminate\Http\Request;
 
-class ClientGController extends Controller
+class ClientGController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('ClientG');
+    }
     /**
      * Display a listing of the resource.
      */

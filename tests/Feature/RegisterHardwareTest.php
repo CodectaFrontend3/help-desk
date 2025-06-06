@@ -4,6 +4,7 @@ use App\Models\RegisterHardware;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+beforeEach(function () {$this->setTestUserWithPermissions("RegisterHardware");});
 
 it('list of all register hardwares', function () {
     RegisterHardware::factory()->count(3)->create();

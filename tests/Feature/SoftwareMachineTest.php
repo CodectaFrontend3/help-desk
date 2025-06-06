@@ -6,6 +6,7 @@ use App\Models\Software;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+beforeEach(function () {$this->setTestUserWithPermissions("SoftwareMachine");});
 
 it('list of all software machines', function () {
     SoftwareMachine::factory()->count(3)->create();

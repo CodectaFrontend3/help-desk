@@ -6,8 +6,11 @@ use App\Models\Ticket;
 use App\Http\Requests\TicketRequest;
 use Illuminate\Http\Request;
 
-class TicketController extends Controller
+class TicketController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('Ticket');
+    }
     // Mostrar todos los tickets
     public function index()
     {

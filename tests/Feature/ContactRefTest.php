@@ -7,6 +7,7 @@ use App\Models\Area;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+beforeEach(function () {$this->setTestUserWithPermissions("ContactRef");});
 
 // Test: crear un contacto
 it('create a contact', function () {

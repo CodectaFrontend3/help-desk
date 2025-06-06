@@ -6,8 +6,11 @@ use App\Http\Requests\PlanRequest;
 use App\Models\Plan;
 use Illuminate\Http\Request;
 
-class PlanController extends Controller
+class PlanController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('Plan');
+    }
     public function index()
     {
         return response()->json(Plan::all());
