@@ -7,11 +7,11 @@
 </head>
 <body>
     <div class="form-contenedor">
-        <h2 class="form-titulo">Registrar</h2>
+        <h2 class="form-titulo">Registrar Administrador</h2>
         <form action="{{ url('/api/register') }}" method="POST">
             @csrf
             <div class="campos-group">
-                <input type="hidden" name="rol" value="client">
+                <input type="hidden" name="rol" value="admin">
                 <div class="form-group">
                     <label for="name">Nombre:</label>
                     <input type="text" id="name" name="name" placeholder="Nombre del usuario" required>

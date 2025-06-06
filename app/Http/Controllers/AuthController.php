@@ -35,11 +35,16 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'rol' => 'required'
         ]);
 
         if ($validator->fails()) {
             $error = $validator->errors()->first();
-            return view('register', ['error' => $error]);
+            if ($request->rol === 'admin') {
+                return view('registerAdmin', ['error' => $error]);
+            } else {
+                return view('register', ['error' => $error]);
+            }
         }
         $user = User::create([
             'name' => $request->name,
@@ -47,7 +52,12 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $user->assignRole('client');
+        if ($request->rol === 'admin') {
+            $user->assignRole('admin');
+        } else {
+            $user->assignRole('client');
+        }
+
 
         $token = $user->createToken('token');
 
@@ -62,5 +72,11 @@ class AuthController extends Controller
     {
         return view('register');
     }
+
+    public function viewRegisterAdmin()
+    {
+        return view('registerAdmin');
+    }
+
 
 }
