@@ -12,6 +12,7 @@ class ContactRef extends Model
     protected $fillable = [
         'company_id',
         'natural_person_id',
+        'area_id',
         'name',
         'address',
         'email',
@@ -27,6 +28,11 @@ class ContactRef extends Model
     public function naturalPerson()
     {
         return $this->belongsTo(NaturalPerson::class);
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
     }
 
 }

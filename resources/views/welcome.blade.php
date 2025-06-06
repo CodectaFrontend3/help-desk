@@ -5,7 +5,9 @@
            <meta charset="UTF-8">
            <meta name="viewport" content="width=device-width, initial-scale=1.0">
            <title>Laravel + Vue.js</title>
-           @vite('resources/js/main.js')
+           @if (!app()->environment('testing'))
+            @vite('resources/js/main.js')
+        @endif
        </head>
 
        <body>

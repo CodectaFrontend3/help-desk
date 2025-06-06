@@ -23,6 +23,7 @@ class TicketFactory extends Factory
             'area' => $this->faker->word(),
             'branch' => $this->faker->city(),
             'state' => $this->faker->randomElement(['Abierto', 'En Proceso', 'Cerrado']),
+            'is_supervised'=> $this->faker->boolean,
             'registration_date' => $this->faker->date(),
         ];
     }

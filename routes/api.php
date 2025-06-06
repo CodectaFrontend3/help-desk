@@ -37,5 +37,5 @@ Route::apiResource('/softwareMachine', SoftwareMachineController::class);
 Route::apiResource('/accountWorker', AccountWorkerController::class);
 Route::apiResource('/branches', BranchController::class);
 Route::resource('/areas', AreaController::class);
-Route::resource('/contact_refs', ContactRefController::class);
+Route::apiResource('/contact_refs', ContactRefController::class);
 Route::apiResource('/tickets', TicketController::class);

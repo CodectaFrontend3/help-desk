@@ -29,6 +29,7 @@ class TicketRequest extends FormRequest
             'area' => 'required|string|max:255',
             'branch' => 'required|string|max:255',
             'state' => 'required|string|max:255',
+            'is_supervised'=>'boolean',
             'registration_date' => 'required|date',
         ];
     }

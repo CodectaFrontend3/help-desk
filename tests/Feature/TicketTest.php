@@ -18,6 +18,7 @@ it('create a ticket', function () {
         'area' => 'Soporte',
         'branch' => 'Sucursal Lima',
         'state' => 'Abierto',
+        'is_supervised'=>true,
         'registration_date' => '2025-05-05',
     ]);
 
@@ -68,6 +69,7 @@ it('update a ticket', function () {
         'area' => 'TI',
         'branch' => 'Sucursal Sur',
         'state' => 'Cerrado',
+        'is_supervised'=>true,
         'registration_date' => '2025-05-05',
     ]);
 

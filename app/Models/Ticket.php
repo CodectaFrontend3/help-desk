@@ -17,6 +17,7 @@ class Ticket extends Model
         'area',
         'branch',
         'state',
+        'is_supervised',
         'registration_date',
     ];
 
