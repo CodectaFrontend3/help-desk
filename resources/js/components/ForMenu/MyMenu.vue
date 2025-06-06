@@ -1,64 +1,95 @@
 <script>
 import MenuItem from "./MenuItem.vue";
-import { mapState } from "vuex";
+import { computed } from "vue";
+import { useAuthStore } from '@/stores/auth'; // Asegúrate de que esta ruta sea correcta
 
 export default {
     name: "MyMenu",
     components: { MenuItem },
-    computed: {
-        ...mapState(["userType"]),
-        model() {
-            return [
-                { label: "Home - Clientes (Gerente y sus trabajadores)", icon: "pi pi-fw pi-home", to: "/" },
-                { label: "Home - Administrador", icon: "pi pi-fw pi-home", to: "/home-admin" },
-                { label: "Home - Soporte Técnico", icon: "pi pi-fw pi-home", to: "/home-support" },
+    setup() {
+        const authStore = useAuthStore();
+
+        const ROLES = {
+            ADMIN: "admin",
+            CLIENT: "client",
+            TI_SUPPORT: "TiSupport",
+        };
+
+        const model = computed(() => {
+            const allMenuItems = [
+                // --- Menú para Administrador ---
+                { label: "Home - Administrador", icon: "pi pi-fw pi-home", to: { name: 'AdminDashboard' }, roles: [ROLES.ADMIN] }, // CORREGIDO: "HomeAdmin" a "AdminDashboard"
                 {
                     label: "Administrador - Tickets",
                     icon: "pi pi-fw pi-ticket",
-                    to: "/admin-tickets",
+                    to: { name: 'AdminTickets' },
+                    roles: [ROLES.ADMIN],
                 },
                 {
                     label: "Administrador - Clientes",
                     icon: "pi pi-fw pi-user",
-                    to: "/clients-admin",
+                    to: { name: 'AdminClients' },
+                    roles: [ROLES.ADMIN],
                 },
                 {
                     label: "Administrador - Plan de soporte",
                     icon: "pi pi-fw pi-users",
-                    to: "/admin-support",
+                    to: { name: 'AdminSupport' },
+                    roles: [ROLES.ADMIN],
                 },
-                {
-                    label: "Soporte TI - Tickets",
-                    icon: "pi pi-fw pi-ticket",
-                    to: "/tickets",
-                },
-                {
-                    label: "Soporte TI - Clientes",
-                    icon: "pi pi-fw pi-users",
-                    to: "/clients-soporte-ti",
-                },
-                {
-                    label: "Soporte TI - Plan de soporte",
-                    icon: "pi pi-fw pi-users",
-                    to: "/soporte-ti",
-                },
-                {
-                    label: "Soporte TI - Empresa",
-                    icon: "pi pi-fw pi-users",
-                    to: "/company-soporte-ti",
-                },
+
+                // --- Menú para Soporte TI ---
+                    { label: "Home - Soporte Técnico", icon: "pi pi-fw pi-home", to: { name: 'TiSupportDashboard' }, roles: [ROLES.TI_SUPPORT] },
+                    {
+                        label: "Soporte TI - Tickets",
+                        icon: "pi pi-fw pi-ticket",
+                        to: { name: 'TiSupportTickets' }, // ASUMIENDO que defines esta ruta en support.js
+                        roles: [ROLES.TI_SUPPORT],
+                    },
+                    {
+                        label: "Soporte TI - Clientes",
+                        icon: "pi pi-fw pi-users",
+                        to: { name: 'TiSupportClients' }, // ASUMIENDO que defines esta ruta en support.js
+                        roles: [ROLES.TI_SUPPORT],
+                    },
+                    {
+                        label: "Soporte TI - Empresa",
+                        icon: "pi pi-fw pi-users",
+                        to: { name: 'TiSupportCompanies' }, // ASUMIENDO que defines esta ruta en support.js
+                        roles: [ROLES.TI_SUPPORT],
+                    },
+
+                // --- Menú para Gerente y Empleados (rol 'client') ---
+                { label: "Home - Clientes (Gerente y sus trabajadores)", icon: "pi pi-fw pi-home", to: { name: 'ClientDashboard' }, roles: [ROLES.CLIENT] },
                 {
                     label: "Gerente y Empleados - tickets",
                     icon: "pi pi-fw pi-users",
-                    to: "/client-tickets",
+                    to: { name: 'ClientTickets' },
+                    roles: [ROLES.CLIENT],
                 },
                 {
                     label: "Gerente y Empleados - Equipos",
                     icon: "pi pi-fw pi-users",
-                    to: "/client-equipments",
+                    to: { name: 'ClientEquipment' },
+                    roles: [ROLES.CLIENT],
                 },
             ];
-        },
+
+            return allMenuItems.filter(item => {
+                if (!item.roles || item.roles.length === 0) {
+                    return true;
+                }
+                return authStore.isAuthenticated && authStore.hasAnyRole(item.roles);
+            });
+        });
+
+        return {
+            model,
+            user: computed(() => authStore.user),
+            isAuthenticated: computed(() => authStore.isAuthenticated),
+            userRole: computed(() => authStore.userRole),
+            logout: authStore.logout
+        };
     },
 };
 </script>
@@ -69,8 +100,8 @@ export default {
             <div class="profile-img">
                 <img src="../assets/user.png" width="120px" alt="" />
             </div>
-            <p class="profile-name">Beto Ortiz</p>
-            <h4 class="profile-especialization">Administrador</h4>
+            <p class="profile-name">{{ user?.name || 'Invitado' }}</p>
+            <h4 class="profile-especialization">{{ userRole ? userRole.charAt(0).toUpperCase() + userRole.slice(1) : 'Sin rol' }}</h4>
         </div>
         <ul class="layout-menu">
             <template v-for="(item, i) in model" :key="i">
@@ -82,7 +113,7 @@ export default {
                 <span class="pi pi-user"></span>
                 <span>Perfil</span>
             </button>
-            <button class="logout">
+            <button v-if="isAuthenticated" class="logout" @click="logout">
                 <span class="pi pi-sign-out"></span>
                 <span>Cerrar Sesión</span>
             </button>

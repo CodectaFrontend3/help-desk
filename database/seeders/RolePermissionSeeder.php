@@ -27,8 +27,10 @@ class RolePermissionSeeder extends Seeder
 
         $client = Role::firstOrCreate(['name' => 'client']);
         $technical = Role::firstOrCreate(['name' => 'technical']);
+        $tiSupport = Role::firstOrCreate(['name' => 'TiSupport']);
         $admin = Role::firstOrCreate(['name' => 'admin']);
 
+        // CLIENTE
         $modelsClient = ['ClientG', 'Software','Plan','RegisterHardware','AccountRegister','Company','NaturalPerson','Branch','Machine','SoftwareMachine',
                 'AccountWorker','Area','Hardware','ContactRef','Ticket'];
         $termsClient = ['view'];
@@ -36,6 +38,7 @@ class RolePermissionSeeder extends Seeder
         //$permissionsClient = ['edit Software'];
         $client->syncPermissions($permissionsClient);
 
+        // TECNICO
         $modelsTechnical = ['ClientG', 'Software','Plan','RegisterHardware','AccountRegister','Company','NaturalPerson','Branch','Machine','SoftwareMachine',
                 'AccountWorker','Area','Hardware','ContactRef','Ticket'];
         $termsTechnical = ['view','create'];
@@ -43,6 +46,14 @@ class RolePermissionSeeder extends Seeder
         $permissionsTechnical = $this->generatePermissions($modelsTechnical, $termsTechnical, $permTechnicalExtra);
         //unset($permissionsTechnical[array_search('delete ClientG', $permissionsTechnical)]);
         $technical->syncPermissions($permissionsTechnical);
+
+        // SOPORTE TI
+        $modelsTiSupport = ['ClientG', 'Software','Plan','RegisterHardware','AccountRegister','Company','NaturalPerson','Branch','Machine','SoftwareMachine', 'AccountWorker','Area','Hardware','ContactRef','Ticket'];
+        $termsTiSupport = ['view', 'create', 'edit'];
+        $permissionsTiSupport = $this->generatePermissions($modelsTiSupport, $termsTiSupport);
+
+        $tiSupport->syncPermissions($permissionsTiSupport);
+
 
         $admin->syncPermissions($permissions);
     }
