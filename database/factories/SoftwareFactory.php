@@ -2,10 +2,7 @@
 
 namespace Database\Factories;
 
-<<<<<<< HEAD
 use App\Models\Software;
-=======
->>>>>>> feature/software
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

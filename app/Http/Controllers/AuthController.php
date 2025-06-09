@@ -58,14 +58,7 @@ class AuthController extends Controller
             $user->assignRole('client');
         }
 
-
-        $token = $user->createToken('token');
-
-        $tokenModel = $token->accessToken;
-        $tokenModel->expires_at = Carbon::now()->addWeeks(2);
-        $tokenModel->save();
-
-        return response()->json(['user' => $user, 'token' => $token->plainTextToken], 201);
+        return view('welcome');
     }
 
     public function viewRegister()
