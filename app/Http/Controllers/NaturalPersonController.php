@@ -54,4 +54,19 @@ class NaturalPersonController extends Controller
         $naturalPerson->delete();
         return response()->noContent();
     }
+    /**
+     * buscar en cliente.
+     */
+    public function buscar(Request $request)
+    {
+        $query = $request->input('query');
+
+        $resultados = NaturalPerson::where('name', 'like', "%{$query}%")
+            ->orWhere('dni', 'like', "%{$query}%")
+            ->orWhere('phone', 'like', "%{$query}%")
+            ->orWhere('email', 'like', "%{$query}%")
+            ->get();
+
+        return response()->json($resultados);
+    }
 }

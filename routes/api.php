@@ -22,6 +22,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 Route::get('/natural-persons/{id}/contactos', [ContactRefController::class, 'getByPersonNP']);
+Route::get('/natural-person/buscar', [NaturalPersonController::class, 'buscar']);
 Route::get('/companies/{id}/contactos', [ContactRefController::class, 'getByPersonC']);
 
 //routes en ingles

@@ -1,6 +1,7 @@
 <script>
 import PopCliente from "../Commons/PopCliente.vue";
 import PopCompany from "../Commons/PopCompany.vue";
+import person from "../Tabla/natural-person.vue";
 import Paginator from "primevue/paginator";
 
 export default {
@@ -9,6 +10,7 @@ export default {
         PopCliente,
         PopCompany,
         Paginator,
+        person,
     },
     props: {
         columns: Array,
@@ -426,6 +428,8 @@ export default {
             :visible="showPopup"
             :cliente-id="selectedClientId"
             @close="showPopup = false" />
+        <person
+         />
     </div>
 </template>
 
