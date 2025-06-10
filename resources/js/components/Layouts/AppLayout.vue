@@ -2,8 +2,10 @@
     <MyMenu />
     <div class="main">
         <div class="main__head">
-            <Titulos v-if="showTitle" />
-            <NavBar v-if="showNavBar" />
+            <!-- El Título siempre se mostrará -->
+            <Titulos />
+            <!-- La barra de navegación (NavBar) se mostrará SOLO si $route.meta.hideNavbar NO es true -->
+            <NavBar v-if="!$route.meta.hideNavbar" />
         </div>
 
         <div class="content">
@@ -24,31 +26,8 @@ export default {
         Titulos,
         NavBar,
     },
-    data() {
-        return {
-            showTitle: true,
-            showNavBar: true,
-        };
-    },
-    watch: {
-        // Observamos el objeto $route completo para cambios en la ruta
-        $route(to, from) {
-            if (to.name === "Inicio" || to.name === "HomeAdmin" || to.name === "HomeSupport") {
-                this.showTitle = false;
-                this.showNavBar = false;
-            } else {
-                this.showTitle = true;
-                this.showNavBar = true;
-            }
-        },
-    },
-    mounted() {
-        // Inicia la lógica cuando se monta el componente
-        if (this.$route.name === "Inicio" || this.$route.name === "HomeAdmin" || this.$route.name === "HomeSupport") {
-            this.showTitle = false;
-            this.showNavBar = false;
-        }
-    },
+    // Eliminamos 'data', 'watch' y 'mounted' porque ya no son necesarios
+    // La lógica de visibilidad se maneja directamente en el template con $route.meta
 };
 </script>
 

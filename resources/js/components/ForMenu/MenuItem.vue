@@ -1,200 +1,134 @@
-<script setup>
-import { ref, onBeforeMount, watch } from "vue";
-import { useRoute } from "vue-router";
-import { useLayout } from "./layout.js";
-
-const route = useRoute();
-const { layoutState, setActiveMenuItem, onMenuToggle } = useLayout();
-
-const props = defineProps({
-    item: {
-        type: Object,
-        default: () => ({}),
-    },
-    index: {
-        type: Number,
-        default: 0,
-    },
-    root: {
-        type: Boolean,
-        default: true,
-    },
-    parentItemKey: {
-        type: String,
-        default: null,
-    },
-});
-
-const isActiveMenu = ref(false);
-const itemKey = ref(null);
-
-// Configura el key del ítem y si debe estar expandido al inicio
-onBeforeMount(() => {
-    itemKey.value = props.parentItemKey
-        ? `${props.parentItemKey}-${props.index}`
-        : String(props.index);
-
-    const activeItem = layoutState.activeMenuItem;
-    isActiveMenu.value =
-        activeItem === itemKey.value ||
-        activeItem?.startsWith(`${itemKey.value}-`);
-});
-
-// Reactiva cuando cambia el ítem activo
-watch(
-    () => layoutState.activeMenuItem,
-    (newVal) => {
-        isActiveMenu.value =
-            newVal === itemKey.value || newVal?.startsWith(`${itemKey.value}-`);
-    }
-);
-
-// Maneja el clic del ítem
-function itemClick(event, item) {
-    if (item.disabled) {
-        event.preventDefault();
-        return;
-    }
-
-    if (
-        (item.to || item.url) &&
-        (layoutState.staticMenuMobileActive || layoutState.overlayMenuActive)
-    ) {
-        onMenuToggle();
-    }
-
-    if (item.command) {
-        item.command({ originalEvent: event, item });
-    }
-
-    const foundItemKey = item.items
-        ? isActiveMenu.value
-            ? props.parentItemKey
-            : itemKey
-        : itemKey.value;
-
-    setActiveMenuItem(foundItemKey);
-}
-
-// ✅ Verifica si la ruta actual coincide o está dentro de la ruta del item
-function checkActiveRoute(item) {
-    if (!item.to) return false;
-    const pattern = new RegExp(`^${item.to}(/|$)`);
-    return pattern.test(route.path);
-}
-</script>
-
 <template>
-    <li
-        :class="{
-            'layout-root-menuitem': root,
-            'active-menuitem': isActiveMenu,
-        }"
-    >
-        <!-- Para rutas internas -->
-        <router-link
-            v-if="item.to && !item.items && item.visible !== false"
-            @click="itemClick($event, item, index)"
-            :class="[item.class, { 'active-route': checkActiveRoute(item) }]"
-            tabindex="0"
-            :to="item.to"
-            class="menu-item"
-        >
-            <i
-                :class="item.icon"
-                class="layout-menuitem-icon"
-                v-if="item.icon"
-            />
-            <img
-                :src="item.svg"
-                class="layout-menuitem-icon"
-                v-if="item.svg"
-                alt=""
-                style="width: 1rem; height: 1rem"
-            />
-            <span class="layout-menuitem-text">{{ item.label }}</span>
-        </router-link>
+    <li :class="{ 'layout-menuitem-category': !item.to && item.label }">
+        <template v-if="!item.to && item.label">
+            <div class="layout-menuitem-root-text" v-if="!root">{{ item.label }}</div>
+        </template>
+        <template v-else>
+            <router-link v-if="item.to" :to="item.to" custom v-slot="{ href, navigate, isActive, isExactActive }">
+                <a :href="href" @click="navigate" :class="{ 'active-route': item.exact ? isExactActive : isActive }">
+                    <i :class="item.icon"></i>
+                    <span>{{ item.label }}</span>
+                    <i v-if="item.items" :class="['pi pi-fw', item.expanded ? 'pi-angle-down' : 'pi-angle-right']"></i>
+                </a>
+            </router-link>
+            <a v-else @click="onMenuItemClick($event, item)" :class="{ 'active-route': isCurrentRouteActive(item) }">
+                <i :class="item.icon"></i>
+                <span>{{ item.label }}</span>
+                <i v-if="item.items" :class="['pi pi-fw', item.expanded ? 'pi-angle-down' : 'pi-angle-right']"></i>
+            </a>
 
-        <!-- Para enlaces externos -->
-        <a
-            v-else-if="item.url && !item.items && item.visible !== false"
-            :href="item.url"
-            @click="itemClick($event, item, index)"
-            :class="item.class"
-            :target="item.target"
-            tabindex="0"
-            class="menu-item"
-        >
-            <i :class="item.icon" class="layout-menuitem-icon"></i>
-            <span class="layout-menuitem-text">{{ item.label }}</span>
-        </a>
+            <Transition v-if="item.items && item.visible !== false" name="layout-submenu-wrapper">
+                <ul v-show="root ? true : item.expanded" class="layout-submenu">
+                    <menu-item v-for="(child, i) in item.items" :key="child.label + i" :item="child" :index="i"></menu-item>
+                </ul>
+            </Transition>
+        </template>
     </li>
 </template>
 
+<script setup>
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+
+const props = defineProps({
+    item: Object,
+    index: Number,
+    root: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const emit = defineEmits(['menuitem-click']);
+
+// Mantén esta función solo si tienes elementos de menú que NO son router-links
+// pero que necesitan resaltar su estado activo basado en la URL.
+// Si todos tus elementos de menú que navegan usan `item.to` y, por lo tanto, `router-link`,
+// entonces esta función y el `v-else` en la plantilla de arriba pueden ser eliminados.
+const isCurrentRouteActive = (menuItem) => {
+    if (!menuItem.to) return false;
+    try {
+        const resolvedRoute = router.resolve(menuItem.to);
+        // Para que esta función sea más precisa, podríamos comparar el nombre de la ruta,
+        // o usar `isExactActive` en lugar de `startsWith` si es un caso de "home" que no debe coincidir con subrutas.
+        // Pero para el problema actual, el foco es el `router-link` y sus propiedades.
+        return route.path.startsWith(resolvedRoute.path);
+    } catch (e) {
+        console.warn('Error resolviendo ruta en MenuItem (isCurrentRouteActive):', menuItem.to, e);
+        return false;
+    }
+};
+
+const onMenuItemClick = (event, item) => {
+    if (item.command) {
+        item.command(event);
+    }
+    if (item.items) {
+        item.expanded = !item.expanded;
+    }
+    emit('menuitem-click', { originalEvent: event, item: item });
+};
+
+watch(() => route.path, (newPath, oldPath) => {
+    // Depuración si es necesario.
+});
+
+</script>
 
 <style scoped>
-/* Aplicar la fuente Poppins */
-body,
-.menu-item,
-.layout-menuitem-text {
-    font-family: "Poppins", sans-serif;
+/* Tus estilos existentes para MenuItem.vue */
+li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-/* Estilo de la raíz del menú */
-.layout-root-menuitem {
-    font-weight: 600;
-    color: black;
-}
-
-/* Estilo del texto del menú */
-.layout-menuitem-text {
-    font-size: 1rem;
-    font-weight: 400;
-}
-
-.menu-item {
+a {
     display: flex;
     align-items: center;
-    padding: 15px 20px;
-    background-color: #fbfbfb;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    color: #001839;
-    cursor: pointer;
-    text-decoration: none; /* Evitar el subrayado en los enlaces */
-}
-/* Evitar subrayado en los router-link y <a> */
-.menu-item:hover,
-.menu-item:focus,
-.menu-item:active {
+    gap: 10px;
+    padding: 10px 20px;
+    color: var(--text-color, #333);
     text-decoration: none;
-}
-/* Estilo de hover: Fondo amarillo y texto sin cambiar */
-.menu-item:hover {
-    color: rgb(182, 182, 182);
-    transform: scale(1);
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-/* Estilo del icono en los items del menú */
-.menu-item .layout-menuitem-icon {
-    margin-right: 10px;
-    font-size: 1.5rem;
-    transition: color 0.3s ease; /* Transición suave para el cambio de color */
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: var(--border-radius);
 }
 
-/* Cuando el menú está en hover, el icono cambia de color */
-.menu-item:hover .layout-menuitem-icon {
-    color: rgb(182, 182, 182); /* Ícono azul en hover */
-    transform: scale(1.5); /* Aumentar el tamaño del ícono un 10% */
-    transition: transform 0.3s ease, color 0.3s ease; /* Transición suave */
+a i {
+    font-size: 1.2rem;
 }
 
-/* Estilo de un item activo (por la ruta activa) */
-.menu-item.active-route {
-    background-color: rgb(182, 182, 182);
-    color: black;
+a:hover {
+    background-color: var(--hover-bg-color, #e0e0e0);
+    color: var(--hover-text-color, #000);
 }
 
-.menu-item.active-route .layout-menuitem-icon {
-    color: black;
+.active-route {
+    background-color: var(--active-menu-bg-color, var(--main-color));
+    color: var(--active-menu-text-color, #fff);
+    font-weight: bold;
+    border-left: 5px solid var(--accent-color, #007bff);
+}
+
+.layout-submenu {
+    list-style: none;
+    padding: 0;
+    margin-left: 20px;
+}
+
+.layout-submenu-wrapper-enter-active,
+.layout-submenu-wrapper-leave-active {
+    transition: all 0.3s ease-in-out;
+    max-height: 500px;
+    overflow: hidden;
+}
+.layout-submenu-wrapper-enter-from,
+.layout-submenu-wrapper-leave-to {
+    max-height: 0;
+    opacity: 0;
 }
 </style>

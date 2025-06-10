@@ -1,13 +1,17 @@
+// src/components/MyMenu/MyMenu.vue
+
 <script>
 import MenuItem from "./MenuItem.vue";
 import { computed } from "vue";
-import { useAuthStore } from '@/stores/auth'; // Asegúrate de que esta ruta sea correcta
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
 export default {
     name: "MyMenu",
     components: { MenuItem },
     setup() {
         const authStore = useAuthStore();
+        const router = useRouter();
 
         const ROLES = {
             ADMIN: "admin",
@@ -18,7 +22,8 @@ export default {
         const model = computed(() => {
             const allMenuItems = [
                 // --- Menú para Administrador ---
-                { label: "Home - Administrador", icon: "pi pi-fw pi-home", to: { name: 'AdminDashboard' }, roles: [ROLES.ADMIN] }, // CORREGIDO: "HomeAdmin" a "AdminDashboard"
+                // Aquí podrías añadir exact: true si el dashboard de Admin solo debe activarse en su URL exacta
+                { label: "Home - Administrador", icon: "pi pi-fw pi-home", to: { name: 'AdminDashboard' }, roles: [ROLES.ADMIN], exact: true },
                 {
                     label: "Administrador - Tickets",
                     icon: "pi pi-fw pi-ticket",
@@ -39,37 +44,38 @@ export default {
                 },
 
                 // --- Menú para Soporte TI ---
-                    { label: "Home - Soporte Técnico", icon: "pi pi-fw pi-home", to: { name: 'TiSupportDashboard' }, roles: [ROLES.TI_SUPPORT] },
-                    {
-                        label: "Soporte TI - Tickets",
-                        icon: "pi pi-fw pi-ticket",
-                        to: { name: 'TiSupportTickets' }, // ASUMIENDO que defines esta ruta en support.js
-                        roles: [ROLES.TI_SUPPORT],
-                    },
-                    {
-                        label: "Soporte TI - Clientes",
-                        icon: "pi pi-fw pi-users",
-                        to: { name: 'TiSupportClients' }, // ASUMIENDO que defines esta ruta en support.js
-                        roles: [ROLES.TI_SUPPORT],
-                    },
-                    {
-                        label: "Soporte TI - Empresa",
-                        icon: "pi pi-fw pi-users",
-                        to: { name: 'TiSupportCompanies' }, // ASUMIENDO que defines esta ruta en support.js
-                        roles: [ROLES.TI_SUPPORT],
-                    },
+                // Aquí podrías añadir exact: true si el dashboard de Soporte TI solo debe activarse en su URL exacta
+                { label: "Home - Soporte Técnico", icon: "pi pi-fw pi-home", to: { name: 'TiSupportDashboard' }, roles: [ROLES.TI_SUPPORT], exact: true },
+                {
+                    label: "Soporte TI - Tickets",
+                    icon: "pi pi-fw pi-ticket",
+                    to: { name: 'TiSupportTickets' },
+                    roles: [ROLES.TI_SUPPORT],
+                },
+                {
+                    label: "Soporte TI - Clientes",
+                    icon: "pi pi-fw pi-users",
+                    to: { name: 'TiSupportClients' },
+                    roles: [ROLES.TI_SUPPORT],
+                },
+                {
+                    label: "Soporte TI - Empresa",
+                    icon: "pi pi-fw pi-users",
+                    to: { name: 'TiSupportCompanies' },
+                    roles: [ROLES.TI_SUPPORT],
+                },
 
                 // --- Menú para Gerente y Empleados (rol 'client') ---
-                { label: "Home - Clientes (Gerente y sus trabajadores)", icon: "pi pi-fw pi-home", to: { name: 'ClientDashboard' }, roles: [ROLES.CLIENT] },
+                { label: "Home - Clientes", icon: "pi pi-fw pi-home", to: { name: 'ClientDashboard' }, roles: [ROLES.CLIENT], exact: true }, // <--- ¡AQUÍ ESTÁ EL CAMBIO CLAVE PARA CLIENTES!
                 {
                     label: "Gerente y Empleados - tickets",
-                    icon: "pi pi-fw pi-users",
+                    icon: "pi pi-fw pi-ticket",
                     to: { name: 'ClientTickets' },
                     roles: [ROLES.CLIENT],
                 },
                 {
                     label: "Gerente y Empleados - Equipos",
-                    icon: "pi pi-fw pi-users",
+                    icon: "pi pi-fw pi-desktop",
                     to: { name: 'ClientEquipment' },
                     roles: [ROLES.CLIENT],
                 },
@@ -77,18 +83,23 @@ export default {
 
             return allMenuItems.filter(item => {
                 if (!item.roles || item.roles.length === 0) {
-                    return true;
+                    return authStore.isAuthenticated;
                 }
                 return authStore.isAuthenticated && authStore.hasAnyRole(item.roles);
             });
         });
+
+        const handleLogout = async () => {
+            await authStore.logout();
+            router.replace({ name: 'Login' });
+        };
 
         return {
             model,
             user: computed(() => authStore.user),
             isAuthenticated: computed(() => authStore.isAuthenticated),
             userRole: computed(() => authStore.userRole),
-            logout: authStore.logout
+            logout: handleLogout
         };
     },
 };
@@ -122,10 +133,12 @@ export default {
 </template>
 
 <style scoped>
+/* Tus estilos existentes para MyMenu.vue */
 .menu-container {
     display: flex;
     flex-direction: column;
     background-color: #fff;
+    height: 100vh;
 }
 .layout-menu {
     flex: 1;
@@ -134,13 +147,12 @@ export default {
     padding: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh;
     width: var(--my_menu_width);
     min-width: var(--my_menu_width);
     max-width: var(--my_menu_width);
     background-color: #fff;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    overflow: auto;
+    overflow-y: auto;
 }
 
 .profile {
@@ -162,6 +174,7 @@ export default {
     padding: 10px 20px;
     gap: 10px;
     font-weight: 500;
+    padding-bottom: 20px;
 }
 .options button {
     font-weight: inherit;
@@ -169,5 +182,18 @@ export default {
     align-items: center;
     gap: 8px;
     font-size: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    width: 100%;
+    text-align: left;
+    padding: 5px 0;
+}
+.options button:hover {
+    background-color: #f0f0f0;
+}
+.options button.logout {
+    color: var(--danger-color, #ff4d4f);
 }
 </style>

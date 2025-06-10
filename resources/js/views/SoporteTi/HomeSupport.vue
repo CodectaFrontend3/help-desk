@@ -1,45 +1,53 @@
-<!-- HomeSupport.vue -->
 <script>
 import HomeComponent from "../../components/Commons/HomeComponent.vue";
 import { roleConfigurations } from "../../utils/roleConfigs";
 import TicketService from "../../services/TicketServices";
+import { useAuthStore } from "@/stores/auth"; // 1. Importa el store de autenticación
 
 export default {
     name: "HomeSupport",
     components: { HomeComponent },
     data() {
         return {
-            currentUser: {
-                nombre: "Alberto Pérez",
-                rol: "support", // Este valor podría venir desde una autenticación
-                empresa: "J&P PERIFÉRICOS S.A.C.",
-                direccion: "Los Olivos"
-            },
+            // Ya no necesitas 'currentUser' aquí, se obtendrá del store de Pinia.
+            // Si necesitas valores iniciales para 'dashboardData', mantenlos.
             dashboardData: {
                 ticketsCount: 0,
                 openTickets: 0,
                 processingTickets: 0,
                 closedTickets: 0,
-                // Datos específicos para soporte
                 hardwareTickets: 0,
                 softwareTickets: 0,
                 networkTickets: 0,
                 satisfactionRating: 4 // Valoración por defecto
             },
-            isLoading: false
+            isLoading: false,
+            // 2. Instancia del store de autenticación para usar en el componente
+            authStore: useAuthStore(),
         };
     },
     computed: {
+        // 3. 'currentUser' ahora es una propiedad computada que obtiene los datos del store
+        currentUser() {
+            // Proporciona un objeto por defecto si el usuario aún no se ha cargado
+            // Esto evita errores si intentas acceder a 'user.nombre' antes de que esté disponible
+            return this.authStore.user || {
+                nombre: "Cargando...",
+                rol: "guest", // Rol por defecto, útil para evitar errores
+                empresa: "",
+                direccion: ""
+            };
+        },
         // Obtener la configuración basada en el rol del usuario actual
         userRoleConfig() {
-            // Valor por defecto en caso de que el rol no exista en configuraciones
+            // Asegúrate de que el rol de 'currentUser' es válido para 'roleConfigurations'
             return roleConfigurations[this.currentUser.rol] || roleConfigurations.client;
         },
         // Distribución de tipos de tickets para mostrar en métricas
         ticketTypeDistribution() {
             const total = this.dashboardData.hardwareTickets +
-                        this.dashboardData.softwareTickets +
-                        this.dashboardData.networkTickets;
+                            this.dashboardData.softwareTickets +
+                            this.dashboardData.networkTickets;
 
             if (total === 0) return { hardware: 0, software: 0, network: 0 };
 
@@ -57,10 +65,11 @@ export default {
                 this.isLoading = true;
                 console.log("Actualizando datos del dashboard para soporte...");
 
+                // 4. Se mantiene la lógica de filtrado del lado del cliente por ahora
+                //    (Ver explicación de optimización backend más abajo)
                 const tickets = await TicketService.getAllTickets();
                 this.dashboardData.ticketsCount = tickets.length;
 
-                // Filtrar por estado
                 this.dashboardData.openTickets = tickets.filter(ticket =>
                     ticket.state === 'Abierto'
                 ).length;
@@ -73,7 +82,6 @@ export default {
                     ticket.state === 'Cerrado'
                 ).length;
 
-                // Filtrar por tipo de incidente
                 this.dashboardData.hardwareTickets = tickets.filter(ticket =>
                     ticket.incident_type === 'Hardware'
                 ).length;
@@ -86,9 +94,6 @@ export default {
                     ticket.incident_type === 'Network' || ticket.incident_type === 'Red'
                 ).length;
 
-                // Aquí podría venir la lógica para calcular la valoración de satisfacción
-                // Por ahora usamos un valor fijo como ejemplo (en una implementación real vendría de la BD)
-
                 this.isLoading = false;
             } catch (error) {
                 console.error("Error al actualizar datos del dashboard:", error);
@@ -97,7 +102,13 @@ export default {
         }
     },
     async mounted() {
-        // Cargar datos iniciales
+        // 5. Asegúrate de que los datos del usuario estén cargados antes de usar 'currentUser.rol'
+        // Esto es importante si el store no ha terminado de inicializarse o el usuario no está en localStorage
+        if (!this.authStore.user) {
+            await this.authStore.checkAuthStatus(); // Fuerza la carga del usuario si no está
+        }
+
+        // Cargar datos iniciales del dashboard
         await this.updateDashboardData();
 
         // Ejemplo de actualización periódica (cada 5 minutos)
@@ -112,21 +123,16 @@ export default {
 
 <template>
     <div>
-        <!-- Spinner de carga principal si es necesario -->
         <div v-if="isLoading" class="main-loading">
             Actualizando datos...
         </div>
 
         <HomeComponent
             :rolConfig="userRoleConfig"
-            :userData="currentUser">
-
-            <!-- Contenido adicional para soporte -->
-            <template v-slot:additional-content>
+            :userData="currentUser"> <template v-slot:additional-content>
                 <div class="support-tools">
                     <h3>Herramientas de Soporte</h3>
 
-                    <!-- Panel de distribución de tickets por tipo -->
                     <div class="ticket-distribution">
                         <h4>Distribución de tickets por tipo de incidente</h4>
                         <div class="distribution-bars">
@@ -154,7 +160,6 @@ export default {
                         </div>
                     </div>
 
-                    <!-- Panel de métricas de tickets -->
                     <div class="support-metrics">
                         <div class="metric-card">
                             <div class="metric-title">Estado de tickets</div>
@@ -187,6 +192,7 @@ export default {
                                 </div>
                                 <div class="metric-item">
                                     <div class="metric-label">Software:</div>
+                                    <div class="metric-label">Software:</div>
                                     <div class="metric-value">{{ dashboardData.softwareTickets }}</div>
                                 </div>
                                 <div class="metric-item">
@@ -200,8 +206,7 @@ export default {
                             <div class="metric-title">Satisfacción del cliente</div>
                             <div class="satisfaction-rating">
                                 <div class="stars">
-                                    <i v-for="n in 5" :key="n"
-                                       :class="['pi', n <= dashboardData.satisfactionRating ? 'pi-star-fill' : 'pi-star']"></i>
+                                    <i v-for="n in 5" :key="n" :class="['pi', n <= dashboardData.satisfactionRating ? 'pi-star-fill' : 'pi-star']"></i>
                                 </div>
                                 <div class="rating-value">{{ dashboardData.satisfactionRating }}/5</div>
                             </div>

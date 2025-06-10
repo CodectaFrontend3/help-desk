@@ -281,12 +281,6 @@
 
     <template>
         <div>
-            <Titulo
-                :titulo="rolConfig.titulo || 'Inicio'"
-                :iconSrc="rolConfig.iconSrc || '/icono-home.png'"
-                :empresa="userData.empresa"
-                :direccion="userData.direccion"
-            />
 
             <!-- Tarjetas de información -->
             <div class="card-container">

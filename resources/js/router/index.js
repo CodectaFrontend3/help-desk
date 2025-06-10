@@ -1,5 +1,7 @@
+// src/router/index.js
+
 import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
+// import { useAuthStore } from "@/stores/auth";
 
 // Importa tus componentes
 import AppLayout from "@/components/Layouts/AppLayout.vue";
@@ -21,6 +23,7 @@ const adminRoutes = [
         meta: {
             title: "Panel de Administración",
             roles: [ROLES.ADMIN],
+            hideNavbar: true, // <-- AÑADIDO: Ocultar NavBar en el dashboard de Admin
         },
     },
     {
@@ -54,14 +57,14 @@ const adminRoutes = [
                 },
             },
             {
-                path: "natural-persons",
+                path: "natural-person",
                 name: "AdminClientsPersons",
                 component: () => import("@/views/Admin/PersonaClientes.vue"),
                 meta: {
                     title: "Personas Naturales",
                     roles: [ROLES.ADMIN],
                     navbarConfig: {
-                        persona: true,
+                        clientes: true,
                         labelDni: "DNI:",
                         labelNombre: "Nombre:",
                     },
@@ -106,6 +109,7 @@ const tiSupportRoutes = [
         meta: {
             title: "Panel de Soporte TI",
             roles: [ROLES.TI_SUPPORT],
+            hideNavbar: true, // <-- AÑADIDO: Ocultar NavBar en el dashboard de Soporte TI
         },
     },
     {
@@ -280,12 +284,13 @@ const tiSupportRoutes = [
 // Rutas del cliente
 const clientRoutes = [
     {
-        path: "",
+        path: "", // Este path en blanco significa que la ruta completa será '/client'
         name: "ClientDashboard",
-        component: () => import("@/views/HomeClients.vue"),
+        component: () => import("@/views/HomeClients.vue"), // O el componente que uses para el home del cliente
         meta: {
             title: "Panel de Cliente",
             roles: [ROLES.CLIENT],
+            hideNavbar: true, // <-- AÑADIDO: Ocultar NavBar en el dashboard de Cliente
         },
     },
     {
@@ -324,7 +329,7 @@ const authRoutes = [
         children: [
             {
                 path: "",
-                redirect: { name: "Login" } // Redirige automáticamente a login
+                redirect: { name: "Login" }
             },
             {
                 path: "login",
@@ -344,24 +349,19 @@ const authRoutes = [
 
 // Definir todas las rutas
 const routes = [
-    // Rutas de autenticación
     ...authRoutes,
 
-    // Rutas de la aplicación principal
     {
         path: "/",
         component: AppLayout,
         meta: { requiresAuth: true },
         children: [
-            // Redireccionamiento inicial basado en rol
             {
                 path: "",
-                name: "Home",
+                name: "Home", // Nombre de la ruta raíz que usa HomeRedirect
                 component: () => import("@/components/Commons/HomeRedirect.vue"),
-                meta: { requiresAuth: true },
+                meta: { requiresAuth: true, hideNavbar: true }, // <-- AÑADIDO: Ocultar NavBar también en la ruta raíz
             },
-
-            // Rutas agrupadas por rol
             {
                 path: "admin",
                 meta: { roles: [ROLES.ADMIN] },
@@ -395,35 +395,9 @@ const routes = [
     },
 ];
 
-// Crear el router
 const router = createRouter({
     history: createWebHistory(),
     routes,
-});
-
-// Guards de navegación
-router.beforeEach(async (to, from, next) => {
-    const authStore = useAuthStore();
-
-    // Verificar si la ruta requiere autenticación
-    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-        return next({ name: 'Login', query: { redirect: to.fullPath } });
-    }
-
-    // Si está autenticado pero trata de acceder a rutas de invitado
-    if (to.meta.requiresGuest && authStore.isAuthenticated) {
-        return next({ name: 'Home' });
-    }
-
-    // Verificar roles
-    if (to.meta.roles && !to.meta.roles.includes(authStore.user?.role)) {
-        return next({ name: 'Unauthorized' });
-    }
-
-    // Establecer título de página
-    document.title = to.meta.title ? `${to.meta.title} - Mi App` : 'Mi App';
-
-    next();
 });
 
 export default router;

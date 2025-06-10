@@ -42,9 +42,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+// Añade esta ruta para manejar el logout
+// Colócala dentro del grupo de middleware 'auth:sanctum' o al menos con ese middleware aplicado
+Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
+    $request->user()->currentAccessToken()->delete(); // Revoca el token actual del usuario
+    return response()->json(['message' => 'Cierre de sesión exitoso'], 200);
+});
+
 
 //routes en ingles
 Route::middleware(['auth:sanctum', 'expiration'])->group(function () {

@@ -15,35 +15,39 @@ import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 const authStore = useAuthStore()
 
-const getDefaultRouteByRole = (role) => {
-  const routes = {
-    'admin': '/home-admin',
-    'TiSupport': '/home-support',
-    'client': '/'
+// CAMBIO IMPORTANTE: Usar nombres de ruta para mayor robustez
+// Y corregir la ruta para el rol 'client'
+const getRedirectRouteNameByRole = (role) => {
+  switch (role) {
+    case 'admin':
+      return 'AdminDashboard';     // Nombre de ruta definido en index.js
+    case 'TiSupport':
+      return 'TiSupportDashboard'; // Nombre de ruta definido en index.js
+    case 'client':
+      return 'ClientDashboard';    // CAMBIO: 'ClientDashboard' que apunta a '/client'
+    default:
+      return 'Login'; // Fallback si el rol es desconocido o nulo
   }
-  return routes[role] || '/'
 }
 
 onMounted(async () => {
-  // Verificar si el usuario está autenticado
-  if (!authStore.isAuthenticated) {
-    router.push('/auth/login')
-    return
-  }
+  // Paso 1: Verificar el estado de autenticación (incluyendo con el servidor)
+  // La acción checkAuthStatus también actualiza authStore.isAuthenticated
+  const isValid = await authStore.checkAuthStatus();
 
-  // Verificar el estado de autenticación con el servidor (si aplica)
-  const isValid = await authStore.checkAuthStatus()
-
+  // Paso 2: Si no es válido (no autenticado o token expirado/inválido)
   if (!isValid) {
-    router.push('/auth/login')
-    return
+    // Redirigir al login y REEMPLAZAR la entrada en el historial
+    router.replace({ name: 'Login' });
+    return; // Detener la ejecución
   }
 
-  // Redirigir según el rol
-  const userRole = authStore.user?.role
-  const defaultRoute = getDefaultRouteByRole(userRole)
+  // Paso 3: Si está autenticado y válido, determinar la ruta de redirección según el rol
+  const userRole = authStore.user?.role;
+  const redirectRouteName = getRedirectRouteNameByRole(userRole);
 
-  router.push(defaultRoute)
+  // Paso 4: Redirigir a la ruta apropiada, REEMPLAZANDO la entrada actual en el historial
+  router.replace({ name: redirectRouteName });
 })
 </script>
 

@@ -5,7 +5,7 @@ import equipmentServices from "../../../services/EquipmentServices";
 
 export default {
     name: "CompanyEquipment",
-    components: { tableComponent },
+    components: { tableComponent }, 
     props: {
         id: {
             type: String,

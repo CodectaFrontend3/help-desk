@@ -1,6 +1,6 @@
 <script>
 import TableComponent from '@/components/Commons/TableComponent.vue';
-import equipmentServices from '../../../services/equipmentServices';
+import equipmentServices from '../../../services/EquipmentServices';
 
 export default {
     name: "CompanyEquipmentDetails",

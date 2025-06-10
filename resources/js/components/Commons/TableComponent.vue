@@ -25,7 +25,7 @@ export default {
             type: Boolean,
             default: false
         },
-        // Nueva prop para mostrar columna de prioridad
+        // Nueva prop para mostrar columna de prioridad (genérica)
         showPriorityColumn: {
             type: Boolean,
             default: false
@@ -34,6 +34,18 @@ export default {
         currentUser: {
             type: Object,
             default: () => ({})
+        },
+        // NUEVAS PROPS PARA DESACOPLAR DE $route.meta
+        // Controla si se muestran las columnas específicas de 'admin-tickets'
+        showTicketAdminColumns: {
+            type: Boolean,
+            default: false
+        },
+        // Controla si se aplica la lógica de botones de 'companySoporteTi'
+        // (si aún la necesitas como un control aparte de availableActions)
+        showCompanySoporteTiButtons: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -88,14 +100,12 @@ export default {
         };
     },
     computed: {
-        navbarConfig() {
-            return this.$route.meta.navbarConfig || {};
-        },
         paginatedData() {
             return this.data.slice(this.first, this.first + this.rows);
         },
         // Computed para obtener los botones que deben mostrarse
         visibleButtons() {
+            // Si showButtons() es falso, no mostramos ningún botón de acción
             if (!this.showButtons()) return [];
 
             return this.availableActions
@@ -109,7 +119,7 @@ export default {
         isAdmin() {
             return this.currentUser && (this.currentUser.role === 'admin' || this.currentUser.isAdmin === true);
         },
-        // Verificar si debe mostrar el checkbox (solo admin)
+        // Verificar si debe mostrar el checkbox (solo admin y si la prop lo permite)
         shouldShowCheckbox() {
             return this.showSelectionCheckbox && this.isAdmin;
         },
@@ -144,8 +154,8 @@ export default {
             if (this.availableActions && this.availableActions.length > 0) {
                 return true;
             }
-            // Fallback a la configuración original
-            return this.$route.meta.navbarConfig?.companySoporteTi === true;
+            // Fallback a la nueva prop `showCompanySoporteTiButtons`
+            return this.showCompanySoporteTiButtons;
         },
 
         // Método centralizado para ejecutar acciones
@@ -233,15 +243,19 @@ export default {
             console.log("Navegando a detalles de equipos para:", row);
             console.log("ID:", id, "Tipo:", this.entityType);
 
+            // Esta lógica es para "Detalles de Equipo" que es una ruta anidada bajo CompanyEquipment
             if (this.entityType === "equipment") {
+                // Aquí, si necesitas `companyId`, lo ideal sería que `row` ya lo contenga
+                // o que sea pasado como otra prop si el contexto lo requiere,
+                // para evitar depender de `this.$route.path.split('/')`.
                 const urlParts = this.$route.path.split('/');
-                const companyIdIndex = urlParts.indexOf('company-equipment') + 1;
+                const companyIdIndex = urlParts.indexOf('company-equipment') + 1; // Ajusta según la estructura de tu URL
                 const companyId = urlParts[companyIdIndex] || this.$route.params.id;
 
                 console.log("Navegando a detalles de equipo con companyId:", companyId, "equipmentId:", id);
 
                 this.$router.push({
-                    name: "Detalles de Equipo",
+                    name: "Detalles de Equipo", // Asegúrate de que este nombre sea correcto en tu router
                     params: {
                         companyId: companyId,
                         equipmentId: id,
@@ -250,6 +264,9 @@ export default {
             } else {
                 let type = this.entityType;
 
+                // Estas condiciones siguen dependiendo de $route.name, lo cual puedes considerar
+                // pasarlo como una prop si quieres eliminar completamente la dependencia del router
+                // dentro de esta lógica de `viewEquipment`.
                 if (this.$route.name === "CompanyMicro" || this.$route.name.includes("Microempresa")) {
                     type = "micro";
                 } else if (this.$route.name === "CompanyPerson" || this.$route.name.includes("Persona")) {
@@ -260,8 +277,9 @@ export default {
 
                 console.log("Navegando a equipos de empresa con ID:", id, "Tipo:", type);
 
+                // *** CAMBIO CRÍTICO AQUÍ: Usar el nombre de ruta correcto "CompanyEquipments" ***
                 this.$router.push({
-                    name: "Equipos de Empresa",
+                    name: "CompanyEquipments", // Este debe coincidir con el 'name' de la ruta en tu router (index.js)
                     params: {
                         id: id,
                         type: type,
@@ -281,7 +299,6 @@ export default {
             const id = row.id || row._id;
             console.log('Ir al chat con ID:', id);
 
-            // Ejemplo de navegación al chat
             this.$router.push({
                 name: 'Chat',
                 params: { id: id },
@@ -290,20 +307,20 @@ export default {
         },
 
         editRecord(row) {
-            // Implementa la lógica para editar
-            console.log('Editar registro:', row);
+            // Emite un evento para que el componente padre maneje la edición
+            console.log('Emitiendo evento de edición para:', row);
             this.$emit('edit', row);
         },
 
         deleteRecord(row) {
-            // Implementa la lógica para eliminar
-            console.log('Eliminar registro:', row);
+            // Emite un evento para que el componente padre maneje la eliminación
+            console.log('Emitiendo evento de eliminación para:', row);
             this.$emit('delete', row);
         },
 
         downloadRecord(row) {
-            // Implementa la lógica para descargar
-            console.log('Descargar registro:', row);
+            // Emite un evento para que el componente padre maneje la descarga
+            console.log('Emitiendo evento de descarga para:', row);
             this.$emit('download', row);
         },
 
@@ -336,7 +353,6 @@ export default {
 
 <template>
     <div class="table-container">
-        <!-- Toolbar para acciones masivas (solo si hay selección) -->
         <div v-if="shouldShowCheckbox && selectedRows.length > 0" class="selection-toolbar">
             <span class="selection-info">{{ selectedRows.length }} elemento(s) seleccionado(s)</span>
             <button class="btn-bulk-action" @click="$emit('bulk-delete', selectedRows)">
@@ -351,33 +367,29 @@ export default {
             <table>
                 <thead>
                     <tr>
-                        <!-- Checkbox para seleccionar todo (solo admin) -->
                         <th v-if="shouldShowCheckbox" class="checkbox-column">
                             <input type="checkbox" :checked="selectAll" :indeterminate="isIndeterminate"
                                 @change="toggleSelectAll" title="Seleccionar todo" />
                         </th>
 
-                        <!-- Columna de prioridad -->
                         <th v-if="showPriorityColumn" class="priority-column">Prioridad</th>
 
                         <th v-for="(col, index) in columns" :key="index">
                             {{ col.label }}
                         </th>
-                        <th v-if="this.$route.meta.role === 'admin-tickets'">Prioridad</th>
+                        <th v-if="showTicketAdminColumns">Prioridad</th>
                         <th v-if="visibleButtons.length > 0">Acciones</th>
-                        <th v-if="this.$route.meta.role === 'admin-tickets'">Soporte In Situ</th>
+                        <th v-if="showTicketAdminColumns">Soporte In Situ</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(row, rowIndex) in paginatedData" :key="rowIndex"
                         :class="{ 'selected-row': isRowSelected(row) }">
 
-                        <!-- Checkbox para seleccionar fila (solo admin) -->
                         <td v-if="shouldShowCheckbox" class="checkbox-column">
                             <input type="checkbox" :checked="isRowSelected(row)" @change="toggleRowSelection(row)" />
                         </td>
 
-                        <!-- Columna de prioridad -->
                         <td v-if="showPriorityColumn" class="priority-column">
                             <span class="priority-badge" :style="{
                                 backgroundColor: getPriorityColor(row.priority || row.prioridad),
@@ -393,8 +405,8 @@ export default {
                             </slot>
                         </td>
 
-                        <td v-if="this.$route.meta.role === 'admin-tickets'">
-                            <button class="pi pi-arrow-down"></button>
+                        <td v-if="showTicketAdminColumns">
+                            <button class="pi pi-arrow-down" title="Ver detalles de prioridad (ej.)"></button>
                         </td>
 
                         <td v-if="visibleButtons.length > 0" class="acciones">
@@ -402,9 +414,11 @@ export default {
                                 :title="button.title" @click="executeAction(button.action, row)"></button>
                         </td>
 
-                        <td v-if="this.$route.meta.role === 'admin-tickets'" class="acciones">
-                            <label v-for="button in visibleButtons" :key="button.key" class="checkbox-container">
-                                <input type="checkbox" :title="button.title" @change="executeAction(button.action, row)" :checked="button.checked || false">
+                        <td v-if="showTicketAdminColumns" class="acciones">
+                            <label class="checkbox-container">
+                                <input type="checkbox" title="Marcar como Soporte In Situ"
+                                    :checked="row.inSituSupport || false"
+                                    @change="$emit('toggle-in-situ-support', { row, value: $event.target.checked })">
                                 <span class="checkmark"></span>
                             </label>
                         </td>
@@ -413,14 +427,13 @@ export default {
             </table>
         </div>
 
-        <!-- Paginador funcional -->
         <Paginator :rows="rows" :totalRecords="data.length" :first="first" :rowsPerPageOptions="rowsPerPageOptions"
             @page="onPageChange" class="paginator" />
 
-        <!-- Popup -->
         <PopCliente :visible="showPopup" :cliente-id="selectedClientId" @close="showPopup = false" />
     </div>
 </template>
+
 
 <style scoped>
 .table-container {
