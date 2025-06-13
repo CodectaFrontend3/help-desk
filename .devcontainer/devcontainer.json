@@ -1,0 +1,25 @@
+{
+  "name": "HelpDesk Sail Dev Container",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+  "service": "helpDesk.laravel",
+  "workspaceFolder": "/var/www/html",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "ms-azuretools.vscode-docker",
+        "xdebug.php-debug",
+        "DEVSENSE.phptools-vscode"
+      ]
+    },
+    "settings": {
+      "php.validate.executablePath": "/usr/bin/php",
+      "php.format.codeStyle": "K&R",
+      "editor.formatOnSave": true
+    }
+  },
+  "postCreateCommand": "composer install"
+}

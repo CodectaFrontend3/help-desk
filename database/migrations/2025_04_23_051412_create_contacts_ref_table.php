@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('contacts_ref', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('empresa_id')->constrained('empresa')->onDelete('cascade');
-            $table->foreignId('microempresa_id')->constrained('micro_empresas')->onDelete('cascade');
-            $table->foreignId('persona_natural_id')->constrained('natural_person')->onDelete('cascade');
+            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
+            $table->foreignId('natural_person_id')->constrained('natural_persons')->onDelete('cascade');
             $table->string('name');
             $table->string('address');
             $table->string('email');

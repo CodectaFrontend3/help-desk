@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\NaturalPerson;
 use Illuminate\Http\Request;
+use App\Http\Requests\NaturalPersonRequest;
 
-class NaturalPersonController extends Controller
+class NaturalPersonController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('NaturalPerson');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -18,7 +22,7 @@ class NaturalPersonController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(NaturalPersonRequest $request)
     {
         $naturalPerson = NaturalPerson::create($request->all());
         return response()->json($naturalPerson, 201);
@@ -37,7 +41,7 @@ class NaturalPersonController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(NaturalPersonRequest $request, string $id)
     {
         $naturalPerson = NaturalPerson::findOrFail($id);
         $naturalPerson->update($request->all());

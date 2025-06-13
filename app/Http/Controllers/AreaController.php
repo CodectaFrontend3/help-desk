@@ -6,8 +6,11 @@ use App\Models\Area;
 use Illuminate\Http\Request;
 use App\Http\Requests\AreaRequest;
 
-class AreaController extends Controller
+class AreaController extends PermissionController
 {
+    public function __construct(){
+        $this->permisos('Area');
+    }
     public function index()
     {
         return response()->json(Area::all());
@@ -15,7 +18,7 @@ class AreaController extends Controller
 
     public function store(AreaRequest $request)
     {
-        $area = Area::create($request->all());
+        $area = Area::create($request->validated());
         return response()->json($area, 201);
     }
 
@@ -28,8 +31,8 @@ class AreaController extends Controller
     public function update(AreaRequest $request, string $id)
     {
         $area = Area::findOrFail($id);
-        $area->update($request->all());
-        return response()->json($area, 204);
+        $area->update($request->validated());
+        return response()->json($area); // ahora retorna la entidad actualizada
     }
 
     public function destroy(string $id)
