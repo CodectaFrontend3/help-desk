@@ -247,37 +247,40 @@ const tiSupportRoutes = [
                     roles: [ROLES.TI_SUPPORT],
                 },
             },
+            {
+                path: "equipment/:id/:type",
+                name: "CompanyEquipments",
+                component: () =>
+                    import("@/views/SoporteTi/Company/CompanyEquipment.vue"),
+                props: true,
+                meta: {
+                    title: "Equipos",
+                    roles: [ROLES.TI_SUPPORT],
+                    navbarConfig: {
+                        equipment: true,
+                        companySoporteTi: true,
+                        dateRange: "Rango de fecha",
+                    },
+                },
+            },
+            {
+                path: "equipment-details/:companyId/:equipmentId/:type?", // ¡Asegúrate de que ':type?' esté aquí!
+                name: "TiSupportEquipmentDetails",
+                component: () =>
+                    import(
+                        "@/views/SoporteTi/Company/CompanyEquipmentDetails.vue"
+                    ),
+                props: true,
+                meta: {
+                    title: "Detalles de Equipo",
+                    roles: [ROLES.TI_SUPPORT],
+                    navbarConfig: {
+                        companySoporteTi: true,
+                        equipmentDetails: true,
+                    },
+                },
+            },
         ],
-    },
-    {
-        path: "equipment/:id/:type",
-        name: "TiSupportEquipment",
-        component: () =>
-            import("@/views/SoporteTi/Company/CompanyEquipment.vue"),
-        props: true,
-        meta: {
-            title: "Equipos",
-            roles: [ROLES.TI_SUPPORT],
-            navbarConfig: {
-                equipment: true,
-                companySoporteTi: true,
-                dateRange: "Rango de fecha",
-            },
-        },
-    },
-    {
-        path: "equipment-details/:companyId/:equipmentId",
-        name: "TiSupportEquipmentDetails",
-        component: () =>
-            import("@/views/SoporteTi/Company/CompanyEquipmentDetails.vue"),
-        meta: {
-            title: "Detalles de Equipo",
-            roles: [ROLES.TI_SUPPORT],
-            navbarConfig: {
-                companySoporteTi: true,
-                equipmentDetails: true,
-            },
-        },
     },
 ];
 
@@ -329,7 +332,7 @@ const authRoutes = [
         children: [
             {
                 path: "",
-                redirect: { name: "Login" }
+                redirect: { name: "Login" },
             },
             {
                 path: "login",
@@ -359,7 +362,8 @@ const routes = [
             {
                 path: "",
                 name: "Home", // Nombre de la ruta raíz que usa HomeRedirect
-                component: () => import("@/components/Commons/HomeRedirect.vue"),
+                component: () =>
+                    import("@/components/Commons/HomeRedirect.vue"),
                 meta: { requiresAuth: true, hideNavbar: true }, // <-- AÑADIDO: Ocultar NavBar también en la ruta raíz
             },
             {

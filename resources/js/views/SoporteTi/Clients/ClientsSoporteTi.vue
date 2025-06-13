@@ -6,19 +6,29 @@ export default {
     name: "ClientsSoporteTi",
     components: { tableComponent },
     data() {
-        return {
-
-        };
+        return {};
     },
-
-
+    methods: {
+        ensureDefaultClientsTiView(route) {
+            // Verifica si la ruta actual es el padre sin un hijo específico ya activo
+            if (route.name === 'TiSupportClients' && !['TiSupportClientsCompanies', 'TiSupportClientsPersons'].includes(route.name)) {
+                this.$router.replace({ name: 'TiSupportClientsCompanies' });
+            }
+        }
+    },
+    watch: {
+        '$route': {
+            immediate: true,
+            handler(to, from) {
+                this.ensureDefaultClientsTiView(to);
+            }
+        }
+    }
 };
 </script>
 
 <template>
-    <div class="content-area">
-        <router-view />
-    </div>
+    <router-view />
 </template>
 
 <style scoped></style>

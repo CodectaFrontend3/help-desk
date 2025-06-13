@@ -3,7 +3,10 @@ import ClientsAdmin from "@/views/Admin/ClientsAdmin.vue";
 import CompanyAdmin from "@/views/Admin/CompanyAdmin.vue";
 import PersonaClientes from "@/views/Admin/PersonaClientes.vue";
 import SoporteView from "@/views/Admin/SoporteView.vue";
-import AdminTickets from "@/views/Admin/AdminTickets.vue";
+// import AdminTickets from "@/views/Admin/AdminTickets.vue"; // Comenta o elimina si HistorialTickets.vue es el nuevo componente
+
+// Importa HistorialTickets si es el componente que se utilizará para la gestión general de tickets
+import HistorialTickets from "@/views/Admin/HistorialTickets.vue";
 
 export default [
     {
@@ -39,10 +42,11 @@ export default [
         component: SoporteView,
         meta: { title: "Soporte Técnico", roles: ["admin"] },
     },
+    // **** RUTA MODIFICADA PARA LOS TICKETS GENERALES BAJO EL PERFIL DE ADMINISTRADOR ****
     {
         path: "tickets",
         name: "AdminTickets",
-        component: AdminTickets,
+        component: HistorialTickets, // <--- CAMBIADO: Ahora apunta a HistorialTickets.vue
         meta: { title: "Administrar Tickets", roles: ["admin"] },
     },
 ];

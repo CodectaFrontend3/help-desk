@@ -22,12 +22,42 @@ const showTiSupportClientButtons = computed(() => navbarConfig.value.clientsSopo
 const showTiSupportCompanyButtons = computed(() => navbarConfig.value.companySoporteTi);
 
 
+
+
 const showAdd = computed(() => {
     return authStore.hasAnyRole(["admin", "manager", "worker"]);
 });
 
 const isTicketActive = computed(() => {
     return route.name === "Tickets activos" || route.name === "TiSupportTickets"; // Corregido a TiSupportTickets
+});
+
+const isEmpresasButtonActive = computed(() => {
+    if (route.name === 'TiSupportCompaniesView') {
+        return true;
+    }
+    // Añade 'TiSupportEquipmentDetails' a la lista de rutas a verificar
+    if (['CompanyEquipments', 'TiSupportEquipmentDetails'].includes(route.name)) {
+        // Verifica el parámetro 'type' para ambas rutas
+        if (route.params.type === 'company') {
+            return true;
+        }
+    }
+    return false;
+});
+
+const isPersonalButtonActive = computed(() => {
+    if (route.name === 'TiSupportCompaniesPersons') {
+        return true;
+    }
+    // Añade 'TiSupportEquipmentDetails' a la lista de rutas a verificar
+    if (['CompanyEquipments', 'TiSupportEquipmentDetails'].includes(route.name)) {
+        // Verifica el parámetro 'type' para ambas rutas
+        if (route.params.type === 'person') {
+            return true;
+        }
+    }
+    return false;
 });
 
 /**
@@ -39,6 +69,8 @@ const navigateToNamedRoute = (routeName) => {
         router.push({ name: routeName });
     }
 };
+
+
 
 /**
  * Función genérica para verificar si una ruta por su nombre está activa.
@@ -88,20 +120,20 @@ const isRouteActive = (routeName) => {
 
         <div v-if="showTiSupportCompanyButtons" class="buttons-ti">
             <button
-                :class="{ active: isRouteActive('TiSupportCompaniesView') }"
+                :class="{ active: isEmpresasButtonActive }"
                 title="Ver empresas"
                 @click="navigateToNamedRoute('TiSupportCompaniesView')"
             >
                 Empresas
             </button>
             <button
-                :class="{ active: isRouteActive('TiSupportCompaniesPersons') }"
+                :class="{ active: isPersonalButtonActive }"
                 title="Ver personal de empresas"
                 @click="navigateToNamedRoute('TiSupportCompaniesPersons')"
             >
                 Personal
             </button>
-            </div>
+        </div>
 
 
         <div class="search">
@@ -184,10 +216,6 @@ const isRouteActive = (routeName) => {
         </div>
     </nav>
 </template>
-
-<style scoped>
-/* Tu CSS existente */
-</style>
 
 <style scoped>
 .search-container {

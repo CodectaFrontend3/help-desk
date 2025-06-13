@@ -1,16 +1,14 @@
 <script>
 import HomeComponent from "../../components/Commons/HomeComponent.vue";
-import { roleConfigurations } from "../../utils/roleConfigs";
+import { roleConfigurations } from "@/utils/roleConfigs";
 import TicketService from "../../services/TicketServices";
-import { useAuthStore } from "@/stores/auth"; // 1. Importa el store de autenticación
+import { useAuthStore } from "@/stores/auth";
 
 export default {
     name: "HomeSupport",
     components: { HomeComponent },
     data() {
         return {
-            // Ya no necesitas 'currentUser' aquí, se obtendrá del store de Pinia.
-            // Si necesitas valores iniciales para 'dashboardData', mantenlos.
             dashboardData: {
                 ticketsCount: 0,
                 openTickets: 0,
@@ -19,31 +17,26 @@ export default {
                 hardwareTickets: 0,
                 softwareTickets: 0,
                 networkTickets: 0,
-                satisfactionRating: 4 // Valoración por defecto
+                satisfactionRating: 4,
+                equipmentCount: 0, // Asegúrate de que esto se pase correctamente
             },
             isLoading: false,
-            // 2. Instancia del store de autenticación para usar en el componente
             authStore: useAuthStore(),
         };
     },
     computed: {
-        // 3. 'currentUser' ahora es una propiedad computada que obtiene los datos del store
         currentUser() {
-            // Proporciona un objeto por defecto si el usuario aún no se ha cargado
-            // Esto evita errores si intentas acceder a 'user.nombre' antes de que esté disponible
             return this.authStore.user || {
                 nombre: "Cargando...",
-                rol: "guest", // Rol por defecto, útil para evitar errores
+                rol: "guest",
                 empresa: "",
                 direccion: ""
             };
         },
-        // Obtener la configuración basada en el rol del usuario actual
         userRoleConfig() {
-            // Asegúrate de que el rol de 'currentUser' es válido para 'roleConfigurations'
+            // Asegúrate de que roleConfigurations tiene la clave 'TiSupport'
             return roleConfigurations[this.currentUser.rol] || roleConfigurations.client;
         },
-        // Distribución de tipos de tickets para mostrar en métricas
         ticketTypeDistribution() {
             const total = this.dashboardData.hardwareTickets +
                             this.dashboardData.softwareTickets +
@@ -56,43 +49,78 @@ export default {
                 software: Math.round((this.dashboardData.softwareTickets / total) * 100),
                 network: Math.round((this.dashboardData.networkTickets / total) * 100)
             };
+        },
+
+        configuredCards() {
+            const config = JSON.parse(JSON.stringify(this.userRoleConfig));
+            if (config && config.cards) {
+                config.cards = config.cards.map(card => {
+                    let numberToShow = 0;
+                    switch (card.text) {
+                        case "Tickets Abiertos":
+                            numberToShow = this.dashboardData.openTickets;
+                            break;
+                        case "Tickets En Proceso":
+                            numberToShow = this.dashboardData.processingTickets;
+                            break;
+                        case "Tickets Cerrados":
+                            numberToShow = this.dashboardData.closedTickets;
+                            break;
+                        case "Tickets Totales Generales": // <-- Asegúrate de que esta tarjeta se llame así en roleConfigs
+                            numberToShow = this.dashboardData.ticketsCount;
+                            break;
+                        case "Cantidad de Equipos": // <-- Asegúrate de que esta tarjeta se llame así en roleConfigs
+                            numberToShow = this.dashboardData.equipmentCount;
+                            break;
+                        // Para "Tickets Generados" en HomeSupport, ya se maneja en HomeComponent.vue
+                        // si rolConfig.cards incluye una tarjeta con ese texto y HomeSupport no la sobrescribe aquí.
+                        default:
+                            numberToShow = card.number; // Usa el número predeterminado si no hay coincidencia
+                            break;
+                    }
+                    return { ...card, number: numberToShow };
+                });
+            }
+            return config;
         }
     },
     methods: {
-        // Método para actualizar datos en tiempo real
         async updateDashboardData() {
             try {
                 this.isLoading = true;
                 console.log("Actualizando datos del dashboard para soporte...");
 
-                // 4. Se mantiene la lógica de filtrado del lado del cliente por ahora
-                //    (Ver explicación de optimización backend más abajo)
                 const tickets = await TicketService.getAllTickets();
-                this.dashboardData.ticketsCount = tickets.length;
+                console.log("Tickets recibidos:", tickets);
 
+                this.dashboardData.ticketsCount = tickets.length;
                 this.dashboardData.openTickets = tickets.filter(ticket =>
                     ticket.state === 'Abierto'
                 ).length;
-
                 this.dashboardData.processingTickets = tickets.filter(ticket =>
                     ticket.state === 'En Proceso'
                 ).length;
-
                 this.dashboardData.closedTickets = tickets.filter(ticket =>
                     ticket.state === 'Cerrado'
                 ).length;
-
                 this.dashboardData.hardwareTickets = tickets.filter(ticket =>
                     ticket.incident_type === 'Hardware'
                 ).length;
-
                 this.dashboardData.softwareTickets = tickets.filter(ticket =>
                     ticket.incident_type === 'Software'
                 ).length;
-
                 this.dashboardData.networkTickets = tickets.filter(ticket =>
                     ticket.incident_type === 'Network' || ticket.incident_type === 'Red'
                 ).length;
+
+                try {
+                    // Llama a getMachinesCount sin companyId para obtener el total de todos los equipos
+                    this.dashboardData.equipmentCount = await TicketService.getMachinesCount();
+                    console.log("Cantidad de equipos recibida:", this.dashboardData.equipmentCount);
+                } catch (eqError) {
+                    console.warn("No se pudo obtener la cantidad de equipos:", eqError);
+                    this.dashboardData.equipmentCount = 0;
+                }
 
                 this.isLoading = false;
             } catch (error) {
@@ -102,20 +130,15 @@ export default {
         }
     },
     async mounted() {
-        // 5. Asegúrate de que los datos del usuario estén cargados antes de usar 'currentUser.rol'
-        // Esto es importante si el store no ha terminado de inicializarse o el usuario no está en localStorage
         if (!this.authStore.user) {
-            await this.authStore.checkAuthStatus(); // Fuerza la carga del usuario si no está
+            await this.authStore.checkAuthStatus();
         }
 
-        // Cargar datos iniciales del dashboard
         await this.updateDashboardData();
 
-        // Ejemplo de actualización periódica (cada 5 minutos)
         this.updateInterval = setInterval(this.updateDashboardData, 300000);
     },
     beforeUnmount() {
-        // Limpiar el intervalo al desmontar el componente
         clearInterval(this.updateInterval);
     }
 };
@@ -128,8 +151,9 @@ export default {
         </div>
 
         <HomeComponent
-            :rolConfig="userRoleConfig"
-            :userData="currentUser"> <template v-slot:additional-content>
+            :rolConfig="configuredCards"
+            >
+            <template v-slot:additional-content>
                 <div class="support-tools">
                     <h3>Herramientas de Soporte</h3>
 
@@ -192,7 +216,6 @@ export default {
                                 </div>
                                 <div class="metric-item">
                                     <div class="metric-label">Software:</div>
-                                    <div class="metric-label">Software:</div>
                                     <div class="metric-value">{{ dashboardData.softwareTickets }}</div>
                                 </div>
                                 <div class="metric-item">
@@ -217,7 +240,6 @@ export default {
         </HomeComponent>
     </div>
 </template>
-
 <style scoped>
 .support-tools {
     margin: 20px;

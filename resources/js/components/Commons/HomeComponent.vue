@@ -1,288 +1,198 @@
-    <!-- HomeComponent.vue -->
-    <script>
-    import Titulo from "@/components/ForMenu/Titulos.vue";
-    import TicketService from "../../services/TicketServices";
+<script>
+import Titulo from "@/components/ForMenu/Titulos.vue";
+import TicketService from "../../services/TicketServices";
+import { useAuthStore } from "@/stores/auth";
+import { watch } from 'vue';
 
-    export default {
-        name: "HomeComponent",
-        components: { Titulo },
-        props: {
-            // Configuración según el rol
-            rolConfig: {
-                type: Object,
-                required: true
-            },
-            // Datos de usuario (nombre, rol, etc.)
-            userData: {
-                type: Object,
-                default: () => ({
-                    nombre: "Usuario",
-                    rol: "Cliente",
-                    empresa: "Mi Empresa",
-                    direccion: "Av. Principal 123",
-                    id: null // Agregar ID para filtrar tickets por cliente
-                })
-            }
+export default {
+    name: "HomeComponent",
+    components: { Titulo },
+    props: {
+        rolConfig: {
+            type: Object,
+            required: true
         },
-        data() {
-            return {
-                // Datos compartidos entre todos los roles
-                mensajes: [
-                    {
-                        numero: 1,
-                        intencion: "Consulta sobre facturación",
-                        tiempo: "hace 5 minutos",
-                    },
-                    {
-                        numero: 2,
-                        intencion: "Reclamo por servicio",
-                        tiempo: "hace 15 minutos",
-                    },
-                    {
-                        numero: 3,
-                        intencion: "Solicitud de información",
-                        tiempo: "hace 30 minutos",
-                    },
-                ],
-                // Datos de tickets dinámicos
-                ticketsData: {
-                    active: 0,
-                    urgent: 0,
-                    history: 0,
-                    generated: 0,
-                    resolved: 0,
-                    inProcess: 0,
-                    closed: 0,
-                    equipment: 0,
-                    clients: 0,
-                    satisfaction: 0
+        // REMOVED: userData prop is no longer needed here as it's fetched from Pinia store.
+    },
+    data() {
+        return {
+            authStore: useAuthStore(),
+            mensajes: [
+                {
+                    numero: 1,
+                    intencion: "Consulta sobre facturación",
+                    tiempo: "hace 5 minutos",
                 },
-                isLoading: true,
-                error: null
+                {
+                    numero: 2,
+                    intencion: "Reclamo por servicio",
+                    tiempo: "hace 15 minutos",
+                },
+                {
+                    numero: 3,
+                    intencion: "Solicitud de información",
+                    tiempo: "hace 30 minutos",
+                },
+            ],
+            ticketsData: {
+                active: 0,
+                urgent: 0,
+                history: 0,
+                generated: 0, // <-- Asegurarse de que se use para soporte y cliente
+                resolved: 0,
+                inProcess: 0,
+                closed: 0,
+                equipment: 0, // <-- Asegurarse de que se use para cliente
+                clients: 0,
+                satisfaction: 0
+            },
+            isLoading: true,
+            error: null
+        };
+    },
+    computed: {
+        currentRole() {
+            return this.authStore.userRole;
+        },
+        currentUserDataFromStore() {
+            return this.authStore.user || {
+                nombre: "Usuario",
+                empresa: "Mi Empresa", // Asegúrate de que esta propiedad exista en tu objeto de usuario para el cliente
+                direccion: "Av. Principal 123",
+                id: null
             };
         },
-        computed: {
-            // Obtener las tarjetas según la configuración del rol, con datos dinámicos
-            cards() {
-                const baseCards = this.rolConfig.cards || [];
-
-                // Mapear las tarjetas con los datos dinámicos
-                return baseCards.map(card => {
-                    const newCard = { ...card };
-
-                    // Reemplazar los números estáticos con datos dinámicos según el tipo de tarjeta
-                    switch(card.text) {
-                        case "Tickets Activos":
-                            newCard.number = this.ticketsData.active;
-                            break;
-                        case "Tickets Urgentes":
-                            newCard.number = this.ticketsData.urgent;
-                            break;
-                        case "Tickets Abiertos":
-                            newCard.number = this.ticketsData.active;
-                            break;
-                        case "Tickets En Proceso":
-                            newCard.number = this.ticketsData.inProcess;
-                            break;
-                        case "Tickets Cerrados":
-                            newCard.number = this.ticketsData.closed;
-                            break;
-                        case "Historial de Tickets":
-                            newCard.number = this.ticketsData.history;
-                            break;
-                        case "Tickets Generados":
-                            newCard.number = this.ticketsData.generated;
-                            break;
-                        case "Tickets Resueltos":
-                            newCard.number = this.ticketsData.resolved;
-                            break;
-                        case "Cantidad de equipos":
-                            newCard.number = this.ticketsData.equipment;
-                            break;
-                        case "Registrar clientes":
-                            newCard.number = this.ticketsData.clients;
-                            break;
-                        case "Valorización de Satisfacción":
-                            newCard.number = this.ticketsData.satisfaction;
-                            break;
-                        default:
-                            // Mantener el número estático si no hay equivalente dinámico
-                            break;
-                    }
-
-                    return newCard;
-                });
-            },
-            // Componentes adicionales a mostrar según el rol
-            showComponents() {
-                return this.rolConfig.components || {
-                    messages: true,
-                    charts: false,
-                    calendar: false
-                };
-            },
-            // Colores y estilos personalizados según el rol
-            themeStyles() {
-                return {
-                    cardBackground: this.rolConfig.theme?.cardBackground || "#ffc676",
-                    messageBackground: this.rolConfig.theme?.messageBackground || "#fcd8a6",
-                    // Otros estilos personalizables...
-                };
-            }
-        },
-        methods: {
-            async loadTicketsData() {
-                try {
-                    this.isLoading = true;
-                    this.error = null;
-
-                    // Cargar datos según el rol del usuario
-                    switch(this.userData.rol) {
-                        case 'admin':
-                            await this.loadAdminTicketsData();
-                            break;
-                        case 'support':
-                            await this.loadSupportTicketsData();
-                            break;
-                        case 'client':
-                            await this.loadClientTicketsData();
-                            break;
-                        default:
-                            console.warn('Rol no reconocido:', this.userData.rol);
-                            break;
-                    }
-
-                    this.isLoading = false;
-                } catch (error) {
-                    console.error('Error al cargar datos de tickets:', error);
-                    this.error = 'Error al cargar datos. Por favor, intente nuevamente.';
-                    this.isLoading = false;
+        cards() {
+            const baseCards = this.rolConfig.cards || [];
+            return baseCards.map(card => {
+                const newCard = { ...card };
+                switch(card.text) {
+                    case "Tickets Activos": newCard.number = this.ticketsData.active; break;
+                    case "Tickets Urgentes": newCard.number = this.ticketsData.urgent; break;
+                    case "Tickets Abiertos": newCard.number = this.ticketsData.active; break;
+                    case "Tickets En Proceso": newCard.number = this.ticketsData.inProcess; break;
+                    case "Tickets Cerrados": newCard.number = this.ticketsData.closed; break;
+                    case "Historial de Tickets": newCard.number = this.ticketsData.history; break;
+                    case "Tickets Generados": newCard.number = this.ticketsData.generated; break; // <-- USAR ESTE
+                    case "Tickets Resueltos": newCard.number = this.ticketsData.resolved; break;
+                    case "Cantidad de equipos": newCard.number = this.ticketsData.equipment; break; // <-- USAR ESTE
+                    case "Registrar clientes": newCard.number = this.ticketsData.clients; break;
+                    case "Valorización de Satisfacción": newCard.number = this.ticketsData.satisfaction; break;
+                    default: break;
                 }
-            },
+                return newCard;
+            });
+        },
+        showComponents() {
+            return this.rolConfig.components || {
+                messages: true,
+                charts: false,
+                calendar: false
+            };
+        },
+        themeStyles() {
+            return {
+                cardBackground: this.rolConfig.theme?.cardBackground || "#ffc676",
+                messageBackground: this.rolConfig.theme?.messageBackground || "#fcd8a6",
+            };
+        }
+    },
+    methods: {
+        async loadTicketsData() {
+            try {
+                this.isLoading = true;
+                this.error = null;
 
-            async loadAdminTicketsData() {
-                // Para administradores: obtener todos los tickets
-                const allTickets = await TicketService.getAllTickets();
-
-                // Contar tickets activos (abiertos)
-                this.ticketsData.active = allTickets.filter(ticket =>
-                    ticket.state === 'Abierto'
-                ).length;
-
-                // Contar tickets en proceso
-                this.ticketsData.inProcess = allTickets.filter(ticket =>
-                    ticket.state === 'En Proceso'
-                ).length;
-
-                // Contar tickets cerrados
-                this.ticketsData.closed = allTickets.filter(ticket =>
-                    ticket.state === 'Cerrado'
-                ).length;
-
-                // Contar tickets urgentes (suponiendo que los tickets urgentes son los abiertos)
-                this.ticketsData.urgent = this.ticketsData.active;
-
-                // Historial (todos los tickets)
-                this.ticketsData.history = allTickets.length;
-
-                // Número de clientes (para tarjeta "Registrar clientes")
-                // Obtener número único de clientes basado en el campo client_name
-                const uniqueClients = new Set(allTickets.map(ticket => ticket.client_name));
-                this.ticketsData.clients = uniqueClients.size;
-            },
-
-            async loadSupportTicketsData() {
-                // Para soporte técnico
-                const allTickets = await TicketService.getAllTickets();
-
-                // Tickets activos asignados a soporte (abiertos)
-                this.ticketsData.active = allTickets.filter(ticket =>
-                    ticket.state === 'Abierto'
-                ).length;
-
-                // Tickets en proceso
-                this.ticketsData.inProcess = allTickets.filter(ticket =>
-                    ticket.state === 'En Proceso'
-                ).length;
-
-                // Tickets cerrados
-                this.ticketsData.closed = allTickets.filter(ticket =>
-                    ticket.state === 'Cerrado'
-                ).length;
-
-                // Tickets urgentes (asumimos que son los tickets abiertos)
-                this.ticketsData.urgent = this.ticketsData.active;
-
-                // Historial
-                this.ticketsData.history = allTickets.length;
-
-                // Valorización de satisfacción (promedio de calificaciones)
-                // Como no tenemos campo de rating en la DB actual, usamos un valor fijo de ejemplo
-                this.ticketsData.satisfaction = 4; // De 1-5
-            },
-
-            async loadClientTicketsData() {
-                // Para clientes
-                // En un escenario real, filtrarías por el id del cliente
-                // Aquí usaremos un enfoque simulado porque no tenemos un campo de cliente_id en la tabla
-
-                // Simulamos obtener tickets por cliente con el nombre
-                const clientTickets = await TicketService.getAllTickets();
-
-                // Filtramos por company que coincide con la empresa del cliente (simulación)
-                const filteredTickets = clientTickets.filter(ticket =>
-                    ticket.company === this.userData.empresa
-                );
-
-                // Tickets generados (todos los del cliente)
-                this.ticketsData.generated = filteredTickets.length;
-
-                // Tickets resueltos (cerrados)
-                this.ticketsData.resolved = filteredTickets.filter(ticket =>
-                    ticket.state === 'Cerrado'
-                ).length;
-
-                // Tickets abiertos
-                this.ticketsData.active = filteredTickets.filter(ticket =>
-                    ticket.state === 'Abierto'
-                ).length;
-
-                // Tickets en proceso
-                this.ticketsData.inProcess = filteredTickets.filter(ticket =>
-                    ticket.state === 'En Proceso'
-                ).length;
-
-                // Cantidad de equipos (esto podría venir de otro endpoint en una implementación real)
-                // Contamos la cantidad de tickets con incident_type Hardware como aproximación
-                this.ticketsData.equipment = filteredTickets.filter(ticket =>
-                    ticket.incident_type === 'Hardware'
-                ).length;
-            },
-
-            // Método para actualizar los datos de los tickets (para llamadas periódicas)
-            refreshTicketsData() {
-                this.loadTicketsData();
+                const role = this.currentRole;
+                switch(role) {
+                    case 'admin':
+                        await this.loadAdminTicketsData();
+                        break;
+                    case 'TiSupport':
+                        await this.loadSupportTicketsData();
+                        break;
+                    case 'client':
+                        // Asegúrate de que currentUserDataFromStore.empresa o currentUserDataFromStore.id exista
+                        await this.loadClientTicketsData(this.currentUserDataFromStore.id); // Usamos ID para el cliente
+                        break;
+                    default:
+                        console.warn('Rol no reconocido (desde Store):', role);
+                        break;
+                }
+                this.isLoading = false;
+            } catch (error) {
+                console.error('Error al cargar datos de tickets:', error);
+                this.error = 'Error al cargar datos. Por favor, intente nuevamente.';
+                this.isLoading = false;
             }
         },
-        created() {
-            // Cargar datos al crear el componente
-            this.loadTicketsData();
-        },
-        mounted() {
-            // Configurar actualización periódica (cada 5 minutos)
-            this.refreshInterval = setInterval(this.refreshTicketsData, 300000);
-        },
-        beforeUnmount() {
-            // Limpiar el intervalo al desmontar el componente
-            clearInterval(this.refreshInterval);
-        }
-    };
-    </script>
 
+        async loadAdminTicketsData() {
+            const allTickets = await TicketService.getAllTickets();
+            this.ticketsData.active = allTickets.filter(ticket => ticket.state === 'Abierto').length;
+            this.ticketsData.inProcess = allTickets.filter(ticket => ticket.state === 'En Proceso').length;
+            this.ticketsData.closed = allTickets.filter(ticket => ticket.state === 'Cerrado').length;
+            this.ticketsData.urgent = this.ticketsData.active; // Considerar si urgente es igual a abierto o tiene otra lógica
+            this.ticketsData.history = allTickets.length; // Total de tickets
+            const uniqueClients = new Set(allTickets.map(ticket => ticket.client_name)); // Si `client_name` es el nombre de la empresa
+            this.ticketsData.clients = uniqueClients.size;
+            // Para admin, podrías querer el total de todos los equipos
+            this.ticketsData.equipment = await TicketService.getMachinesCount();
+        },
+
+        async loadSupportTicketsData() {
+            const allTickets = await TicketService.getAllTickets();
+            this.ticketsData.active = allTickets.filter(ticket => ticket.state === 'Abierto').length;
+            this.ticketsData.inProcess = allTickets.filter(ticket => ticket.state === 'En Proceso').length;
+            this.ticketsData.closed = allTickets.filter(ticket => ticket.state === 'Cerrado').length;
+            this.ticketsData.urgent = this.ticketsData.active;
+            this.ticketsData.history = allTickets.length;
+            this.ticketsData.satisfaction = 4;
+            // **NUEVO:** Para Soporte TI, 'Tickets Generados' es el total de tickets.
+            this.ticketsData.generated = allTickets.length;
+            // Para Soporte TI, obtiene la cantidad total de equipos
+            this.ticketsData.equipment = await TicketService.getMachinesCount();
+        },
+
+        async loadClientTicketsData(clientId) { // Cambiado a usar clientId
+            const clientTickets = await TicketService.getFilteredTickets({ clientId: clientId }); // Filtra por clientID
+            this.ticketsData.generated = clientTickets.length; // Total de tickets generados por este cliente
+            this.ticketsData.resolved = clientTickets.filter(ticket => ticket.state === 'Cerrado').length;
+            this.ticketsData.active = clientTickets.filter(ticket => ticket.state === 'Abierto').length;
+            this.ticketsData.inProcess = clientTickets.filter(ticket => ticket.state === 'En Proceso').length;
+            // **NUEVO:** Obtiene la cantidad de equipos para la empresa del cliente
+            this.ticketsData.equipment = await TicketService.getMachinesCount(clientId); // Pasa el ID de la empresa del cliente
+        },
+
+        refreshTicketsData() {
+            this.loadTicketsData();
+        }
+    },
+    mounted() {
+        watch(() => this.authStore.userRole, (newRole) => {
+            if (newRole) {
+                this.loadTicketsData();
+            } else {
+                console.log("Esperando a que el rol del usuario esté disponible en el store...");
+            }
+        }, { immediate: true });
+
+        // Observa también los cambios en el objeto user del store para el clientId
+        watch(() => this.authStore.user, (newUser) => {
+            if (newUser && this.currentRole === 'client' && newUser.id) {
+                this.loadTicketsData(); // Recargar si el usuario es cliente y su ID está disponible
+            }
+        }, { deep: true }); // Usar deep watch para objetos
+
+        this.refreshInterval = setInterval(this.refreshTicketsData, 300000);
+    },
+    beforeUnmount() {
+        clearInterval(this.refreshInterval);
+    }
+};
+</script>
     <template>
         <div>
-
-            <!-- Tarjetas de información -->
             <div class="card-container">
                 <div v-if="isLoading" class="loading-container">
                     <div class="loading-spinner"></div>
@@ -308,7 +218,6 @@
                 </template>
             </div>
 
-            <!-- Contenedor de Mensajes (condicional) -->
             <div v-if="showComponents.messages" class="messages-wrapper">
                 <div class="messages-container">
                     <div class="messages-header">
@@ -323,11 +232,9 @@
                 </div>
             </div>
 
-            <!-- Sección de gráficos (condicional) -->
             <div v-if="showComponents.charts" class="charts-wrapper">
                 <div class="charts-container">
-                    <!-- Resumen de estados de tickets para administrador -->
-                    <div v-if="userData.rol === 'admin'" class="ticket-summary">
+                    <div v-if="currentUserDataFromStore.rol === 'admin'" class="ticket-summary">
                         <h3>Resumen de Tickets</h3>
                         <div class="summary-cards">
                             <div class="summary-card">
@@ -348,12 +255,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Aquí irían tus gráficos específicos por rol -->
                     <slot name="charts"></slot>
                 </div>
             </div>
 
-            <!-- Otras secciones específicas por rol usando slots -->
             <slot name="additional-content"></slot>
         </div>
     </template>

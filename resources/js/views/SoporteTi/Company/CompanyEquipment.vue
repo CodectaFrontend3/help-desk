@@ -1,3 +1,38 @@
+<template>
+    <div class="company-equipment-container">
+        <div v-if="error" class="error-message">
+            {{ error }}
+            <button class="back-button" @click="$router.go(-1)">
+                <i class="pi pi-arrow-left"></i> Volver
+            </button>
+        </div>
+
+        <div v-else>
+            <button class="back-button" @click="$router.go(-1)">
+                <i class="pi pi-arrow-left"></i> Volver
+            </button>
+
+            <div v-if="loading" class="loading-message">
+                <div class="loader"></div>
+            </div>
+
+            <div v-else-if="equipments.length === 0" class="no-data">
+                No se encontraron equipos para esta entidad.
+            </div>
+
+            <div v-else>
+                <h3>Equipos registrados</h3>
+                <table-component
+                    :data="equipments"
+                    :columns="columns"
+                    entityType="equipment"
+                    :available-actions="['equipment']"
+                    :parent-id="companyId"     :parent-type="companyType"  />
+            </div>
+        </div>
+    </div>
+</template>
+
 <script>
 import tableComponent from "@/components/Commons/TableComponent.vue";
 import apiServices from "../../../services/ApiServices";
@@ -5,7 +40,7 @@ import equipmentServices from "../../../services/EquipmentServices";
 
 export default {
     name: "CompanyEquipment",
-    components: { tableComponent }, 
+    components: { tableComponent },
     props: {
         id: {
             type: String,
@@ -128,45 +163,6 @@ export default {
     }
 };
 </script>
-
-<template>
-    <div class="company-equipment-container">
-        <!-- Mensaje de error si existe -->
-        <div v-if="error" class="error-message">
-            {{ error }}
-            <button class="back-button" @click="$router.go(-1)">
-                <i class="pi pi-arrow-left"></i> Volver
-            </button>
-        </div>
-
-        <div v-else>
-            <button class="back-button" @click="$router.go(-1)">
-                    <i class="pi pi-arrow-left"></i> Volver
-                </button>
-
-            <!-- Mostrar mensaje de carga -->
-            <div v-if="loading" class="loading-message">
-                <div class="loader"></div>
-            </div>
-
-            <!-- Mostrar mensaje si no hay equipos -->
-            <div v-else-if="equipments.length === 0" class="no-data">
-                No se encontraron equipos para esta entidad.
-            </div>
-
-            <!-- Mostrar tabla con equipos -->
-            <div v-else>
-                <h3>Equipos registrados</h3>
-                <table-component
-                    :data="equipments"
-                    :columns="columns"
-                    entityType="equipment"
-                    :available-actions="['equipment']"
-                />
-            </div>
-        </div>
-    </div>
-</template>
 
 <style scoped>
 .company-equipment-container {

@@ -28,7 +28,7 @@ export default [
                     import("@/views/SoporteTi/Clients/ClientsCompany.vue"),
                 meta: {
                     title: "Empresas",
-                    roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
+                    roles: ["TiSupport"],
                     navbarConfig: {
                         clientsSoporteTi: true,
                         clientCompany: true,
@@ -40,104 +40,12 @@ export default [
             },
             {
                 path: "persons",
-                name: "TiSupportClientsPersons",
-                component: () =>
-                    import("@/views/SoporteTi/Clients/ClientsPerson.vue"),
-                meta: {
-                    title: "Personas Naturales",
-                    roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
-                    navbarConfig: {
-                        clientsSoporteTi: true,
-                        clientPerson: true,
-                        labelDni: "DNI:",
-                        labelNombre: "Nombre:",
-                    },
-                },
-            },
-        ],
-    },
-    {
-        path: "tickets",
-        name: "TiSupportTickets",
-        component: () => import("@/views/SoporteTi/Tickets/TicketsView.vue"),
-        meta: {
-            title: "Gestión de Tickets",
-            roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
-            navbarConfig: {
-                tickets: true,
-                labelEstado: "Estado",
-                labelIncidente: "Tipo de incidente:",
-                labelArea: "Área:",
-                labelFecha: "Rango de fecha",
-            },
-        },
-        children: [
-            {
-                path: "history",
-                name: "TiSupportTicketsHistory",
-                component: () =>
-                    import("@/views/SoporteTi/Tickets/HistorialTickets.vue"),
-                meta: {
-                    title: "Historial de Tickets",
-                    roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
-                },
-            },
-            {
-                path: "active",
-                name: "TiSupportTicketsActive",
-                component: () =>
-                    import("@/views/SoporteTi/Tickets/TicketsActivos.vue"),
-                meta: {
-                    title: "Tickets Activos",
-                    roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
-                },
-            },
-            {
-                path: "urgent",
-                name: "TiSupportTicketsUrgent",
-                component: () =>
-                    import("@/views/SoporteTi/Tickets/TicketsUrgentes.vue"),
-                meta: {
-                    title: "Tickets Urgentes",
-                    roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
-                },
-            },
-        ],
-    },
-    {
-        path: "companies",
-        name: "TiSupportCompanies",
-        component: () =>
-            import("@/views/SoporteTi/Company/CompanySoporteTi.vue"),
-        meta: {
-            title: "Gestión de Empresas",
-            roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
-            navbarConfig: { companySoporteTi: true },
-        },
-        children: [
-            {
-                path: "",
-                name: "TiSupportCompaniesDefault",
-                redirect: { name: "TiSupportCompaniesView" },
-            },
-            {
-                path: "view",
-                name: "TiSupportCompaniesView",
-                component: () =>
-                    import("@/views/SoporteTi/Company/CompanyCompany.vue"),
-                meta: {
-                    title: "Vista de Empresas",
-                    roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
-                },
-            },
-            {
-                path: "persons",
                 name: "TiSupportCompaniesPersons",
                 component: () =>
                     import("@/views/SoporteTi/Company/CompanyPerson.vue"),
                 meta: {
                     title: "Personal de Empresas",
-                    roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
+                    roles: ["TiSupport"],
                 },
             },
         ],
@@ -150,7 +58,7 @@ export default [
         props: true,
         meta: {
             title: "Equipos",
-            roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
+            roles: ["TiSupport"],
             navbarConfig: {
                 equipment: true,
                 companySoporteTi: true,
@@ -165,12 +73,21 @@ export default [
             import("@/views/SoporteTi/Company/CompanyEquipmentDetails.vue"),
         meta: {
             title: "Detalles de Equipo",
-            roles: ["TiSupport"], // Cambiado de ROLES.TI_SUPPORT a "TiSupport"
+            roles: ["TiSupport"],
             navbarConfig: {
                 companySoporteTi: true,
                 equipmentDetails: true,
             },
         },
     },
-    // Agrega más rutas aquí...
+    // **** RUTA AÑADIDA/MODIFICADA PARA LOS TICKETS GENERALES BAJO EL PERFIL DE SOPORTE ****
+    {
+        path: "tickets", // Esta ruta se resolverá como /support/tickets
+        name: "SupportTicketsGeneral", // Un nombre único para esta ruta
+        component: () => import("@/views/Admin/HistorialTickets.vue"), // Asegúrate de que esta ruta sea correcta a tu componente HistorialTickets.vue
+        meta: {
+            title: "Gestión de Tickets",
+            roles: ["TiSupport"], // Define los roles que pueden acceder a esta ruta
+        },
+    },
 ];

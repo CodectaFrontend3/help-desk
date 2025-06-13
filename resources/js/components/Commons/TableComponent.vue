@@ -15,37 +15,38 @@ export default {
             type: String,
             default: "company",
         },
-        // Nueva prop para configurar los botones disponibles
         availableActions: {
             type: Array,
-            default: () => ['view', 'equipment', 'chat'] // Todas las acciones por defecto
+            default: () => ['view', 'equipment', 'chat']
         },
-        // Nueva prop para mostrar checkbox de selección (solo admin)
         showSelectionCheckbox: {
             type: Boolean,
             default: false
         },
-        // Nueva prop para mostrar columna de prioridad (genérica)
         showPriorityColumn: {
             type: Boolean,
             default: false
         },
-        // Prop para el usuario actual (para verificar rol)
         currentUser: {
             type: Object,
             default: () => ({})
         },
-        // NUEVAS PROPS PARA DESACOPLAR DE $route.meta
-        // Controla si se muestran las columnas específicas de 'admin-tickets'
         showTicketAdminColumns: {
             type: Boolean,
             default: false
         },
-        // Controla si se aplica la lógica de botones de 'companySoporteTi'
-        // (si aún la necesitas como un control aparte de availableActions)
         showCompanySoporteTiButtons: {
             type: Boolean,
             default: false
+        },
+        // --- NUEVAS PROPS PARA PASAR EL CONTEXTO DEL PADRE (EMPRESA/PERSONA) ---
+        parentId: { // ID de la empresa o persona que contiene los equipos
+            type: [String, Number],
+            default: null
+        },
+        parentType: { // Tipo de la entidad padre ('company' o 'person')
+            type: String,
+            default: null
         }
     },
     data() {
@@ -55,9 +56,8 @@ export default {
             rows: 10,
             rowsPerPageOptions: [5, 10, 20, 50],
             selectedClientId: null,
-            selectedRows: [], // Array para almacenar las filas seleccionadas
-            selectAll: false, // Estado del checkbox "Seleccionar todo"
-            // Configuración centralizada de botones
+            selectedRows: [],
+            selectAll: false,
             buttonConfig: {
                 view: {
                     icon: 'pi pi-eye',
@@ -95,7 +95,6 @@ export default {
                     action: 'downloadRecord',
                     show: true
                 }
-                // Puedes agregar más botones según necesites
             }
         };
     },
@@ -103,11 +102,8 @@ export default {
         paginatedData() {
             return this.data.slice(this.first, this.first + this.rows);
         },
-        // Computed para obtener los botones que deben mostrarse
         visibleButtons() {
-            // Si showButtons() es falso, no mostramos ningún botón de acción
             if (!this.showButtons()) return [];
-
             return this.availableActions
                 .filter(actionKey => this.buttonConfig[actionKey])
                 .map(actionKey => ({
@@ -115,31 +111,25 @@ export default {
                     ...this.buttonConfig[actionKey]
                 }));
         },
-        // Verificar si el usuario es admin
         isAdmin() {
             return this.currentUser && (this.currentUser.role === 'admin' || this.currentUser.isAdmin === true);
         },
-        // Verificar si debe mostrar el checkbox (solo admin y si la prop lo permite)
         shouldShowCheckbox() {
             return this.showSelectionCheckbox && this.isAdmin;
         },
-        // Estado intermedio del checkbox principal
         isIndeterminate() {
             return this.selectedRows.length > 0 && this.selectedRows.length < this.paginatedData.length;
         }
     },
     watch: {
-        // Watchers para manejar la selección
         selectedRows: {
             handler(newVal) {
                 this.selectAll = newVal.length === this.paginatedData.length && this.paginatedData.length > 0;
-                // Emitir evento con las filas seleccionadas
                 this.$emit('selection-change', newVal);
             },
             deep: true
         },
         paginatedData() {
-            // Limpiar selección al cambiar de página
             this.selectedRows = [];
             this.selectAll = false;
         }
@@ -150,15 +140,11 @@ export default {
             this.rows = event.rows;
         },
         showButtons() {
-            // Si se especifican acciones disponibles, siempre mostrar los botones
             if (this.availableActions && this.availableActions.length > 0) {
                 return true;
             }
-            // Fallback a la nueva prop `showCompanySoporteTiButtons`
             return this.showCompanySoporteTiButtons;
         },
-
-        // Método centralizado para ejecutar acciones
         executeAction(actionKey, row) {
             if (this[actionKey]) {
                 this[actionKey](row);
@@ -166,8 +152,6 @@ export default {
                 console.warn(`Acción ${actionKey} no encontrada`);
             }
         },
-
-        // Métodos para manejar la selección
         toggleSelectAll() {
             if (this.selectAll) {
                 this.selectedRows = [...this.paginatedData];
@@ -175,26 +159,21 @@ export default {
                 this.selectedRows = [];
             }
         },
-
         toggleRowSelection(row) {
             const index = this.selectedRows.findIndex(selectedRow =>
                 (selectedRow.id || selectedRow._id) === (row.id || row._id)
             );
-
             if (index === -1) {
                 this.selectedRows.push(row);
             } else {
                 this.selectedRows.splice(index, 1);
             }
         },
-
         isRowSelected(row) {
             return this.selectedRows.some(selectedRow =>
                 (selectedRow.id || selectedRow._id) === (row.id || row._id)
             );
         },
-
-        // Método para obtener el color de prioridad
         getPriorityColor(priority) {
             const priorityColors = {
                 'alta': '#ff4444',
@@ -206,17 +185,12 @@ export default {
                 'urgente': '#cc0000',
                 'urgent': '#cc0000'
             };
-
             if (!priority) return '#999999';
-
             const normalizedPriority = priority.toString().toLowerCase();
             return priorityColors[normalizedPriority] || '#999999';
         },
-
-        // Método para formatear texto de prioridad
         formatPriority(priority) {
             if (!priority) return 'N/A';
-
             const priorityMap = {
                 'alta': 'Alta',
                 'high': 'Alta',
@@ -227,59 +201,61 @@ export default {
                 'urgente': 'Urgente',
                 'urgent': 'Urgente'
             };
-
             const normalizedPriority = priority.toString().toLowerCase();
             return priorityMap[normalizedPriority] || priority;
         },
 
+        // --- MÉTODO viewEquipment CORREGIDO ---
         viewEquipment(row) {
-            const id = row.id || row._id;
+            const equipmentId = row.id || row._id; // ID del equipo específico
 
-            if (!id) {
-                console.error("Error: No se pudo obtener el ID del registro", row);
+            if (!equipmentId) {
+                console.error("Error: No se pudo obtener el ID del registro de equipo", row);
                 return;
             }
 
             console.log("Navegando a detalles de equipos para:", row);
-            console.log("ID:", id, "Tipo:", this.entityType);
+            console.log("Equipment ID:", equipmentId, "Table entityType (prop):", this.entityType);
 
-            // Esta lógica es para "Detalles de Equipo" que es una ruta anidada bajo CompanyEquipment
+            // Si entityType es 'equipment', estamos mostrando una lista de equipos,
+            // y necesitamos el ID de la empresa/persona padre y su tipo
             if (this.entityType === "equipment") {
-                // Aquí, si necesitas `companyId`, lo ideal sería que `row` ya lo contenga
-                // o que sea pasado como otra prop si el contexto lo requiere,
-                // para evitar depender de `this.$route.path.split('/')`.
-                const urlParts = this.$route.path.split('/');
-                const companyIdIndex = urlParts.indexOf('company-equipment') + 1; // Ajusta según la estructura de tu URL
-                const companyId = urlParts[companyIdIndex] || this.$route.params.id;
+                const companyOrPersonId = this.parentId; // Usamos la nueva prop parentId
+                const companyOrPersonType = this.parentType; // Usamos la nueva prop parentType
 
-                console.log("Navegando a detalles de equipo con companyId:", companyId, "equipmentId:", id);
+                if (!companyOrPersonId || !companyOrPersonType) {
+                    console.error("Error: No se pudo determinar el ID de la entidad padre o el tipo (company/person).", { companyOrPersonId, companyOrPersonType, row });
+                    return;
+                }
+
+                console.log("Navegando a detalles de equipo con companyId:", companyOrPersonId, "equipmentId:", equipmentId, "type:", companyOrPersonType);
 
                 this.$router.push({
-                    name: "Detalles de Equipo", // Asegúrate de que este nombre sea correcto en tu router
+                    name: "TiSupportEquipmentDetails",
                     params: {
-                        companyId: companyId,
-                        equipmentId: id,
+                        companyId: companyOrPersonId, // ID de la empresa o persona
+                        equipmentId: equipmentId,      // ID del equipo específico
+                        type: companyOrPersonType      // Tipo de la entidad padre ('company' o 'person')
                     },
                 });
             } else {
-                let type = this.entityType;
+                // Esta es la lógica para navegar a la lista de equipos de una empresa/persona desde
+                // la vista de empresas o personas (TiSupportCompaniesView/TiSupportCompaniesPersons)
+                const id = row.id || row._id;
+                let type = this.entityType; // Usa la prop entityType que ya tienes
 
-                // Estas condiciones siguen dependiendo de $route.name, lo cual puedes considerar
-                // pasarlo como una prop si quieres eliminar completamente la dependencia del router
-                // dentro de esta lógica de `viewEquipment`.
-                if (this.$route.name === "CompanyMicro" || this.$route.name.includes("Microempresa")) {
-                    type = "micro";
-                } else if (this.$route.name === "CompanyPerson" || this.$route.name.includes("Persona")) {
+                // Si necesitas ajustar el 'type' basado en la ruta actual, manten esta lógica
+                // (aunque lo ideal sería que 'entityType' ya refleje esto)
+                if (this.$route.name === "TiSupportCompaniesPersons" || this.$route.name.includes("Persona")) {
                     type = "person";
-                } else {
+                } else if (this.$route.name === "TiSupportCompaniesView" || this.$route.name.includes("Company")) {
                     type = "company";
                 }
 
                 console.log("Navegando a equipos de empresa con ID:", id, "Tipo:", type);
 
-                // *** CAMBIO CRÍTICO AQUÍ: Usar el nombre de ruta correcto "CompanyEquipments" ***
                 this.$router.push({
-                    name: "CompanyEquipments", // Este debe coincidir con el 'name' de la ruta en tu router (index.js)
+                    name: "CompanyEquipments",
                     params: {
                         id: id,
                         type: type,
@@ -292,59 +268,44 @@ export default {
             this.selectedClientId = row.id || row._id;
             this.showPopup = true;
         },
-
-        // Nuevos métodos para las acciones adicionales
         viewChat(row) {
-            // Implementa la lógica para ir al chat
             const id = row.id || row._id;
             console.log('Ir al chat con ID:', id);
-
             this.$router.push({
                 name: 'Chat',
                 params: { id: id },
                 query: { type: this.entityType || 'default' }
             });
         },
-
         editRecord(row) {
-            // Emite un evento para que el componente padre maneje la edición
             console.log('Emitiendo evento de edición para:', row);
             this.$emit('edit', row);
         },
-
         deleteRecord(row) {
-            // Emite un evento para que el componente padre maneje la eliminación
             console.log('Emitiendo evento de eliminación para:', row);
             this.$emit('delete', row);
         },
-
         downloadRecord(row) {
-            // Emite un evento para que el componente padre maneje la descarga
             console.log('Emitiendo evento de descarga para:', row);
             this.$emit('download', row);
         },
-
         formatDate(dateString) {
             if (!dateString) return 'N/A';
             const date = new Date(dateString);
             if (isNaN(date.getTime())) return dateString;
-
             return date.toLocaleDateString('es-ES', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric'
             });
         },
-
         getCellValue(row, column) {
             const value = row[column.key];
-
             if (column.format && value) {
                 if (column.key === 'end_revision' || column.key === 'revision_scheduled') {
                     return this.formatDate(value);
                 }
             }
-
             return value;
         }
     },
@@ -433,7 +394,6 @@ export default {
         <PopCliente :visible="showPopup" :cliente-id="selectedClientId" @close="showPopup = false" />
     </div>
 </template>
-
 
 <style scoped>
 .table-container {

@@ -1,6 +1,6 @@
 <script>
 import tableComponent from "@/components/Commons/TableComponent.vue";
-import apiServices from "../../../services/ApiServices";
+import TicketService from "@/services/TicketServices"; // Importa TicketService
 
 export default {
     name: "HistorialTickets",
@@ -22,13 +22,23 @@ export default {
         };
     },
     async created() {
-        await this.fetchCompanies(); // Llamada a la API cuando el componente se crea
+        await this.fetchTickets();
+    },
+    watch: {
+        '$route.query.status': {
+            handler: 'fetchTickets',
+        }
     },
     methods: {
-        async fetchCompanies() {
+        async fetchTickets() {
             try {
-                // Obtener los datos de empresas desde la API
-                this.tickets = await apiServices.get("tickets");
+                const statusFilter = this.$route.query.status;
+
+                if (statusFilter) {
+                    this.tickets = await TicketService.getFilteredTickets({ status: statusFilter });
+                } else {
+                    this.tickets = await TicketService.getAllTickets();
+                }
                 console.log("Tickets cargados:", this.tickets);
             } catch (error) {
                 console.error("Error al cargar tickets:", error);
