@@ -22,7 +22,7 @@ class PlanController extends Controller
         return response()->json($plan, 201);
     }
 
-    /**			
+    /**
      * Display the specified resource.
      */
     public function show(string $id)
@@ -51,5 +51,18 @@ class PlanController extends Controller
         $plan->delete();
         return response()->noContent();
     }
+        /**
+     * buscar en Plan.
+     */
+    public function buscar(Request $request)
+    {
+        $query = $request->input('query');
 
+        $resultados = Plan::where('plan_number', 'like', "%{$query}%")
+            ->orWhere('name', 'like', "%{$query}%")
+            ->orWhere('description', 'like', "%{$query}%")
+            ->get();
+
+        return response()->json($resultados);
+    }
 }

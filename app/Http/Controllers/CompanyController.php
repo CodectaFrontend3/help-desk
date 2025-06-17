@@ -53,4 +53,20 @@ class CompanyController extends Controller
         $company->delete();
         return response()->noContent();
     }
+        /**
+     * buscar en empresa.
+     */
+    public function buscar(Request $request)
+    {
+        $query = $request->input('query');
+
+        $resultados = Company::where('client_name', 'like', "%{$query}%")
+            ->orWhere('ruc', 'like', "%{$query}%")
+            ->orWhere('address', 'like', "%{$query}%")
+            ->orWhere('phone', 'like', "%{$query}%")
+            ->orWhere('email', 'like', "%{$query}%")
+            ->get();
+
+        return response()->json($resultados);
+    }
 }

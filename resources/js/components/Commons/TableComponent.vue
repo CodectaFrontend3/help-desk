@@ -6,6 +6,14 @@ import Paginator from "primevue/paginator";
 
 export default {
     name: "TableComponent",
+    watch: {
+    entityType: {
+        immediate: true,
+        handler() {
+        this.cargarProductos();
+        }
+    }
+    },
     components: {
         PopCliente,
         PopCompany,
@@ -39,6 +47,9 @@ export default {
             selectedRows: [], // Array para almacenar las filas seleccionadas
             selectAll: false, // Estado del checkbox "Seleccionar todo"
             filteredData: [],
+            searchTerm: '',
+            producto: [],            // todos los datos
+            resultadosBusqueda: [],  // datos filtrados por API
             // Configuración centralizada de botones
             buttonConfig: {
                 view: {
@@ -82,6 +93,9 @@ export default {
         };
     },
     computed: {
+          paginatedData() {
+            return this.productosMostrados.slice(this.first, this.first + this.rows);
+        },
         navbarConfig() {
             return this.$route.meta.navbarConfig || {};
         },
@@ -126,8 +140,48 @@ export default {
             )
             );
         },
+        productosMostrados() {
+            return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
+        },
     },
     methods: {
+        async buscarProductos() {
+            if (this.searchTerm.length === 0) return;
+
+            const apiMap = {
+            person: '/api/natural-person/buscar',
+            'c-person': '/api/natural-person/support/buscar',
+            company: '/api/company/buscar'
+            };
+
+            const url = apiMap[this.entityType] || '/api/company/buscar';
+
+            try {
+            const response = await axios.get(url, {
+                params: { query: this.searchTerm }
+            });
+            this.resultadosBusqueda = response.data;
+            } catch (error) {
+            console.error('Error en la búsqueda:', error);
+            }
+        },
+
+        async cargarProductos() {
+            const apiMap = {
+            person: '/api/natural-person',
+            'c-person': '/api/natural-person/support',
+            company: '/api/company'
+            };
+
+            const url = apiMap[this.entityType] || '/api/company';
+
+            try {
+            const response = await axios.get(url);
+            this.producto = response.data;
+            } catch (error) {
+            console.error('Error al cargar productos:', error);
+            }
+        },
         onPageChange(event) {
             this.first = event.first;
             this.rows = event.rows;
@@ -429,6 +483,7 @@ export default {
             :cliente-id="selectedClientId"
             @close="showPopup = false" />
         <person
+        v-if="entityType === 'person' || entityType === 'c-person'"
          />
     </div>
 </template>

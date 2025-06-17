@@ -44,4 +44,22 @@ class TicketController extends Controller
         $ticket->delete();
         return response()->noContent();
     }
+        /**
+     * buscar en cliente.
+     */
+    public function buscar(Request $request)
+    {
+        $query = $request->input('query');
+
+        $resultados = Ticket::where('incident_type', 'like', "%{$query}%")
+            ->orWhere('client_name', 'like', "%{$query}%")
+            ->orWhere('company', 'like', "%{$query}%")
+            ->orWhere('area', 'like', "%{$query}%")
+            ->orWhere('branch', 'like', "%{$query}%")
+            ->orWhere('state', 'like', "%{$query}%")
+            ->orWhere('registration_date', 'like', "%{$query}%")
+            ->get();
+
+        return response()->json($resultados);
+    }
 }

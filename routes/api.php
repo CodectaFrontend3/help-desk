@@ -22,8 +22,12 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 Route::get('/natural-persons/{id}/contactos', [ContactRefController::class, 'getByPersonNP']);
-Route::get('/natural-person/buscar', [NaturalPersonController::class, 'buscar']);
 Route::get('/companies/{id}/contactos', [ContactRefController::class, 'getByPersonC']);
+
+Route::get('/natural-person/buscar', [NaturalPersonController::class, 'buscar']);
+Route::get('/company/buscar', [CompanyController::class, 'buscar']);
+Route::get('/tickets/buscar', [TicketController::class, 'buscar']);
+Route::get('/plan/buscar', [PlanController::class, 'buscar']);
 
 //routes en ingles
 Route::apiResource('/clientG', ClientGController::class);
