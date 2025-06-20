@@ -39,7 +39,7 @@ import axios from 'axios';
 
 
 export default {
-  name:'company',
+  name:'tickets_admin',
   props: {
     visible: Boolean,
     clienteId: Number,

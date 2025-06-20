@@ -1,15 +1,30 @@
 <script>
 import axios from 'axios';
+import ProductSearch from '../Tabla/iftura.vue'
 export default {
+
     name: "NavBar",
+    props: {
+
+    },
+    components:{
+        ProductSearch,
+    },
     data() {
+
         return {
             sekker: true, // Probablemente una bandera para controlar el estado de algo en la barra de navegación (nombre no muy descriptivo)
             searchQuery: '',
             cliente: [],
+            //buscar
+            searchTerm: '',
+            productos: [],
+            resultadosBusqueda: [],
+            showAdd: true,
         };
     },
     mounted() {
+
       let endpoint = '';
 
         // Puedes ajustar esto según las rutas de tu router
@@ -34,6 +49,18 @@ export default {
             });
     },
     computed: {
+
+            apiBaseUrl() {
+            // Devuelve la ruta base de la API según el tipo de entidad
+            const map = {
+                "natural-person": "/api/natural-person",
+                "company": "/api/company",
+                "natural-person-support": "/api/natural-person/support",
+                "admintickets": "/api/ticket"
+            };
+            return map[this.entityType] || "/api/company";
+            },
+
         // Obtiene la configuración del navbar desde los metadatos de la ruta actual
         navbarConfig() {
             return this.$route.meta.navbarConfig || {};
@@ -78,6 +105,20 @@ export default {
         },
     },
     methods: {
+        //buscar
+        async buscarProductos() {
+        if (this.searchTerm.length === 0) return;
+
+        try {
+            const response = await axios.get(`${this.apiBaseUrl}/buscar`, {
+            params: { query: this.searchTerm },
+            });
+            this.resultadosBusqueda = response.data;
+        } catch (error) {
+            console.error('Error en la búsqueda:', error);
+        }
+        },
+
         /**
          * Determina el tipo de entidad actualmente activa según la URL.
          * Retorna: "company", "person" o un tipo extraído de la URL si estamos en equipos.
@@ -383,7 +424,8 @@ export default {
 
             <!--Seeker General-->
             <div class="seeker seeker__general" :class="{ width__sekker: this.$route.name === 'Tickets activos',}">
-                <input type="text" title="Buscar" placeholder="Search" v-model="searchQuery" @keyup.enter="buscar"/>
+
+
                 <span class="icon pi pi-search"></span>
 
             </div>
@@ -392,7 +434,8 @@ export default {
                 <span class="pi pi-plus"></span>
                 <span>Agregar</span>
             </button>
-
+            <ProductSearch
+            />
         </div>
 
     </nav>

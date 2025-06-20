@@ -1,9 +1,24 @@
 <script>
+import axios from 'axios';
+import company from '../Tabla/company.vue'
+import person from '../Tabla/natural-person.vue'
+import plan_admin from '../Tabla/plan-admin.vue'
+import plan from '../Tabla/plan.vue'
+import tickets_admin from '../Tabla/tickets-admin.vue'
+import tickets from '../Tabla/tickets.vue'
 export default {
   name: 'ProductSearch',
   props: {
     visible: Boolean,
     clienteId: Number,
+  },
+    components:{
+      company,
+      person,
+      plan_admin,
+      plan,
+      tickets_admin,
+      tickets,
   },
   data() {
     return {
@@ -24,6 +39,15 @@ export default {
       if (routeName === "Administrador - Tickets") return "admintickets";
       return "company";
     },
+    currentComponent() {
+    const map = {
+        "natural-person": "person",
+        "company": "company",
+        "natural-person-support": "person", // podrías usar el mismo
+        "admintickets": "tickets_admin"
+    };
+    return map[this.entityType] || "company";
+    },
     apiBaseUrl() {
       // Devuelve la ruta base de la API según el tipo de entidad
       const map = {
@@ -36,18 +60,7 @@ export default {
     }
   },
   methods: {
-    async buscarProductos() {
-      if (this.searchTerm.length === 0) return;
 
-      try {
-        const response = await axios.get(`${this.apiBaseUrl}/buscar`, {
-          params: { query: this.searchTerm },
-        });
-        this.resultadosBusqueda = response.data;
-      } catch (error) {
-        console.error('Error en la búsqueda:', error);
-      }
-    },
     async cargarProductos() {
       try {
         const response = await axios.get(this.apiBaseUrl);
@@ -62,3 +75,13 @@ export default {
   },
 };
 </script>
+<template>
+  <div>
+
+
+    <component
+      :is="currentComponent"
+      :productos="productosMostrados"
+    />
+  </div>
+</template>
