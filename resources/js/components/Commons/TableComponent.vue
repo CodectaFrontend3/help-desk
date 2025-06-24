@@ -47,7 +47,7 @@ export default {
             selectedRows: [], // Array para almacenar las filas seleccionadas
             selectAll: false, // Estado del checkbox "Seleccionar todo"
             filteredData: [],
-            searchTerm: '',
+            //searchTerm: '',
             producto: [],            // todos los datos
             resultadosBusqueda: [],  // datos filtrados por API
             // Configuración centralizada de botones

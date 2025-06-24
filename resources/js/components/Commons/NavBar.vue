@@ -47,19 +47,28 @@ export default {
             .catch(error => {
             console.error('Error al cargar datos:', error);
             });
+
+        this.cargarProductos()
     },
     computed: {
-
-            apiBaseUrl() {
-            // Devuelve la ruta base de la API según el tipo de entidad
-            const map = {
-                "natural-person": "/api/natural-person",
-                "company": "/api/company",
-                "natural-person-support": "/api/natural-person/support",
-                "admintickets": "/api/ticket"
-            };
-            return map[this.entityType] || "/api/company";
-            },
+        entityType() {
+        const routeName = this.$route.name;
+        if (routeName === "Clientes - Persona natural") return "natural-person";
+        if (routeName === "Clientes - Empresa - Administrador") return "company";
+        if (routeName === "Clientes - Persona Natural - Soporte TI") return "natural-person-support";
+        if (routeName === "Administrador - Tickets") return "admintickets";
+        return "company";
+        },
+        apiBaseUrl() {
+        // Devuelve la ruta base de la API según el tipo de entidad
+        const map = {
+            "natural-person": "/api/natural-person",
+            "company": "/api/company",
+            "natural-person-support": "/api/natural-person/support",
+            "admintickets": "/api/ticket"
+        };
+        return map[this.entityType] || "/api/company";
+        },
 
         // Obtiene la configuración del navbar desde los metadatos de la ruta actual
         navbarConfig() {
@@ -107,7 +116,7 @@ export default {
     methods: {
         //buscar
         async buscarProductos() {
-        if (this.searchTerm.length === 0) return;
+        if (!this.searchTerm) return;
 
         try {
             const response = await axios.get(`${this.apiBaseUrl}/buscar`, {
@@ -118,7 +127,23 @@ export default {
             console.error('Error en la búsqueda:', error);
         }
         },
-
+        async cargarProductos() {
+        try {
+            const res = await axios.get(this.apiBaseUrl)
+            this.productos = res.data
+        } catch (err) {
+            console.error('Error al cargar:', err)
+        }
+        },
+        //GRACIAS A ESTO LA BARRA DE BUSQUEDA FUNCIONA, NO LE MUEVAN PLOX :V
+        async onInputBuscar() {
+        if (!this.searchTerm) {
+            this.productos = await axios.get(this.apiBaseUrl).then(r => r.data);
+            this.resultadosBusqueda = [];
+        } else {
+            await this.buscarProductos();
+        }
+        },
         /**
          * Determina el tipo de entidad actualmente activa según la URL.
          * Retorna: "company", "person" o un tipo extraído de la URL si estamos en equipos.
@@ -425,7 +450,11 @@ export default {
             <!--Seeker General-->
             <div class="seeker seeker__general" :class="{ width__sekker: this.$route.name === 'Tickets activos',}">
 
-
+                <input
+                    v-model="searchTerm"
+                    @input="onInputBuscar"
+                    placeholder="Buscar..."
+                />
                 <span class="icon pi pi-search"></span>
 
             </div>
@@ -434,10 +463,13 @@ export default {
                 <span class="pi pi-plus"></span>
                 <span>Agregar</span>
             </button>
-            <ProductSearch
-            />
-        </div>
 
+        </div>
+        <div>            <ProductSearch
+            :searchTerm="searchTerm"
+            :resultadosBusqueda="resultadosBusqueda"
+            :productos="productos"
+            /></div>
     </nav>
 </template>
 

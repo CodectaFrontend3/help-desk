@@ -9,8 +9,11 @@ import tickets from '../Tabla/tickets.vue'
 export default {
   name: 'ProductSearch',
   props: {
-    visible: Boolean,
-    clienteId: Number,
+    //visible: Boolean,
+    //clienteId: Number,
+    searchTerm: String,
+    productos: Array,
+    resultadosBusqueda: Array
   },
     components:{
       company,
@@ -21,15 +24,14 @@ export default {
       tickets,
   },
   data() {
-    return {
-      producto: [],
-      resultadosBusqueda: [],
-      searchTerm: '',
-    };
+
   },
   computed: {
     productosMostrados() {
-      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
+        //return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
+      return this.searchTerm?.length > 0
+      ? this.resultadosBusqueda
+      : this.productos;
     },
     entityType() {
       const routeName = this.$route.name;

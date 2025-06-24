@@ -1,33 +1,31 @@
 <template>
-  <div>
-    <input
-      v-model="searchTerm"
-      @input="buscarProductos"
-      placeholder="Buscar Personas..."
-    />
-
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>RUC</th>
-          <th>Dirección</th>
-          <th>Telefono</th>
-          <th>Correo</th>
-          <th>ojito</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="producto in productosMostrados" :key="producto.id">
-          <td>{{ producto.client_name }}</td>
-          <td>{{ producto.ruc }}</td>
-          <td>{{ producto.address }}</td>
-          <td>{{ producto.phone }}</td>
-          <td>{{ producto.email }}</td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="table-container">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>RUC</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th class="acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="producto in productos" :key="producto.id">
+            <td>{{ producto.client_name }}</td>
+            <td>{{ producto.ruc }}</td>
+            <td>{{ producto.address }}</td>
+            <td>{{ producto.phone }}</td>
+            <td>{{ producto.email }}</td>
+            <td class="acciones">
+              <button class="pi pi-eye" title="Ver cliente"></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -38,6 +36,12 @@ import axios from 'axios';
 export default {
   name:'company',
   props: {
+    productos: {
+      type: Array,
+      required: true,
+      productos: Array,
+      default: () => []
+    },
     visible: Boolean,
     clienteId: Number,
   },
@@ -82,6 +86,15 @@ export default {
 </script>
 
 <style scoped>
+.table-container,
+.table-wrapper,
+table,
+th,
+td {
+  font-family: 'Poppins', sans-serif; /* o la fuente que estés usando en TableComponent */
+  font-weight: 400;
+}
+
 .table-container {
     display: flex;
     flex-direction: column;
@@ -101,7 +114,7 @@ export default {
 }
 
 .selection-info {
-    font-weight: 500;
+    font-weight: 400;
     color: #495057;
 }
 
@@ -351,5 +364,5 @@ button.pi:hover {
         height: 24px;
         font-size: 10px;
     }
-    }
-</style>
+}</style>
+
