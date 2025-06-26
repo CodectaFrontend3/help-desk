@@ -13,6 +13,7 @@ export default {
     data() {
 
         return {
+            searchTermCompany: '',      // para buscar sólo por RUC
             sekker: true, // Probablemente una bandera para controlar el estado de algo en la barra de navegación (nombre no muy descriptivo)
             searchQuery: '',
             cliente: [],
@@ -391,6 +392,8 @@ export default {
                         id="empresa"
                         type="text"
                         title="Buscar empresa"
+                        v-model="searchTermCompany"
+                        @input="onInputBuscar"
                         placeholder="Ingrese nombre de la empresa"
                     />
                 </div>
@@ -465,11 +468,12 @@ export default {
             </button>
 
         </div>
-        <div>            <ProductSearch
+        <div>
+        <ProductSearch
             :searchTerm="searchTerm"
             :resultadosBusqueda="resultadosBusqueda"
             :productos="productos"
-            /></div>
+        /></div>
     </nav>
 </template>
 
@@ -480,6 +484,8 @@ export default {
     align-items: center;
     justify-content: space-between;
     text-align: center;
+        flex-direction: column; /* <-- Agrega esta línea */
+        align-items: stretch;   /* Opcional: hace que los hijos usen todo el ancho */
     font-weight: 600;
     gap: 20px;
 }

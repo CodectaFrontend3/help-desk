@@ -20,26 +20,39 @@
             <td>{{ producto.phone }}</td>
             <td>{{ producto.email }}</td>
             <td class="acciones">
-              <button class="pi pi-eye" title="Ver cliente"></button>
+              <button
+              class="pi pi-eye"
+              title="Ver cliente"
+              @click="viewClient(producto)"
+             ></button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+    <PopCompany
+            v-if="showPopup"
+            :visible="showPopup"
+            :cliente-id="selectedClientId"
+            @close="showPopup = false"
+        />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-
+import PopCompany from "../Commons/PopCompany.vue";
 
 export default {
   name:'company',
+  components: {
+  PopCompany,
+  // otros componentes...
+  },
   props: {
     productos: {
       type: Array,
       required: true,
-      productos: Array,
       default: () => []
     },
     visible: Boolean,
@@ -47,6 +60,8 @@ export default {
   },
   data() {
     return {
+      showPopup: false,
+      selectedClientId: null,
       producto: [],           // todos los productos
       resultadosBusqueda: [],  // resultados del filtro
       searchTerm: '',
@@ -58,6 +73,20 @@ export default {
     },
   },
   methods: {
+        viewClient(producto) {
+            const id = producto.id || producto._id;
+            if (!id) {
+                console.error("No se pudo obtener el ID del cliente", producto);
+                return;
+            }
+
+            console.log("Mostrando detalles del cliente ID:", id);
+
+            console.log("--------------------------------------------------------------------------------------s")
+            this.selectedClientId = id;
+            this.showPopup = true;
+        },
+
     async buscarProductos() {
       if (this.searchTerm.length === 0) return;
 

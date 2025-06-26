@@ -2,7 +2,7 @@
     <transition name="fade">
         <div class="popup-overlay" v-if="visible" @click.self="closePopup">
             <transition name="slide-fade">
-                <div class="popup-container" v-if="visible">
+                <div class="popup-container">
                     <div class="popup-header">
                         <h2>{{ cliente.nombre }}</h2>
                     </div>

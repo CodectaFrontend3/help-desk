@@ -12,8 +12,14 @@ export default {
     //visible: Boolean,
     //clienteId: Number,
     searchTerm: String,
-    productos: Array,
-    resultadosBusqueda: Array
+    productos: {
+    type: Array,
+    default: () => []
+  },
+  resultadosBusqueda: {
+    type: Array,
+    default: () => []
+  }
   },
     components:{
       company,
@@ -66,6 +72,7 @@ export default {
     async cargarProductos() {
       try {
         const response = await axios.get(this.apiBaseUrl);
+        console.log('Productos recibidos:', response.data); // <--- Verifica esto
         this.producto = response.data;
       } catch (error) {
         console.error('Error al cargar productos:', error);

@@ -9,12 +9,16 @@
     <table>
       <thead>
         <tr>
-          <th>Nombre</th>
-          <th>RUC</th>
-          <th>Dirección</th>
-          <th>Telefono</th>
-          <th>Correo</th>
-          <th>ojito</th>
+          <th>ID</th>
+          <th>Tipo de Incidente</th>
+          <th>Usuario</th>
+          <th>Empresa</th>
+          <th>Área</th>
+          <th>Sucursal</th>
+          <th>Estado</th>
+          <th>Fecha de registro</th>
+          <th>Prioridad</th>
+          <th>Soporte en Situ</th>
         </tr>
       </thead>
       <tbody>
