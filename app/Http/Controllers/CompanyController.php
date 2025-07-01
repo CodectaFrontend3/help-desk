@@ -58,14 +58,21 @@ class CompanyController extends Controller
      */
     public function buscar(Request $request)
     {
-        $query = $request->input('query');
+        \Log::info('Request recibido:', $request->all());
 
-        $resultados = Company::where('client_name', 'like', "%{$query}%")
-            ->orWhere('ruc', 'like', "%{$query}%")
-            ->orWhere('address', 'like', "%{$query}%")
-            ->orWhere('phone', 'like', "%{$query}%")
-            ->orWhere('email', 'like', "%{$query}%")
-            ->get();
+        $query = $request->input('query');
+        $tipo = $request->input('tipo');
+
+        if ($tipo === 'nombre') {
+            $resultados = Company::where('client_name', 'like', "%{$query}%")->get();
+        } else {
+            $resultados = Company::where('client_name', 'like', "%{$query}%")
+                ->orWhere('ruc', 'like', "%{$query}%")
+                ->orWhere('address', 'like', "%{$query}%")
+                ->orWhere('phone', 'like', "%{$query}%")
+                ->orWhere('email', 'like', "%{$query}%")
+                ->get();
+        }
 
         return response()->json($resultados);
     }

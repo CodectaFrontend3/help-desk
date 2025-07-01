@@ -65,6 +65,7 @@ export default {
       producto: [],           // todos los productos
       resultadosBusqueda: [],  // resultados del filtro
       searchTerm: '',
+      searchTermCompany: '', // <-- AÑADIDO
     };
   },
   computed: {

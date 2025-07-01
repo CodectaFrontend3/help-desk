@@ -14,11 +14,14 @@ export default {
 
         return {
             searchTermCompany: '',      // para buscar sólo por RUC
+            searchTerm: '',
+            isCompanySearchDisabled: false, //
+            isGeneralSearchDisabled: false, //
             sekker: true, // Probablemente una bandera para controlar el estado de algo en la barra de navegación (nombre no muy descriptivo)
             searchQuery: '',
             cliente: [],
             //buscar
-            searchTerm: '',
+
             productos: [],
             resultadosBusqueda: [],
             showAdd: true,
@@ -137,13 +140,25 @@ export default {
         }
         },
         //GRACIAS A ESTO LA BARRA DE BUSQUEDA FUNCIONA, NO LE MUEVAN PLOX :V
-        async onInputBuscar() {
-        if (!this.searchTerm) {
-            this.productos = await axios.get(this.apiBaseUrl).then(r => r.data);
-            this.resultadosBusqueda = [];
-        } else {
-            await this.buscarProductos();
-        }
+        async onInputBuscar(tipo = 'general') {
+            const query = tipo === 'nombre' ? this.searchTermCompany : this.searchTerm;
+            console.log('Buscando con:', { query, tipo });
+
+            if (!query) {
+                this.productos = await axios.get(this.apiBaseUrl).then(r => r.data);
+                this.resultadosBusqueda = [];
+                return;
+            }
+
+            try {
+                const response = await axios.get(`${this.apiBaseUrl}/buscar`, {
+                    params: { query, tipo },
+                });
+                console.log('Resultados recibidos:', response.data);
+                this.resultadosBusqueda = response.data;
+            } catch (error) {
+                console.error('Error en la búsqueda:', error);
+            }
         },
         /**
          * Determina el tipo de entidad actualmente activa según la URL.
@@ -282,6 +297,26 @@ export default {
             this.$emit('filtro-aplicado', this.searchQuery); // enviar el filtro al padre
             // Aquí puedes ejecutar una API o usar `datosFiltrados`, etc.
         },
+        activarBusquedaNombre() {
+            console.log('Activando búsqueda por nombre:', this.searchTermCompany);
+            this.searchTerm = '';
+            this.isGeneralSearchDisabled = true;
+            this.onInputBuscar('nombre');
+
+            if (!this.searchTermCompany) {
+                this.isGeneralSearchDisabled = false;
+            }
+        },
+        activarBusquedaGeneral() {
+            this.searchTermCompany = ''; // limpia barra por nombre
+            this.isCompanySearchDisabled = true;
+            this.onInputBuscar('general');
+
+            // Si se borra el campo, reactivamos la otra barra
+            if (!this.searchTerm) {
+                this.isCompanySearchDisabled = false;
+            }
+        },
     },
 };
 </script>
@@ -388,12 +423,14 @@ export default {
                     class="seeker seeker__clientes"
                 >
                     <label for="empresa">{{ navbarConfig.labelEmpresa }}</label>
+                    <!--quitable el :disabled-->
                     <input
                         id="empresa"
                         type="text"
                         title="Buscar empresa"
                         v-model="searchTermCompany"
-                        @input="onInputBuscar"
+                        :disabled="searchTerm.length > 0"
+                        @input="() => onInputBuscar('nombre')"
                         placeholder="Ingrese nombre de la empresa"
                     />
                 </div>
@@ -452,9 +489,10 @@ export default {
 
             <!--Seeker General-->
             <div class="seeker seeker__general" :class="{ width__sekker: this.$route.name === 'Tickets activos',}">
-
+                    <!--quitable el disabled-->
                 <input
                     v-model="searchTerm"
+                    :disabled="searchTermCompany.length > 0"
                     @input="onInputBuscar"
                     placeholder="Buscar..."
                 />

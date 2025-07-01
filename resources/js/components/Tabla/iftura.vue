@@ -12,6 +12,7 @@ export default {
     //visible: Boolean,
     //clienteId: Number,
     searchTerm: String,
+    searchTermCompany: String, // <-- AÑADIDO
     productos: {
     type: Array,
     default: () => []
@@ -34,11 +35,11 @@ export default {
   },
   computed: {
     productosMostrados() {
-        //return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
-      return this.searchTerm?.length > 0
-      ? this.resultadosBusqueda
-      : this.productos;
-    },
+    if (this.resultadosBusqueda && this.resultadosBusqueda.length > 0) {
+      return this.resultadosBusqueda;
+    }
+    return this.productos;
+  },
     entityType() {
       const routeName = this.$route.name;
       if (routeName === "Clientes - Persona natural") return "natural-person";
