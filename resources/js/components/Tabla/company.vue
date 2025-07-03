@@ -62,10 +62,6 @@ export default {
     return {
       showPopup: false,
       selectedClientId: null,
-      producto: [],           // todos los productos
-      resultadosBusqueda: [],  // resultados del filtro
-      searchTerm: '',
-      searchTermCompany: '', // <-- AÑADIDO
     };
   },
   computed: {

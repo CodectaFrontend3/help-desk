@@ -65,6 +65,8 @@ class CompanyController extends Controller
 
         if ($tipo === 'nombre') {
             $resultados = Company::where('client_name', 'like', "%{$query}%")->get();
+        } elseif ($tipo === 'ruc') {
+            $resultados = Company::where('ruc', 'like', "%{$query}%")->get();
         } else {
             $resultados = Company::where('client_name', 'like', "%{$query}%")
                 ->orWhere('ruc', 'like', "%{$query}%")

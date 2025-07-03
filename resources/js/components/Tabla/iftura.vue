@@ -13,6 +13,7 @@ export default {
     //clienteId: Number,
     searchTerm: String,
     searchTermCompany: String, // <-- AÑADIDO
+    searchTermRuc: String, //AÑADIDO(?
     productos: {
     type: Array,
     default: () => []

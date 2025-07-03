@@ -13,10 +13,12 @@ export default {
     data() {
 
         return {
-            searchTermCompany: '',      // para buscar sólo por RUC
+            searchTermCompany: '',      // para buscar sólo por compañia
+            searchTermRuc: '', // para buscar por RUC
             searchTerm: '',
             isCompanySearchDisabled: false, //
             isGeneralSearchDisabled: false, //
+            isRucSearchDisabled: false, //
             sekker: true, // Probablemente una bandera para controlar el estado de algo en la barra de navegación (nombre no muy descriptivo)
             searchQuery: '',
             cliente: [],
@@ -141,25 +143,29 @@ export default {
         },
         //GRACIAS A ESTO LA BARRA DE BUSQUEDA FUNCIONA, NO LE MUEVAN PLOX :V
         async onInputBuscar(tipo = 'general') {
-            const query = tipo === 'nombre' ? this.searchTermCompany : this.searchTerm;
-            console.log('Buscando con:', { query, tipo });
+  let query = '';
+  if (tipo === 'nombre') query = this.searchTermCompany;
+  else if (tipo === 'ruc') query = this.searchTermRuc;
+  else query = this.searchTerm;
 
-            if (!query) {
-                this.productos = await axios.get(this.apiBaseUrl).then(r => r.data);
-                this.resultadosBusqueda = [];
-                return;
-            }
+  console.log('Buscando con:', { query, tipo });
 
-            try {
-                const response = await axios.get(`${this.apiBaseUrl}/buscar`, {
-                    params: { query, tipo },
-                });
-                console.log('Resultados recibidos:', response.data);
-                this.resultadosBusqueda = response.data;
-            } catch (error) {
-                console.error('Error en la búsqueda:', error);
-            }
-        },
+  if (!query) {
+    this.productos = await axios.get(this.apiBaseUrl).then(r => r.data);
+    this.resultadosBusqueda = [];
+    return;
+  }
+
+  try {
+    const response = await axios.get(`${this.apiBaseUrl}/buscar`, {
+      params: { query, tipo },
+    });
+    console.log('Resultados recibidos:', response.data);
+    this.resultadosBusqueda = response.data;
+  } catch (error) {
+    console.error('Error en la búsqueda:', error);
+  }
+},
         /**
          * Determina el tipo de entidad actualmente activa según la URL.
          * Retorna: "company", "person" o un tipo extraído de la URL si estamos en equipos.
@@ -300,21 +306,38 @@ export default {
         activarBusquedaNombre() {
             console.log('Activando búsqueda por nombre:', this.searchTermCompany);
             this.searchTerm = '';
-            this.isGeneralSearchDisabled = true;
+            this.searchTermRuc = '';
             this.onInputBuscar('nombre');
 
             if (!this.searchTermCompany) {
                 this.isGeneralSearchDisabled = false;
+                this.isRucSearchDisabled = false;
+            } else {
+                this.isGeneralSearchDisabled = true;
+                this.isRucSearchDisabled = true;
             }
         },
         activarBusquedaGeneral() {
             this.searchTermCompany = ''; // limpia barra por nombre
-            this.isCompanySearchDisabled = true;
+            this.searchTermRuc = ''; // limpia RUC también
             this.onInputBuscar('general');
 
             // Si se borra el campo, reactivamos la otra barra
             if (!this.searchTerm) {
                 this.isCompanySearchDisabled = false;
+            }
+        },
+        activarBusquedaRuc() {
+        this.searchTerm = '';
+        this.searchTermCompany = '';
+        this.onInputBuscar('ruc');
+            // Si se borra el campo, reactivamos la otra barra
+            if (!this.searchTermRuc) {
+                this.isCompanySearchDisabled = false;
+                this.isGeneralSearchDisabled = false;
+            } else {
+                this.isCompanySearchDisabled = true;
+                this.isGeneralSearchDisabled = true;
             }
         },
     },
@@ -412,10 +435,12 @@ export default {
                         navbarConfig.labelRuc
                     }}</label>
                     <input
-                        id="ruc"
-                        type="number"
-                        title="Buscar RUC"
-                        placeholder="Ingrese su RUC"
+                    id="ruc"
+                    type="text"
+                    v-model="searchTermRuc"
+                    @input="activarBusquedaRuc"
+                    :disabled="searchTermCompany.length > 0 || searchTerm.length > 0"
+                    placeholder="Ingrese su RUC"
                     />
                 </div>
                 <div
@@ -425,13 +450,13 @@ export default {
                     <label for="empresa">{{ navbarConfig.labelEmpresa }}</label>
                     <!--quitable el :disabled-->
                     <input
-                        id="empresa"
-                        type="text"
-                        title="Buscar empresa"
-                        v-model="searchTermCompany"
-                        :disabled="searchTerm.length > 0"
-                        @input="() => onInputBuscar('nombre')"
-                        placeholder="Ingrese nombre de la empresa"
+                    id="empresa"
+                    type="text"
+                    title="Buscar empresa"
+                    v-model="searchTermCompany"
+                    @input="activarBusquedaNombre"
+                    :disabled="searchTerm.length > 0 || searchTermRuc.length > 0"
+                    placeholder="Ingrese nombre de la empresa"
                     />
                 </div>
             </div>
@@ -490,12 +515,12 @@ export default {
             <!--Seeker General-->
             <div class="seeker seeker__general" :class="{ width__sekker: this.$route.name === 'Tickets activos',}">
                     <!--quitable el disabled-->
-                <input
+                    <input
                     v-model="searchTerm"
-                    :disabled="searchTermCompany.length > 0"
-                    @input="onInputBuscar"
+                    @input="activarBusquedaGeneral"
+                    :disabled="searchTermCompany.length > 0 || searchTermRuc.length > 0"
                     placeholder="Buscar..."
-                />
+                    />
                 <span class="icon pi pi-search"></span>
 
             </div>
