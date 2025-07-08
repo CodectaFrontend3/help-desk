@@ -1,10 +1,5 @@
 <template>
   <div>
-    <input
-      v-model="searchTerm"
-      @input="buscarProductos"
-      placeholder="Buscar Personas..."
-    />
 
     <table>
       <thead>
@@ -38,17 +33,30 @@ export default {
   props: {
     visible: Boolean,
     clienteId: Number,
+    productos: {
+      type: Array,
+      required: true,
+      default: () => []
+
+    },
+    searchTerm: {
+    type: String,
+    default: ''
+  },
+  resultadosBusqueda: {
+    type: Array,
+    default: () => []
+  }
+
   },
   data() {
     return {
-      producto: [],           // todos los productos
-      resultadosBusqueda: [],  // resultados del filtro
-      searchTerm: '',
+
     };
   },
   computed: {
     productosMostrados() {
-      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
+      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.productos;
     },
   },
   methods: {

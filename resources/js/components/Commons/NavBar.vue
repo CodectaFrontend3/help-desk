@@ -16,6 +16,8 @@ export default {
             searchTermCompany: '',      // para buscar sólo por compañia
             searchTermRuc: '', // para buscar por RUC
             searchTerm: '',
+            searchTermNombre: '',
+            searchTermDni: '',
             isCompanySearchDisabled: false, //
             isGeneralSearchDisabled: false, //
             isRucSearchDisabled: false, //
@@ -36,10 +38,10 @@ export default {
         // Puedes ajustar esto según las rutas de tu router
         const currentPath = this.$route.path;
 
-        if (currentPath.includes('/clients')) {
-            endpoint = '/api/clientes'; // ejemplo para vista de clientes
+        if (currentPath.includes('/natural-person')) {
+            endpoint = '/api/natural-person'; // ejemplo para vista de clientes
         } else if (currentPath.includes('/company')) {
-            endpoint = '/api/empresas'; // ejemplo para vista de empresas
+            endpoint = '/api/company'; // ejemplo para vista de empresas
         } else if (currentPath.includes('/soporte-ti')) {
             endpoint = '/api/soporte-clientes'; // ejemplo para soporte técnico
         } else {
@@ -61,7 +63,8 @@ export default {
         const routeName = this.$route.name;
         if (routeName === "Clientes - Persona natural") return "natural-person";
         if (routeName === "Clientes - Empresa - Administrador") return "company";
-        if (routeName === "Clientes - Persona Natural - Soporte TI") return "natural-person-support";
+        if (routeName === "Clientes - Persona Natural - Soporte TI") return "natural-person";
+        if (routeName === "Soporte técnico - Soporte TI") return "plan";
         if (routeName === "Administrador - Tickets") return "admintickets";
         return "company";
         },
@@ -70,7 +73,7 @@ export default {
         const map = {
             "natural-person": "/api/natural-person",
             "company": "/api/company",
-            "natural-person-support": "/api/natural-person/support",
+            "plan": "/api/plan",
             "admintickets": "/api/ticket"
         };
         return map[this.entityType] || "/api/company";
@@ -143,29 +146,31 @@ export default {
         },
         //GRACIAS A ESTO LA BARRA DE BUSQUEDA FUNCIONA, NO LE MUEVAN PLOX :V
         async onInputBuscar(tipo = 'general') {
-  let query = '';
-  if (tipo === 'nombre') query = this.searchTermCompany;
-  else if (tipo === 'ruc') query = this.searchTermRuc;
-  else query = this.searchTerm;
+        let query = '';
+        if (tipo === 'nombre') query = this.searchTermCompany;
+        else if (tipo === 'ruc') query = this.searchTermRuc;
+        else if (tipo === 'dni') query = this.searchTermDni;
+        else if (tipo === 'nombrePersona') query = this.searchTermNombre;
+        else query = this.searchTerm;
 
-  console.log('Buscando con:', { query, tipo });
+        console.log('Buscando con:', { query, tipo });
 
-  if (!query) {
-    this.productos = await axios.get(this.apiBaseUrl).then(r => r.data);
-    this.resultadosBusqueda = [];
-    return;
-  }
+        if (!query) {
+            this.productos = await axios.get(this.apiBaseUrl).then(r => r.data);
+            this.resultadosBusqueda = [];
+            return;
+        }
 
-  try {
-    const response = await axios.get(`${this.apiBaseUrl}/buscar`, {
-      params: { query, tipo },
-    });
-    console.log('Resultados recibidos:', response.data);
-    this.resultadosBusqueda = response.data;
-  } catch (error) {
-    console.error('Error en la búsqueda:', error);
-  }
-},
+        try {
+            const response = await axios.get(`${this.apiBaseUrl}/buscar`, {
+            params: { query, tipo },
+            });
+            console.log('Resultados recibidos:', response.data);
+            this.resultadosBusqueda = response.data;
+        } catch (error) {
+            console.error('Error en la búsqueda:', error);
+        }
+        },
         /**
          * Determina el tipo de entidad actualmente activa según la URL.
          * Retorna: "company", "person" o un tipo extraído de la URL si estamos en equipos.
@@ -327,6 +332,28 @@ export default {
                 this.isCompanySearchDisabled = false;
             }
         },
+        activarBusquedaNombrePersona() {
+            console.log('Activando búsqueda por nombre de persona:', this.searchTermNombre);
+
+            // Limpiar otros campos para evitar conflictos
+            this.searchTerm = '';
+            this.searchTermRuc = '';
+            this.searchTermCompany = '';
+            this.searchTermDni = '';
+
+            this.onInputBuscar('nombrePersona');
+
+            // Control de habilitación de otros inputs
+            if (!this.searchTermNombre) {
+                this.isCompanySearchDisabled = false;
+                this.isGeneralSearchDisabled = false;
+                this.isRucSearchDisabled = false;
+            } else {
+                this.isCompanySearchDisabled = true;
+                this.isGeneralSearchDisabled = true;
+                this.isRucSearchDisabled = true;
+            }
+        },
         activarBusquedaRuc() {
         this.searchTerm = '';
         this.searchTermCompany = '';
@@ -339,6 +366,21 @@ export default {
                 this.isCompanySearchDisabled = true;
                 this.isGeneralSearchDisabled = true;
             }
+        },
+        activarBusquedaDni() {
+        this.searchTerm = '';
+        this.searchTermCompany = '';
+        this.searchTermRuc = '';
+        this.onInputBuscar('dni');
+        if (!this.searchTermDni) {
+            this.isCompanySearchDisabled = false;
+            this.isGeneralSearchDisabled = false;
+            this.isRucSearchDisabled = false;
+        } else {
+            this.isCompanySearchDisabled = true;
+            this.isGeneralSearchDisabled = true;
+            this.isRucSearchDisabled = true;
+        }
         },
     },
 };
@@ -471,9 +513,11 @@ export default {
                     <input
                         id="dni"
                         type="text"
-                        title="Buscar empresa"
-                        placeholder="Ingrese su DNI"
-                    />
+                        v-model="searchTermDni"
+                        @input="activarBusquedaDni"
+                        :disabled="searchTerm.length > 0 || searchTermNombre.length > 0"
+                        placeholder="Ingrese DNI"
+                        />
                 </div>
                 <div
                     v-if="navbarConfig.labelNombre"
@@ -483,7 +527,10 @@ export default {
                     <input
                         id="nombre"
                         type="text"
-                        title="Buscar empresa"
+                        title="Buscar por nombre de persona"
+                        v-model="searchTermNombre"
+                        @input="activarBusquedaNombrePersona"
+                        :disabled="searchTerm.length > 0 || searchTermDni.length > 0"
                         placeholder="Ingrese su nombre"
                     />
                 </div>
@@ -518,7 +565,7 @@ export default {
                     <input
                     v-model="searchTerm"
                     @input="activarBusquedaGeneral"
-                    :disabled="searchTermCompany.length > 0 || searchTermRuc.length > 0"
+                    :disabled="searchTermCompany.length > 0 || searchTermRuc.length > 0|| searchTermNombre.length > 0 || searchTermDni.length > 0"
                     placeholder="Buscar..."
                     />
                 <span class="icon pi pi-search"></span>

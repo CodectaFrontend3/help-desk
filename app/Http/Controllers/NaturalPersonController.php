@@ -59,13 +59,22 @@ class NaturalPersonController extends Controller
      */
     public function buscar(Request $request)
     {
-        $query = $request->input('query');
+        \Log::info('Request recibido:', $request->all());
 
-        $resultados = NaturalPerson::where('name', 'like', "%{$query}%")
-            ->orWhere('dni', 'like', "%{$query}%")
-            ->orWhere('phone', 'like', "%{$query}%")
-            ->orWhere('email', 'like', "%{$query}%")
-            ->get();
+        $query = $request->input('query');
+        $tipo = $request->input('tipo');
+
+        if ($tipo === 'nombre') {
+            $resultados = NaturalPerson::where('name', 'like', "%{$query}%")->get();
+        } elseif ($tipo === 'dni') {
+            $resultados = NaturalPerson::where('dni', 'like', "%{$query}%")->get();
+        } else {
+            $resultados = NaturalPerson::where('name', 'like', "%{$query}%")
+                ->orWhere('dni', 'like', "%{$query}%")
+                ->orWhere('phone', 'like', "%{$query}%")
+                ->orWhere('email', 'like', "%{$query}%")
+                ->get();
+        }
 
         return response()->json($resultados);
     }

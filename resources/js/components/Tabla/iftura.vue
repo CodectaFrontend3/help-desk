@@ -14,6 +14,8 @@ export default {
     searchTerm: String,
     searchTermCompany: String, // <-- AÑADIDO
     searchTermRuc: String, //AÑADIDO(?
+    searchTermDni: String,     // <-- AÑADIR ESTO
+    searchTermNombre: String,  // <-- si también usas esta
     productos: {
     type: Array,
     default: () => []
@@ -45,7 +47,8 @@ export default {
       const routeName = this.$route.name;
       if (routeName === "Clientes - Persona natural") return "natural-person";
       if (routeName === "Clientes - Empresa - Administrador") return "company";
-      if (routeName === "Clientes - Persona Natural - Soporte TI") return "natural-person-support";
+      if (routeName === "Clientes - Persona Natural - Soporte TI") return "natural-person";
+      if (routeName === "Soporte técnico - Soporte TI") return "plan";
       if (routeName === "Administrador - Tickets") return "admintickets";
       return "company";
     },
@@ -53,7 +56,7 @@ export default {
     const map = {
         "natural-person": "person",
         "company": "company",
-        "natural-person-support": "person", // podrías usar el mismo
+        "plan": "plan", // podrías usar el mismo
         "admintickets": "tickets_admin"
     };
     return map[this.entityType] || "company";
@@ -63,7 +66,7 @@ export default {
       const map = {
         "natural-person": "/api/natural-person",
         "company": "/api/company",
-        "natural-person-support": "/api/natural-person/support",
+        "plan": "/api/plan",
         "admintickets": "/api/ticket"
       };
       return map[this.entityType] || "/api/company";
@@ -93,6 +96,7 @@ export default {
     <component
       :is="currentComponent"
       :productos="productosMostrados"
+
     />
   </div>
 </template>

@@ -1,10 +1,5 @@
 <template>
   <div>
-    <input
-      v-model="searchTerm"
-      @input="buscarProductos"
-      placeholder="Buscar Personas..."
-    />
 
     <table>
       <thead>
@@ -35,19 +30,32 @@ import axios from 'axios';
 export default {
   name:'plan',
   props: {
+      productos: {
+    type: Array,
+    required: true,
+    default: () => []
+  },
+  resultadosBusqueda: {
+    type: Array,
+    required: false,
+    default: () => []
+  },
+  searchTerm: {
+    type: String,
+    required: false,
+    default: ''
+  },
     visible: Boolean,
     clienteId: Number,
   },
   data() {
     return {
-      producto: [],           // todos los productos
-      resultadosBusqueda: [],  // resultados del filtro
-      searchTerm: '',
+
     };
   },
   computed: {
     productosMostrados() {
-      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
+      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.productos;
     },
   },
   methods: {

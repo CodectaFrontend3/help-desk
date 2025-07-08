@@ -36,12 +36,17 @@ import axios from 'axios';
 export default {
   name:'plan_admin',
   props: {
+    productos: {
+      type: Array,
+      required: true,
+      default: () => []
+    },
     visible: Boolean,
     clienteId: Number,
   },
   data() {
     return {
-      producto: [],           // todos los productos
+                // todos los productos
       resultadosBusqueda: [],  // resultados del filtro
       searchTerm: '',
     };
