@@ -28,6 +28,7 @@ Route::get('/natural-person/buscar', [NaturalPersonController::class, 'buscar'])
 Route::get('/company/buscar', [CompanyController::class, 'buscar']);
 Route::get('/tickets/buscar', [TicketController::class, 'buscar']);
 Route::get('/plan/buscar', [PlanController::class, 'buscar']);
+Route::get('/plan/buscaradmin', [PlanController::class, 'buscaradmin']);
 
 //routes en ingles
 Route::apiResource('/clientG', ClientGController::class);

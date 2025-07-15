@@ -49,6 +49,7 @@ export default {
       if (routeName === "Clientes - Empresa - Administrador") return "company";
       if (routeName === "Clientes - Persona Natural - Soporte TI") return "natural-person";
       if (routeName === "Soporte técnico - Soporte TI") return "plan";
+      if (routeName === "Soporte técnico - Administrador") return "planadmin";
       if (routeName === "Administrador - Tickets") return "admintickets";
       return "company";
     },
@@ -57,6 +58,7 @@ export default {
         "natural-person": "person",
         "company": "company",
         "plan": "plan", // podrías usar el mismo
+        "planadmin": "plan_admin",
         "admintickets": "tickets_admin"
     };
     return map[this.entityType] || "company";
@@ -67,6 +69,7 @@ export default {
         "natural-person": "/api/natural-person",
         "company": "/api/company",
         "plan": "/api/plan",
+        "planadmin": "/api/plan",
         "admintickets": "/api/ticket"
       };
       return map[this.entityType] || "/api/company";

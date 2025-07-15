@@ -1,11 +1,5 @@
 <template>
   <div>
-    <input
-      v-model="searchTerm"
-      @input="buscarProductos"
-      placeholder="Buscar Personas..."
-    />
-
     <table>
       <thead>
         <tr>
@@ -41,19 +35,29 @@ export default {
       required: true,
       default: () => []
     },
+      resultadosBusqueda: {
+    type: Array,
+    required: false,
+    default: () => []
+  },
+  searchTerm: {
+    type: String,
+    required: false,
+    default: ''
+  },
     visible: Boolean,
     clienteId: Number,
   },
+
   data() {
     return {
-                // todos los productos
-      resultadosBusqueda: [],  // resultados del filtro
-      searchTerm: '',
+    productos: [],
+    resultadosBusqueda: []
     };
   },
   computed: {
     productosMostrados() {
-      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
+      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.productos;
     },
   },
   methods: {
@@ -61,7 +65,7 @@ export default {
       if (this.searchTerm.length === 0) return;
 
       try {
-        const response = await axios.get('/api/plan/buscar', {
+        const response = await axios.get('/api/plan/buscaradmin', {
           params: { query: this.searchTerm },
         });
         this.resultadosBusqueda = response.data;
@@ -72,7 +76,7 @@ export default {
     async cargarProductos() {
       try {
         const response = await axios.get('/api/plan');
-        this.producto = response.data;
+        this.productos = response.data;
       } catch (error) {
         console.error('Error al cargar productos:', error);
       }

@@ -65,6 +65,7 @@ export default {
         if (routeName === "Clientes - Empresa - Administrador") return "company";
         if (routeName === "Clientes - Persona Natural - Soporte TI") return "natural-person";
         if (routeName === "Soporte técnico - Soporte TI") return "plan";
+              if (routeName === "Soporte técnico - Administrador") return "planadmin";
         if (routeName === "Administrador - Tickets") return "admintickets";
         return "company";
         },
@@ -428,13 +429,15 @@ export default {
         <div class="search">
             <!-- Tickets-->
             <div v-if="navbarConfig.tickets" class="tickets-container">
+                <!-- Incidente-->
                 <div v-if="navbarConfig.labelIncidente" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
                     <label for="empresa">{{ navbarConfig.labelIncidente }}</label>
-                    <input type="text" title="Buscar empresa" placeholder="Ingrese el incidente"/>
+                    <input type="text" v-model="ticketIncidente" title="Buscar empresa" placeholder="Ingrese el incidente"/>
                 </div>
+                <!-- Área-->
                 <div v-if="navbarConfig.labelArea" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
                     <label for="empresa">{{ navbarConfig.labelArea }}</label>
-                    <select v-if="navbarConfig.labelArea">
+                    <select v-if="navbarConfig.labelArea" v-model="ticketArea">
                         <option disabled selected id="empresa">
                             Elegir área
                         </option>
@@ -443,19 +446,20 @@ export default {
                         <option value="3">Área 3</option>
                     </select>
                 </div>
-
+                <!-- Fechas -->
                 <div v-if="navbarConfig.labelFecha" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
                     <label for="fecha" class="date-label">{{ navbarConfig.labelFecha }}</label>
                     <div class="date">
-                        <input id="date" type="date" title="Fecha de inicio" class="date-input" placeholder="Desde"/>
+                        <input id="date" type="date" title="Fecha de inicio" v-model="ticketFechaInicio" class="date-input" placeholder="Desde"/>
                         <p class="date-separator">al</p>
-                        <input type="date" title="Fecha de fin" class="date-input" placeholder="Hasta"/>
+                        <input type="date" title="Fecha de fin" class="date-input" v-model="ticketFechaFin" placeholder="Hasta"/>
                     </div>
                 </div>
+                <!-- Estado-->
                 <div v-if="navbarConfig.labelEstado" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
                     <label class="seeker__label" for="empresa">{{ navbarConfig.labelEstado }}</label>
                     <div class="select-wrapper">
-                        <select v-if="navbarConfig.labelEstado" class="seeker__select">
+                        <select v-if="navbarConfig.labelEstado" class="seeker__select" v-model="ticketEstado">
                             <option disabled selected id="empresa">
                                 Elegir estado del incidente
                             </option>
