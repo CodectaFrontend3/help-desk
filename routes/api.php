@@ -30,6 +30,7 @@ Route::get('/tickets/buscar', [TicketController::class, 'buscar']);
 Route::get('/plan/buscar', [PlanController::class, 'buscar']);
 Route::get('/plan/buscaradmin', [PlanController::class, 'buscaradmin']);
 
+
 //routes en ingles
 Route::apiResource('/clientG', ClientGController::class);
 Route::apiResource('/registerHardware', RegisterHardwareController::class);

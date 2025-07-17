@@ -35,7 +35,7 @@ export default {
       required: true,
       default: () => []
     },
-      resultadosBusqueda: {
+    resultadosBusqueda: {
     type: Array,
     required: false,
     default: () => []
@@ -51,8 +51,7 @@ export default {
 
   data() {
     return {
-    productos: [],
-    resultadosBusqueda: []
+
     };
   },
   computed: {

@@ -65,8 +65,8 @@ export default {
         if (routeName === "Clientes - Empresa - Administrador") return "company";
         if (routeName === "Clientes - Persona Natural - Soporte TI") return "natural-person";
         if (routeName === "Soporte técnico - Soporte TI") return "plan";
-              if (routeName === "Soporte técnico - Administrador") return "planadmin";
-        if (routeName === "Administrador - Tickets") return "admintickets";
+        if (routeName === "Soporte técnico - Administrador") return "plandmin";
+        if (routeName === "Administrador - Tickets") return "plan";
         return "company";
         },
         apiBaseUrl() {
@@ -75,6 +75,7 @@ export default {
             "natural-person": "/api/natural-person",
             "company": "/api/company",
             "plan": "/api/plan",
+            "plandmin": "/api/plan",
             "admintickets": "/api/ticket"
         };
         return map[this.entityType] || "/api/company";

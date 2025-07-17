@@ -57,24 +57,22 @@ class PlanController extends Controller
     public function buscar(Request $request)
     {
         $query = $request->input('query');
-
+        $tipo = $request ->input ('tipo');
+        if ($tipo === 'plan'){
         $resultados = Plan::where('plan_number', 'like', "%{$query}%")
             ->orWhere('name', 'like', "%{$query}%")
             ->orWhere('description', 'like', "%{$query}%")
             ->get();
-
-        return response()->json($resultados);
-    }
-    public function buscaradmin(Request $request)
-    {
-        $query = $request->input('query');
-
+        }else{
             $resultados = Plan::where('plan_number', 'like', "%{$query}%")
             ->orWhere('name', 'like', "%{$query}%")
             ->orWhere('description', 'like', "%{$query}%")
             ->orWhere('id', 'like',"%{$query}%")
             ->get();
+        }
+
 
         return response()->json($resultados);
     }
+
 }

@@ -30,7 +30,7 @@ import axios from 'axios';
 export default {
   name:'plan',
   props: {
-      productos: {
+    productos: {
     type: Array,
     required: true,
     default: () => []

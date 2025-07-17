@@ -98,8 +98,9 @@ export default {
 
     <component
       :is="currentComponent"
+      :searchTerm="searchTerm"
       :productos="productosMostrados"
-
+      :resultadosBusqueda="resultadosBusqueda"
     />
   </div>
 </template>
