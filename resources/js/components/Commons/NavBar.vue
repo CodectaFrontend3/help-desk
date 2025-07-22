@@ -1,6 +1,223 @@
+<template>
+    <nav class="search-container">
+        <div v-if="showButtons" class="buttons">
+            <button
+                :class="{ active: isActive('companies') }"
+                title="Seleccionar empresa"
+                @click="navigateToAdminChildren('companies')"
+            >
+                Empresa
+            </button>
+            <button
+                :class="{ active: isActive('natural-person') }"
+                title="Seleccionar persona natural"
+                @click="navigateToAdminChildren('natural-person')"
+            >
+                Persona Natural
+            </button>
+        </div>
+
+        <!--Buttons - Soporte TI-->
+
+        <div v-if="showButtonsTi" class="buttons-ti">
+            <button
+                :class="{ active: isActive('company') }"
+                title="Seleccionar empresa"
+                @click="navigateToChildren(dynamicSegment('company'))"
+            >
+                Empresa
+            </button>
+            <button
+                :class="{ active: isActive('person') }"
+                title="Seleccionar persona natural"
+                @click="navigateToChildren(dynamicSegment('person'))"
+            >
+                Persona Natural
+            </button>
+        </div>
+
+        <div class="search">
+            <!-- Tickets-->
+            <div v-if="navbarConfig.tickets" class="tickets-container">
+                <!-- Incidente-->
+                <div v-if="navbarConfig.labelIncidente" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
+                    <label for="empresa">{{ navbarConfig.labelIncidente }}</label>
+                    <input type="text" v-model="ticketIncidente" title="Buscar empresa" placeholder="Ingrese el incidente"/>
+                </div>
+                <!-- Área-->
+                <div v-if="navbarConfig.labelArea" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
+                    <label for="empresa">{{ navbarConfig.labelArea }}</label>
+                    <select v-if="navbarConfig.labelArea" v-model="ticketArea">
+                        <option disabled selected id="empresa">
+                            Elegir área
+                        </option>
+                        <option value="1">Área 1</option>
+                        <option value="2">Área 2</option>
+                        <option value="3">Área 3</option>
+                    </select>
+                </div>
+                <!-- Fechas -->
+                <div v-if="navbarConfig.labelFecha" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
+                    <label for="fecha" class="date-label">{{ navbarConfig.labelFecha }}</label>
+                    <div class="date">
+                          <VueDatePicker
+                                v-model="range"
+                                range
+                                :multi-calendars="2"
+                                :format="'yyyy-MM-dd'"
+                                class="date-input"
+                                id="date"
+
+                            />
+                        <!-- <input id="date" type="date" title="Fecha de inicio" v-model="ticketFechaInicio" class="date-input" placeholder="Desde"/>
+                        <p class="date-separator">al</p>
+                        <input type="date" title="Fecha de fin" class="date-input" v-model="ticketFechaFin" placeholder="Hasta"/> -->
+                    </div>
+                </div>
+                <!-- Estado-->
+                <div v-if="navbarConfig.labelEstado" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
+                    <label class="seeker__label" for="empresa">{{ navbarConfig.labelEstado }}</label>
+                    <div class="select-wrapper">
+                        <select v-if="navbarConfig.labelEstado" class="seeker__select" v-model="ticketEstado">
+                            <option disabled selected id="empresa">
+                                Elegir estado del incidente
+                            </option>
+                            <option value="1">Urgente</option>
+                            <option value="2">Medio</option>
+                            <option value="3">Tranquilo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!--CLIENTES - Empresa-->
+            <div v-if="navbarConfig.clientes || navbarConfig.clientCompany" class="clientes-container">
+                <div
+                    v-if="navbarConfig.labelRuc"
+                    class="seeker seeker__clientes"
+                >
+                    <label title="Buscar RUC" for="ruc">{{
+                        navbarConfig.labelRuc
+                    }}</label>
+                    <input
+                    id="ruc"
+                    type="text"
+                    v-model="searchTermRuc"
+                    @input="activarBusquedaRuc"
+                    :disabled="searchTermCompany.length > 0 || searchTerm.length > 0"
+                    placeholder="Ingrese su RUC"
+                    />
+                </div>
+                <div
+                    v-if="navbarConfig.labelEmpresa"
+                    class="seeker seeker__clientes"
+                >
+                    <label for="empresa">{{ navbarConfig.labelEmpresa }}</label>
+                    <!--quitable el :disabled-->
+                    <input
+                    id="empresa"
+                    type="text"
+                    title="Buscar empresa"
+                    v-model="searchTermCompany"
+                    @input="activarBusquedaNombre"
+                    :disabled="searchTerm.length > 0 || searchTermRuc.length > 0"
+                    placeholder="Ingrese nombre de la empresa"
+                    />
+                </div>
+            </div>
+
+            <!--Clientes - Persona Natural-->
+            <div v-if="navbarConfig.persona || navbarConfig.clientPerson" class="persona-container">
+                <div
+                    v-if="navbarConfig.labelDni"
+                    class="seeker seeker__clientes"
+                >
+                    <label for="dni">{{ navbarConfig.labelDni }}</label>
+                    <input
+                        id="dni"
+                        type="text"
+                        v-model="searchTermDni"
+                        @input="activarBusquedaDni"
+                        :disabled="searchTerm.length > 0 || searchTermNombre.length > 0"
+                        placeholder="Ingrese DNI"
+                        />
+                </div>
+                <div
+                    v-if="navbarConfig.labelNombre"
+                    class="seeker seeker__clientes"
+                >
+                    <label for="nombre">{{ navbarConfig.labelNombre }}</label>
+                    <input
+                        id="nombre"
+                        type="text"
+                        title="Buscar por nombre de persona"
+                        v-model="searchTermNombre"
+                        @input="activarBusquedaNombrePersona"
+                        :disabled="searchTerm.length > 0 || searchTermDni.length > 0"
+                        placeholder="Ingrese su nombre"
+                    />
+                </div>
+            </div>
+
+            <!-- SOPORTE TI -->
+            <div v-if="navbarConfig.soporteTi" class="soporte-container">
+                <!-- RUC -->
+                <div v-if="navbarConfig.ruc" class="seeker seeker__soporte" :class="{ width__sekker: isTicketActive }">
+                    <label for="soporte-ruc">{{ navbarConfig.ruc }}</label>
+                    <input id="soporte-ruc" type="text" title="Buscar empresa" placeholder="Ingrese el RUC" />
+                </div>
+                <!-- EMPRESA -->
+                <div v-if="navbarConfig.company" class="seeker seeker__soporte" :class="{ width__sekker: isTicketActive }">
+                    <label for="soporte-ruc">{{ navbarConfig.company }}</label>
+                    <input id="soporte-ruc" type="text" title="Buscar empresa" placeholder="Ingrese el nombre de la empresa"/>
+                </div>
+            </div>
+
+            <div v-if="navbarConfig.equipment" class="seeker seeker__equipment" :class="{ width__sekker: isTicketActive }">
+                <label for="dateRange" class="dateRange__label">{{ navbarConfig.dateRange }}:</label>
+                <div class="date">
+                    <input id="dateRange" type="date" title="Fecha de inicio" class="date-input" placeholder="Desde"/>
+                    <p class="date-separator">al</p>
+                    <input type="date" title="Fecha de fin" class="date-input" placeholder="Hasta"/>
+                </div>
+            </div>
+
+            <!--Seeker General-->
+            <div class="seeker seeker__general" :class="{ width__sekker: this.$route.name === 'Tickets activos',}">
+                    <!--quitable el disabled-->
+                    <input
+                    v-model="searchTerm"
+                    @input="activarBusquedaGeneral"
+                    :disabled="searchTermCompany.length > 0 || searchTermRuc.length > 0|| searchTermNombre.length > 0 || searchTermDni.length > 0"
+                    placeholder="Buscar..."
+                    />
+                <span class="icon pi pi-search"></span>
+
+            </div>
+
+            <button v-if="showAdd" title="Agregar registro" class="add">
+                <span class="pi pi-plus"></span>
+                <span>Agregar</span>
+            </button>
+
+        </div>
+        <div>
+        <ProductSearch
+            :searchTerm="searchTerm"
+            :resultadosBusqueda="resultadosBusqueda"
+            :productos="productos"
+        /></div>
+    </nav>
+</template>
 <script>
 import axios from 'axios';
 import ProductSearch from '../Tabla/iftura.vue'
+
+import { ref } from 'vue'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+
+
 export default {
 
     name: "NavBar",
@@ -9,6 +226,7 @@ export default {
     },
     components:{
         ProductSearch,
+        VueDatePicker,
     },
     data() {
 
@@ -389,208 +607,6 @@ export default {
 </script>
 
 
-<template>
-    <nav class="search-container">
-        <div v-if="showButtons" class="buttons">
-            <button
-                :class="{ active: isActive('companies') }"
-                title="Seleccionar empresa"
-                @click="navigateToAdminChildren('companies')"
-            >
-                Empresa
-            </button>
-            <button
-                :class="{ active: isActive('natural-person') }"
-                title="Seleccionar persona natural"
-                @click="navigateToAdminChildren('natural-person')"
-            >
-                Persona Natural
-            </button>
-        </div>
-
-        <!--Buttons - Soporte TI-->
-
-        <div v-if="showButtonsTi" class="buttons-ti">
-            <button
-                :class="{ active: isActive('company') }"
-                title="Seleccionar empresa"
-                @click="navigateToChildren(dynamicSegment('company'))"
-            >
-                Empresa
-            </button>
-            <button
-                :class="{ active: isActive('person') }"
-                title="Seleccionar persona natural"
-                @click="navigateToChildren(dynamicSegment('person'))"
-            >
-                Persona Natural
-            </button>
-        </div>
-
-        <div class="search">
-            <!-- Tickets-->
-            <div v-if="navbarConfig.tickets" class="tickets-container">
-                <!-- Incidente-->
-                <div v-if="navbarConfig.labelIncidente" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
-                    <label for="empresa">{{ navbarConfig.labelIncidente }}</label>
-                    <input type="text" v-model="ticketIncidente" title="Buscar empresa" placeholder="Ingrese el incidente"/>
-                </div>
-                <!-- Área-->
-                <div v-if="navbarConfig.labelArea" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
-                    <label for="empresa">{{ navbarConfig.labelArea }}</label>
-                    <select v-if="navbarConfig.labelArea" v-model="ticketArea">
-                        <option disabled selected id="empresa">
-                            Elegir área
-                        </option>
-                        <option value="1">Área 1</option>
-                        <option value="2">Área 2</option>
-                        <option value="3">Área 3</option>
-                    </select>
-                </div>
-                <!-- Fechas -->
-                <div v-if="navbarConfig.labelFecha" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
-                    <label for="fecha" class="date-label">{{ navbarConfig.labelFecha }}</label>
-                    <div class="date">
-                        <input id="date" type="date" title="Fecha de inicio" v-model="ticketFechaInicio" class="date-input" placeholder="Desde"/>
-                        <p class="date-separator">al</p>
-                        <input type="date" title="Fecha de fin" class="date-input" v-model="ticketFechaFin" placeholder="Hasta"/>
-                    </div>
-                </div>
-                <!-- Estado-->
-                <div v-if="navbarConfig.labelEstado" class="seeker seeker__tickets" :class="{ width__sekker: isTicketActive }">
-                    <label class="seeker__label" for="empresa">{{ navbarConfig.labelEstado }}</label>
-                    <div class="select-wrapper">
-                        <select v-if="navbarConfig.labelEstado" class="seeker__select" v-model="ticketEstado">
-                            <option disabled selected id="empresa">
-                                Elegir estado del incidente
-                            </option>
-                            <option value="1">Urgente</option>
-                            <option value="2">Medio</option>
-                            <option value="3">Tranquilo</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!--CLIENTES - Empresa-->
-            <div v-if="navbarConfig.clientes || navbarConfig.clientCompany" class="clientes-container">
-                <div
-                    v-if="navbarConfig.labelRuc"
-                    class="seeker seeker__clientes"
-                >
-                    <label title="Buscar RUC" for="ruc">{{
-                        navbarConfig.labelRuc
-                    }}</label>
-                    <input
-                    id="ruc"
-                    type="text"
-                    v-model="searchTermRuc"
-                    @input="activarBusquedaRuc"
-                    :disabled="searchTermCompany.length > 0 || searchTerm.length > 0"
-                    placeholder="Ingrese su RUC"
-                    />
-                </div>
-                <div
-                    v-if="navbarConfig.labelEmpresa"
-                    class="seeker seeker__clientes"
-                >
-                    <label for="empresa">{{ navbarConfig.labelEmpresa }}</label>
-                    <!--quitable el :disabled-->
-                    <input
-                    id="empresa"
-                    type="text"
-                    title="Buscar empresa"
-                    v-model="searchTermCompany"
-                    @input="activarBusquedaNombre"
-                    :disabled="searchTerm.length > 0 || searchTermRuc.length > 0"
-                    placeholder="Ingrese nombre de la empresa"
-                    />
-                </div>
-            </div>
-
-            <!--Clientes - Persona Natural-->
-            <div v-if="navbarConfig.persona || navbarConfig.clientPerson" class="persona-container">
-                <div
-                    v-if="navbarConfig.labelDni"
-                    class="seeker seeker__clientes"
-                >
-                    <label for="dni">{{ navbarConfig.labelDni }}</label>
-                    <input
-                        id="dni"
-                        type="text"
-                        v-model="searchTermDni"
-                        @input="activarBusquedaDni"
-                        :disabled="searchTerm.length > 0 || searchTermNombre.length > 0"
-                        placeholder="Ingrese DNI"
-                        />
-                </div>
-                <div
-                    v-if="navbarConfig.labelNombre"
-                    class="seeker seeker__clientes"
-                >
-                    <label for="nombre">{{ navbarConfig.labelNombre }}</label>
-                    <input
-                        id="nombre"
-                        type="text"
-                        title="Buscar por nombre de persona"
-                        v-model="searchTermNombre"
-                        @input="activarBusquedaNombrePersona"
-                        :disabled="searchTerm.length > 0 || searchTermDni.length > 0"
-                        placeholder="Ingrese su nombre"
-                    />
-                </div>
-            </div>
-
-            <!-- SOPORTE TI -->
-            <div v-if="navbarConfig.soporteTi" class="soporte-container">
-                <!-- RUC -->
-                <div v-if="navbarConfig.ruc" class="seeker seeker__soporte" :class="{ width__sekker: isTicketActive }">
-                    <label for="soporte-ruc">{{ navbarConfig.ruc }}</label>
-                    <input id="soporte-ruc" type="text" title="Buscar empresa" placeholder="Ingrese el RUC" />
-                </div>
-                <!-- EMPRESA -->
-                <div v-if="navbarConfig.company" class="seeker seeker__soporte" :class="{ width__sekker: isTicketActive }">
-                    <label for="soporte-ruc">{{ navbarConfig.company }}</label>
-                    <input id="soporte-ruc" type="text" title="Buscar empresa" placeholder="Ingrese el nombre de la empresa"/>
-                </div>
-            </div>
-
-            <div v-if="navbarConfig.equipment" class="seeker seeker__equipment" :class="{ width__sekker: isTicketActive }">
-                <label for="dateRange" class="dateRange__label">{{ navbarConfig.dateRange }}:</label>
-                <div class="date">
-                    <input id="dateRange" type="date" title="Fecha de inicio" class="date-input" placeholder="Desde"/>
-                    <p class="date-separator">al</p>
-                    <input type="date" title="Fecha de fin" class="date-input" placeholder="Hasta"/>
-                </div>
-            </div>
-
-            <!--Seeker General-->
-            <div class="seeker seeker__general" :class="{ width__sekker: this.$route.name === 'Tickets activos',}">
-                    <!--quitable el disabled-->
-                    <input
-                    v-model="searchTerm"
-                    @input="activarBusquedaGeneral"
-                    :disabled="searchTermCompany.length > 0 || searchTermRuc.length > 0|| searchTermNombre.length > 0 || searchTermDni.length > 0"
-                    placeholder="Buscar..."
-                    />
-                <span class="icon pi pi-search"></span>
-
-            </div>
-
-            <button v-if="showAdd" title="Agregar registro" class="add">
-                <span class="pi pi-plus"></span>
-                <span>Agregar</span>
-            </button>
-
-        </div>
-        <div>
-        <ProductSearch
-            :searchTerm="searchTerm"
-            :resultadosBusqueda="resultadosBusqueda"
-            :productos="productos"
-        /></div>
-    </nav>
-</template>
 
 <style scoped>
 .search-container {
@@ -662,7 +678,7 @@ export default {
 /*----------------------------------------*/
 
 .search {
-    overflow: auto;
+    overflow: visible;
     flex: 2;
     display: flex;
     align-items: end;
@@ -754,7 +770,7 @@ select {
 }
 .date-label {
     width: 100%;
-    font-size: 16px;
+    font-size: 15.5px;
     text-align: left;
     flex: 1;
 }
@@ -764,8 +780,9 @@ select {
     align-items: center;
 }
 .date-input {
+    z-index: 9999 !important; /* Asegura que el calendario se muestre encima */
     flex: 1;
-    padding: 10px;
+    padding: 0px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 5px;
