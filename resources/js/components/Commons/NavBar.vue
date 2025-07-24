@@ -63,7 +63,7 @@
                           <VueDatePicker
                                 v-model="range"
                                 range
-                                :multi-calendars="2"
+                                :multi-calendars="{ count: 2, solo: true }"
                                 :format="'yyyy-MM-dd'"
                                 class="date-input"
                                 id="date"
@@ -206,6 +206,8 @@
             :searchTerm="searchTerm"
             :resultadosBusqueda="resultadosBusqueda"
             :productos="productos"
+            :startDate="startDate"
+            :endDate="endDate"
         /></div>
     </nav>
 </template>
@@ -243,10 +245,14 @@ export default {
             searchQuery: '',
             cliente: [],
             //buscar
-
-            productos: [],
-            resultadosBusqueda: [],
-            showAdd: true,
+            range: [],
+            resultadosBusqueda: Array,
+            productos: Array,
+            ticketIncidente: '',
+            ticketArea: '',
+            ticketEstado: '',
+            startDate: [String, Date], // ✅ acepta String o Date
+            endDate: [String, Date],
         };
     },
     mounted() {
@@ -374,8 +380,12 @@ export default {
         else query = this.searchTerm;
 
         console.log('Buscando con:', { query, tipo });
-
-        if (!query) {
+        if (this.range && this.range.length === 2) {
+            const [start, end] = this.range;
+            params.start_date = start.toISOString().split('T')[0];
+            params.end_date = end.toISOString().split('T')[0];
+        }
+        if (!query && !params.start_date) {
             this.productos = await axios.get(this.apiBaseUrl).then(r => r.data);
             this.resultadosBusqueda = [];
             return;
@@ -603,6 +613,14 @@ export default {
         }
         },
     },
+    watch: {
+  range(newVal) {
+    if (newVal.length === 2) {
+      this.startDate = newVal[0];
+      this.endDate = newVal[1];
+    }
+  }
+}
 };
 </script>
 

@@ -1,10 +1,5 @@
 <template>
   <div>
-    <input
-      v-model="searchTerm"
-      @input="buscarProductos"
-      placeholder="Buscar Personas..."
-    />
 
     <table>
       <thead>
@@ -47,6 +42,8 @@ export default {
   props: {
     visible: Boolean,
     clienteId: Number,
+    startDate: String,
+    endDate: String,
   },
   data() {
     return {
@@ -61,17 +58,34 @@ export default {
     },
   },
   methods: {
-    async buscarProductos() {
-      if (this.searchTerm.length === 0) return;
+        async buscarProductos() {
+        if (!this.searchTerm && !this.startDate && !this.endDate) {
+        // No hay nada para buscar
+        return;
+        }
 
-      try {
-        const response = await axios.get('/api/tickets/buscar', {
-          params: { query: this.searchTerm },
-        });
+        // Validar que si una fecha está presente, la otra también lo esté
+        if ((this.startDate && !this.endDate) || (!this.startDate && this.endDate)) {
+        console.warn("Por favor seleccione ambas fechas: inicio y fin.");
+        return;
+        }
+
+        const params = {
+        query: this.searchTerm,
+        };
+
+        // Si hay fechas completas, agrégalas al filtro
+        if (this.startDate && this.endDate) {
+        params.start_date = this.startDate;
+        params.end_date = this.endDate;
+        }
+
+        try {
+        const response = await axios.get('/api/ticket/buscar', { params });
         this.resultadosBusqueda = response.data;
-      } catch (error) {
+        } catch (error) {
         console.error('Error en la búsqueda:', error);
-      }
+        }
     },
     async cargarProductos() {
       try {
@@ -85,6 +99,7 @@ export default {
   mounted() {
     this.cargarProductos();
   },
+
 };
 </script>
 

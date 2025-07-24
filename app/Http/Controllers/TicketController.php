@@ -50,16 +50,27 @@ class TicketController extends Controller
     public function buscar(Request $request)
     {
         $query = $request->input('query');
+        $startDate = $request->input('start_date'); // ej: "2024-01-01"
+        $endDate = $request->input('end_date');     // ej: "2024-11-30"
 
-        $resultados = Ticket::where('incident_type', 'like', "%{$query}%")
-            ->orWhere('client_name', 'like', "%{$query}%")
-            ->orWhere('company', 'like', "%{$query}%")
-            ->orWhere('area', 'like', "%{$query}%")
-            ->orWhere('branch', 'like', "%{$query}%")
-            ->orWhere('state', 'like', "%{$query}%")
-            ->orWhere('registration_date', 'like', "%{$query}%")
-            ->get();
+        $resultados = Ticket::query();
 
-        return response()->json($resultados);
+        if ($query) {
+            $resultados->where(function ($q) use ($query) {
+                $q->where('incident_type', 'like', "%{$query}%")
+                ->orWhere('client_name', 'like', "%{$query}%")
+                ->orWhere('company', 'like', "%{$query}%")
+                ->orWhere('area', 'like', "%{$query}%")
+                ->orWhere('branch', 'like', "%{$query}%")
+                ->orWhere('state', 'like', "%{$query}%")
+                ->orWhere('registration_date', 'like', "%{$query}%");
+            });
+        }
+
+        if ($startDate && $endDate) {
+            $resultados->whereBetween('registration_date', [$startDate, $endDate]);
+        }
+
+        return response()->json($resultados->get());
     }
 }

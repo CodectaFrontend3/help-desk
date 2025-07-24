@@ -23,7 +23,9 @@ export default {
   resultadosBusqueda: {
     type: Array,
     default: () => []
-  }
+  },
+    startDate: [String, Date],
+    endDate: [String, Date],
   },
     components:{
       company,
@@ -34,7 +36,9 @@ export default {
       tickets,
   },
   data() {
-
+  return {
+    algoLocal: null
+  };
   },
   computed: {
     productosMostrados() {
