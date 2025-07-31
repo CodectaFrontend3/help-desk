@@ -42,8 +42,8 @@ export default {
   props: {
     visible: Boolean,
     clienteId: Number,
-    startDate: String,
-    endDate: String,
+    startDate: [String, Date],
+    endDate: [String, Date],
   },
   data() {
     return {
@@ -54,10 +54,24 @@ export default {
   },
   computed: {
     productosMostrados() {
-      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
+        if (
+        (this.searchTerm && this.searchTerm.length > 0) ||
+        (this.startDate && this.endDate)
+        ) {
+        return this.resultadosBusqueda;
+        }
+        return this.producto;
     },
   },
   methods: {
+        formatDate(date) {
+            if (!date) return null;
+            const d = new Date(date);
+            const year = d.getFullYear();
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
+            const day = d.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        },
         async buscarProductos() {
         if (!this.searchTerm && !this.startDate && !this.endDate) {
         // No hay nada para buscar
@@ -69,19 +83,26 @@ export default {
         console.warn("Por favor seleccione ambas fechas: inicio y fin.");
         return;
         }
-
+        // Formatear fechas
+        const start = this.formatDate(this.startDate);
+        const end = this.formatDate(this.endDate);
+        console.log('Fechas formateadas que se envían:', start, end);
         const params = {
         query: this.searchTerm,
         };
 
         // Si hay fechas completas, agrégalas al filtro
-        if (this.startDate && this.endDate) {
-        params.start_date = this.startDate;
-        params.end_date = this.endDate;
+        // if (this.startDate && this.endDate) {
+        // params.start_date = this.startDate;
+        // params.end_date = this.endDate;
+        // }
+        if (start && end) {
+        params.start_date = start;
+        params.end_date = end;
         }
 
         try {
-        const response = await axios.get('/api/ticket/buscar', { params });
+        const response = await axios.get('/api/tickets/buscar', { params });
         this.resultadosBusqueda = response.data;
         } catch (error) {
         console.error('Error en la búsqueda:', error);
@@ -97,8 +118,20 @@ export default {
     },
   },
   mounted() {
+    console.log(typeof this.startDate, this.startDate);
     this.cargarProductos();
   },
+    watch: {
+    startDate() {
+        this.buscarProductos();
+    },
+    endDate() {
+        this.buscarProductos();
+    },
+    searchTerm() {
+        this.buscarProductos();
+    },
+    }
 
 };
 </script>

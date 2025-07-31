@@ -11,14 +11,14 @@ class TicketController extends Controller
     // Mostrar todos los tickets
     public function index()
     {
-        $tickets = Ticket::with('machines')->get();
+        $tickets = Ticket::with('machine')->get();
         return response()->json($tickets);
     }
 
     // Mostrar un ticket específico
     public function show($id)
     {
-        $ticket = Ticket::with('machines')->findOrFail($id);
+        $ticket = Ticket::with('machine')->findOrFail($id);
         return response()->json($ticket);
     }
 
@@ -62,8 +62,7 @@ class TicketController extends Controller
                 ->orWhere('company', 'like', "%{$query}%")
                 ->orWhere('area', 'like', "%{$query}%")
                 ->orWhere('branch', 'like', "%{$query}%")
-                ->orWhere('state', 'like', "%{$query}%")
-                ->orWhere('registration_date', 'like', "%{$query}%");
+                ->orWhere('state', 'like', "%{$query}%");
             });
         }
 
@@ -71,6 +70,8 @@ class TicketController extends Controller
             $resultados->whereBetween('registration_date', [$startDate, $endDate]);
         }
 
-        return response()->json($resultados->get());
+        $finalResults = $resultados->get();
+
+        return response()->json($finalResults);
     }
 }

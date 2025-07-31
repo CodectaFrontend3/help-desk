@@ -246,13 +246,13 @@ export default {
             cliente: [],
             //buscar
             range: [],
-            resultadosBusqueda: Array,
-            productos: Array,
+            resultadosBusqueda: [],
+            productos: [],
             ticketIncidente: '',
             ticketArea: '',
             ticketEstado: '',
-            startDate: [String, Date], // ✅ acepta String o Date
-            endDate: [String, Date],
+    startDate: null,
+    endDate: null,
         };
     },
     mounted() {

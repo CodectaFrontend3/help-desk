@@ -20,9 +20,9 @@ class Ticket extends Model
         'registration_date',
     ];
 
-    public function machines()
+    public function machine()
     {
         return $this->belongsTo(Machine::class,'machine_id');
     }
-    
+
 }

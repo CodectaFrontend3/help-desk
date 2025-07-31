@@ -22,7 +22,7 @@ export default {
   },
   resultadosBusqueda: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
     startDate: [String, Date],
     endDate: [String, Date],
@@ -105,6 +105,8 @@ export default {
       :searchTerm="searchTerm"
       :productos="productosMostrados"
       :resultadosBusqueda="resultadosBusqueda"
+      :startDate="startDate"
+      :endDate="endDate"
     />
   </div>
 </template>

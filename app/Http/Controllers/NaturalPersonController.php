@@ -76,6 +76,7 @@ class NaturalPersonController extends Controller
                 ->get();
         }
 
+        
         return response()->json($resultados);
     }
 }
