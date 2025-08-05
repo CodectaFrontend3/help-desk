@@ -13,7 +13,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="producto in productos" :key="producto.id">
+          <tr v-for="producto in productosMostrados" :key="producto.id">
             <td>{{ producto.client_name }}</td>
             <td>{{ producto.ruc }}</td>
             <td>{{ producto.address }}</td>
@@ -51,12 +51,20 @@ export default {
   },
   props: {
     productos: {
-      type: Array,
-      required: true,
-      default: () => []
+        type: Array,
+        required: true,
+        default: () => []
     },
     visible: Boolean,
     clienteId: Number,
+    searchTerm: {
+        type: String,
+        default: ''
+    },
+    resultadosBusqueda: {
+        type: Array,
+        default: () => []
+    }
   },
   data() {
     return {
@@ -66,10 +74,17 @@ export default {
   },
   computed: {
     productosMostrados() {
-      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
-    },
+    return this.resultadosBusqueda.length > 0
+        ? this.resultadosBusqueda
+        : this.productos;
+    }
   },
   methods: {
+        limpiarBusqueda() {
+        this.searchTerm = '';
+        this.resultadosBusqueda = [];
+        this.cargarProductos(); // ← Recargar datos originales
+    },
         viewClient(producto) {
             const id = producto.id || producto._id;
             if (!id) {
@@ -108,6 +123,11 @@ export default {
   mounted() {
     this.cargarProductos();
   },
+  watch: {
+  productos(newVal) {
+    // Opcional: forzar refresco de UI o reset local
+  }
+}
 };
 </script>
 

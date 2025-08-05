@@ -58,24 +58,35 @@ class CompanyController extends Controller
      */
     public function buscar(Request $request)
     {
-        \Log::info('Request recibido:', $request->all());
+        \Log::info('Filtros recibidos:', $request->all());
 
-        $query = $request->input('query');
-        $tipo = $request->input('tipo');
+        $ruc = $request->input('ruc');
+        $nombre = $request->input('nombre');
+        $general = $request->input('general');
 
-        if ($tipo === 'nombre') {
-            $resultados = Company::where('client_name', 'like', "%{$query}%")->get();
-        } elseif ($tipo === 'ruc') {
-            $resultados = Company::where('ruc', 'like', "%{$query}%")->get();
-        } else {
-            $resultados = Company::where('client_name', 'like', "%{$query}%")
-                ->orWhere('ruc', 'like', "%{$query}%")
-                ->orWhere('address', 'like', "%{$query}%")
-                ->orWhere('phone', 'like', "%{$query}%")
-                ->orWhere('email', 'like', "%{$query}%")
-                ->get();
+        $query = Company::query();
+
+        if (!empty($ruc)) {
+            $query->where('ruc', 'like', "%{$ruc}%");
         }
+
+        if (!empty($nombre)) {
+            $query->where('client_name', 'like', "%{$nombre}%");
+        }
+
+        if (!empty($general)) {
+            $query->where(function ($q) use ($general) {
+                $q->where('client_name', 'like', "%{$general}%")
+                ->orWhere('ruc', 'like', "%{$general}%")
+                ->orWhere('address', 'like', "%{$general}%")
+                ->orWhere('phone', 'like', "%{$general}%")
+                ->orWhere('email', 'like', "%{$general}%");
+            });
+        }
+
+        $resultados = $query->get();
 
         return response()->json($resultados);
     }
+
 }

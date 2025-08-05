@@ -103,8 +103,7 @@
                     id="ruc"
                     type="text"
                     v-model="searchTermRuc"
-                    @input="activarBusquedaRuc"
-                    :disabled="searchTermCompany.length > 0 || searchTerm.length > 0"
+                    @input="buscarCombinado"
                     placeholder="Ingrese su RUC"
                     />
                 </div>
@@ -117,10 +116,8 @@
                     <input
                     id="empresa"
                     type="text"
-                    title="Buscar empresa"
                     v-model="searchTermCompany"
-                    @input="activarBusquedaNombre"
-                    :disabled="searchTerm.length > 0 || searchTermRuc.length > 0"
+                    @input="buscarCombinado"
                     placeholder="Ingrese nombre de la empresa"
                     />
                 </div>
@@ -187,8 +184,7 @@
                     <!--quitable el disabled-->
                     <input
                     v-model="searchTerm"
-                    @input="activarBusquedaGeneral"
-                    :disabled="searchTermCompany.length > 0 || searchTermRuc.length > 0|| searchTermNombre.length > 0 || searchTermDni.length > 0"
+                    @input="buscarCombinado"
                     placeholder="Buscar..."
                     />
                 <span class="icon pi pi-search"></span>
@@ -203,6 +199,7 @@
         </div>
         <div>
         <ProductSearch
+            ref="productSearchRef"
             :searchTerm="searchTerm"
             :resultadosBusqueda="resultadosBusqueda"
             :productos="productos"
@@ -239,7 +236,6 @@ export default {
             searchTermNombre: '',
             searchTermDni: '',
             isCompanySearchDisabled: false, //
-            isGeneralSearchDisabled: false, //
             isRucSearchDisabled: false, //
             sekker: true, // Probablemente una bandera para controlar el estado de algo en la barra de navegación (nombre no muy descriptivo)
             searchQuery: '',
@@ -401,6 +397,20 @@ export default {
             console.error('Error en la búsqueda:', error);
         }
         },
+        async buscarCombinado() {
+        try {
+            const response = await axios.get(`${this.apiBaseUrl}/buscar`, {
+            params: {
+                ruc: this.searchTermRuc,
+                nombre: this.searchTermCompany,
+                general: this.searchTerm
+            }
+            });
+            this.resultadosBusqueda = response.data;
+        } catch (error) {
+            console.error('Error en búsqueda combinada:', error);
+        }
+        },
         /**
          * Determina el tipo de entidad actualmente activa según la URL.
          * Retorna: "company", "person" o un tipo extraído de la URL si estamos en equipos.
@@ -538,30 +548,6 @@ export default {
             this.$emit('filtro-aplicado', this.searchQuery); // enviar el filtro al padre
             // Aquí puedes ejecutar una API o usar `datosFiltrados`, etc.
         },
-        activarBusquedaNombre() {
-            console.log('Activando búsqueda por nombre:', this.searchTermCompany);
-            this.searchTerm = '';
-            this.searchTermRuc = '';
-            this.onInputBuscar('nombre');
-
-            if (!this.searchTermCompany) {
-                this.isGeneralSearchDisabled = false;
-                this.isRucSearchDisabled = false;
-            } else {
-                this.isGeneralSearchDisabled = true;
-                this.isRucSearchDisabled = true;
-            }
-        },
-        activarBusquedaGeneral() {
-            this.searchTermCompany = ''; // limpia barra por nombre
-            this.searchTermRuc = ''; // limpia RUC también
-            this.onInputBuscar('general');
-
-            // Si se borra el campo, reactivamos la otra barra
-            if (!this.searchTerm) {
-                this.isCompanySearchDisabled = false;
-            }
-        },
         activarBusquedaNombrePersona() {
             console.log('Activando búsqueda por nombre de persona:', this.searchTermNombre);
 
@@ -584,19 +570,6 @@ export default {
                 this.isRucSearchDisabled = true;
             }
         },
-        activarBusquedaRuc() {
-        this.searchTerm = '';
-        this.searchTermCompany = '';
-        this.onInputBuscar('ruc');
-            // Si se borra el campo, reactivamos la otra barra
-            if (!this.searchTermRuc) {
-                this.isCompanySearchDisabled = false;
-                this.isGeneralSearchDisabled = false;
-            } else {
-                this.isCompanySearchDisabled = true;
-                this.isGeneralSearchDisabled = true;
-            }
-        },
         activarBusquedaDni() {
         this.searchTerm = '';
         this.searchTermCompany = '';
@@ -612,8 +585,25 @@ export default {
             this.isRucSearchDisabled = true;
         }
         },
+          limpiarBusquedaCompleta() {
+            // Limpia los campos
+            this.searchTerm = '';
+            this.searchTermRuc = '';
+            this.searchTermCompany = '';
+            this.searchTermNombre = '';
+            this.searchTermDni = '';
+            this.range = [];
+            this.resultadosBusqueda = [];
+
+            // Emite un evento a iftura.vue para que también limpie su lado
+            this.$refs.productSearchRef?.limpiarBusqueda?.();
+        },
+
     },
     watch: {
+    '$route.name'() {
+        this.limpiarBusquedaCompleta();
+    },
   range(newVal) {
     if (newVal.length === 2) {
       this.startDate = newVal[0];

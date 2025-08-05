@@ -42,11 +42,11 @@ export default {
   },
   computed: {
     productosMostrados() {
-    if (this.resultadosBusqueda && this.resultadosBusqueda.length > 0) {
-      return this.resultadosBusqueda;
-    }
-    return this.productos;
-  },
+        if (this.resultadosBusqueda && this.resultadosBusqueda.length > 0 && this.searchTerm) {
+        return this.resultadosBusqueda;
+        }
+        return this.productos;
+    },
     entityType() {
       const routeName = this.$route.name;
       if (routeName === "Clientes - Persona natural") return "natural-person";
@@ -80,7 +80,10 @@ export default {
     }
   },
   methods: {
-
+    limpiarBusqueda() {
+        // Muy importante: limpiar resultados para que la tabla vuelva a mostrar productos originales
+        this.$emit('limpiar'); // En caso otros componentes lo usen
+    },
     async cargarProductos() {
       try {
         const response = await axios.get(this.apiBaseUrl);
@@ -95,18 +98,25 @@ export default {
     this.cargarProductos();
   },
 };
+
 </script>
 <template>
   <div>
 
 
     <component
-      :is="currentComponent"
-      :searchTerm="searchTerm"
-      :productos="productosMostrados"
-      :resultadosBusqueda="resultadosBusqueda"
-      :startDate="startDate"
-      :endDate="endDate"
+    ref="currentComponentRef"
+    :is="currentComponent"
+    @limpiar-busqueda="limpiarBusqueda"
+    :searchTerm="searchTerm"
+    :searchTermCompany="searchTermCompany"
+    :searchTermRuc="searchTermRuc"
+    :searchTermDni="searchTermDni"
+    :searchTermNombre="searchTermNombre"
+    :productos="productosMostrados"
+    :resultadosBusqueda="resultadosBusqueda"
+    :startDate="startDate"
+    :endDate="endDate"
     />
   </div>
 </template>

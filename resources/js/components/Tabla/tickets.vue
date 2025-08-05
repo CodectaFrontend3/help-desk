@@ -1,9 +1,9 @@
 <template>
   <div>
     <input
-      v-model="searchTerm"
-      @input="buscarProductos"
-      placeholder="Buscar Personas..."
+    :value="searchTerm"
+    @input="onInputChange"
+    placeholder="Buscar Personas..."
     />
 
     <table>
@@ -49,18 +49,26 @@ export default {
     visible: Boolean,
     clienteId: Number,
   },
-  data() {
+    data() {
     return {
-      producto: [],           // todos los productos
-      resultadosBusqueda: [],  // resultados del filtro
-      searchTerm: '',
+        producto: [],
     };
-  },
-  computed: {
-    productosMostrados() {
-      return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
     },
-  },
+    props: {
+    searchTerm: {
+        type: String,
+        default: '',
+    },
+    resultadosBusqueda: {
+        type: Array,
+        default: () => [],
+    },
+    },
+    computed: {
+    productosMostrados() {
+        return this.searchTerm.length > 0 ? this.resultadosBusqueda : this.producto;
+    },
+    },
   methods: {
     async buscarProductos() {
       if (this.searchTerm.length === 0) return;
